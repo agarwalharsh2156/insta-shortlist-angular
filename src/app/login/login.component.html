@@ -1,0 +1,54 @@
+<div class="container d-flex justify-content-center align-items-center vh-100">
+       <div class="card p-4 shadow" style="max-width: 400px; width: 100%;">
+         <h3 class="card-title text-center mb-4">
+           <i class="fas fa-lock me-2" *ngIf="isFontAwesomeEnabled"></i> Login
+         </h3>
+         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+           <div class="mb-3">
+             <label for="email" class="form-label">Email address</label>
+             <div class="input-group">
+               <span class="input-group-text" *ngIf="isFontAwesomeEnabled">
+                 <i class="fas fa-envelope"></i>
+               </span>
+               <input
+                 type="email"
+                 id="email"
+                 class="form-control"
+                 formControlName="email"
+                 [class.is-invalid]="email?.invalid && (email?.dirty || email?.touched)"
+                 placeholder="Enter your email"
+               >
+               <div *ngIf="email?.invalid && (email?.dirty || email?.touched)" class="invalid-feedback">
+                 <div *ngIf="email?.errors?.['required']">Email is required.</div>
+                 <div *ngIf="email?.errors?.['email']">Please enter a valid email.</div>
+               </div>
+             </div>
+           </div>
+           <div class="mb-3">
+             <label for="password" class="form-label">Password</label>
+             <div class="input-group">
+               <span class="input-group-text" *ngIf="isFontAwesomeEnabled">
+                 <i class="fas fa-key"></i>
+               </span>
+               <input
+                 type="password"
+                 id="password"
+                 class="form-control"
+                 formControlName="password"
+                 [class.is-invalid]="password?.invalid && (password?.dirty || password?.touched)"
+                 placeholder="Enter your password"
+               >
+               <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="invalid-feedback">
+                 <div *ngIf="password?.errors?.['required']">Password is required.</div>
+               </div>
+             </div>
+           </div>
+           <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid">
+             Login
+           </button>
+         </form>
+         <p class="text-center mt-3">
+           Don't have an account? <a routerLink="/register">Register</a>
+         </p>
+       </div>
+     </div>

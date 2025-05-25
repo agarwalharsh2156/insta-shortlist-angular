@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  angular-dev:
+    build:
+      context: . # Look for the Dockerfile in the current directory
+      dockerfile: Dockerfile # Use the Dockerfile we just created
+    ports:
+      - "4200:4200" # Map port 4200 on your computer to port 4200 inside the container
+    volumes:
+      - .:/app # Mount your project folder from your computer into the container's /app folder
+      - /app/node_modules # Important: This prevents your computer's node_modules from conflicting with the container's
+    command: npm start # Run the 'npm start' command defined in your package.json
