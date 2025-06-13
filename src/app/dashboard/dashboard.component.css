@@ -1,4 +1,146 @@
+/* Chart canvas sizing */
+
+/* Make dashboard background transparent */
+.dashboard {
+  background: transparent !important;
+  overflow: auto;
+
+}
+
+
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 320px !important;
+  max-height: 320px;
+}
+
+/* Stats grid: 2 columns, 2 rows, fixed 200x200px cards, centered */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 24px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+
+
+/* Center stat content */
+.stat-card .card-body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+/* General card style for dashboard cards (charts, lists, etc.) */
 .card {
   border-radius: 10px;
+  background-color: rgb(253, 253, 253) !important;
+  box-shadow: 0 4px 24px rgba(60,60,60,0.06);
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-canvas { display: block; width: 100%; }
+
+/* Stat card style */
+.stat-card {
+  background: rgb(253, 253, 253);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(60,60,60,0.06);
+  padding: 20px;
+  width: 100%;
+  min-width: 180px;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+/* Icon backgrounds */
+.stat-card-icons {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.icon-bg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgb(210, 245, 91); /* brand green */
+  color: #222;
+  font-size: 1.2rem;
+  padding: 20px;
+}
+.icon-bg-faded {
+  background: rgba(255, 90, 90, 0.12); /* faded red for down arrow */
+  color: #ff5a5a;
+}
+
+/* Stat label and value */
+.stat-label {
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+.stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.stat-delta {
+  font-size: 0.95rem;
+  margin-top: 2px;
+}
+
+/* Recent Activity Section */
+.activity-section {
+  margin-bottom: 18px;
+}
+.activity-date-label {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #444;
+}
+.activity-item {
+  gap: 8px;
+}
+.activity-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  padding: 20px;
+}
+.brand-green {
+  background: rgb(210, 245, 91);
+  color: #222;
+}
+.brand-purple {
+  background: rgb(202, 210, 255);
+  color: #222;
+}
+.activity-time {
+  font-size: 0.95rem;
+  color: #888;
+  font-weight: 500;
+}
+.activity-desc {
+  font-size: 1.05rem;
+  color: #222;
+}

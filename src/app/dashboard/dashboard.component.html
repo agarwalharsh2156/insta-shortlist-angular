@@ -1,26 +1,157 @@
-<div class="container mt-4">
-  <h2 class="mb-4">Dashboard</h2>
+<div class="container dashboard">
   <div class="row">
-    <div class="col-md-6">
-      <div class="card shadow mb-4">
+    <!-- Left Column -->
+    <div class="col-md-6 d-flex flex-column" style="height: 100%;">
+      <!-- Stats Grid: 2x2 -->
+      <div class="stats-grid mb-4">
+        <!-- Applicants -->
+        <div class="stat-card shadow-sm">
+          <div class="stat-card-icons mb-2">
+            <span class="icon-bg brand-green">
+              <i class="fas fa-user"></i>
+            </span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="icon-bg icon-bg-faded ms-2">
+              <i class="fas fa-arrow-up" style="color:#4caf50;"></i>
+            </span>
+          </div>
+          <div class="stat-label text-secondary mb-1">Applicants</div>
+          <div class="stat-value text-dark fw-bold">120</div>
+          <div class="stat-delta text-success small">
+            +1.2% <span class="text-muted">than last week</span>
+          </div>
+        </div>
+        <!-- In-Review -->
+        <div class="stat-card shadow-sm">
+          <div class="stat-card-icons mb-2">
+            <span class="icon-bg brand-green">
+              <i class="fas fa-search"></i>
+            </span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="icon-bg icon-bg-faded ms-2">
+              <i class="fas fa-arrow-right" style="color:#ffc107;"></i>
+            </span>
+          </div>
+          <div class="stat-label text-secondary mb-1">In-Review</div>
+          <div class="stat-value text-dark fw-bold">45</div>
+          <div class="stat-delta text-warning small">
+            0.00% <span class="text-muted">than last week</span>
+          </div>
+        </div>
+        <!-- Hired -->
+        <div class="stat-card shadow-sm">
+          <div class="stat-card-icons mb-2">
+            <span class="icon-bg brand-green">
+              <i class="fas fa-user-check"></i>
+            </span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="icon-bg icon-bg-faded ms-2">
+              <i class="fas fa-arrow-up" style="color:#4caf50;"></i>
+            </span>
+          </div>
+          <div class="stat-label text-secondary mb-1">Hired</div>
+          <div class="stat-value text-dark fw-bold">20</div>
+          <div class="stat-delta text-success small">
+            +0.85% <span class="text-muted">than last week</span>
+          </div>
+        </div>
+        <!-- Interview -->
+        <div class="stat-card shadow-sm">
+          <div class="stat-card-icons mb-2">
+            <span class="icon-bg brand-green">
+              <i class="fas fa-comments"></i>
+            </span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <span class="icon-bg icon-bg-faded ms-2">
+              <i class="fas fa-arrow-down" style="color:#ff5a5a;"></i>
+            </span>
+          </div>
+          <div class="stat-label text-secondary mb-1">Interview</div>
+          <div class="stat-value text-dark fw-bold">44</div>
+          <div class="stat-delta text-danger small">
+            -0.62% <span class="text-muted">than last week</span>
+          </div>
+        </div>
+      </div>
+      <!-- List Section -->
+      <div class="card shadow-sm flex-grow-1">
         <div class="card-body">
-          <h5 class="card-title">Job Applications by Status</h5>
-          <canvas baseChart
-            [data]="barChartData"
-            [options]="barChartOptions"
-            [type]="barChartType">
-          </canvas>
+          <h5 class="card-title mb-3">Recent Activity</h5>
+          <!-- Today Section -->
+          <div class="activity-section mb-3">
+            <div class="activity-date-label mb-2">Today</div>
+            <div class="activity-item d-flex align-items-start mb-3">
+              <span class="activity-icon brand-green me-3">
+                <i class="fas fa-user-check"></i>
+              </span>
+              <div>
+                <div class="activity-time">10:15 AM</div>
+                <div class="activity-desc">
+                  Darren Wright viewed 15 candidate profiles for the Software Developer position
+                </div>
+              </div>
+            </div>
+            <div class="activity-item d-flex align-items-start mb-3">
+              <span class="activity-icon brand-purple me-3">
+                <i class="fas fa-calendar-alt"></i>
+              </span>
+              <div>
+                <div class="activity-time">9:50 AM</div>
+                <div class="activity-desc">
+                  Caren Smith scheduled interviews with 3 candidates for the Marketing Manager role
+                </div>
+              </div>
+            </div>
+            <div class="activity-item d-flex align-items-start mb-3">
+              <span class="activity-icon brand-green me-3">
+                <i class="fas fa-bell"></i>
+              </span>
+              <div>
+                <div class="activity-time">9:30 AM</div>
+                <div class="activity-desc">
+                  Automated Reminder sent to Bob Lee to complete interview feedback
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Yesterday Section -->
+          <div class="activity-section">
+            <div class="activity-date-label mb-2">Yesterday</div>
+            <div class="activity-item d-flex align-items-start mb-3">
+              <span class="activity-icon brand-purple me-3">
+                <i class="fas fa-plus"></i>
+              </span>
+              <div>
+                <div class="activity-time">4:45 PM</div>
+                <div class="activity-desc">
+                  New job posting for a Project Manager created by Alice Johnson
+                </div>
+              </div>
+            </div>
+            <div class="activity-item d-flex align-items-start">
+              <span class="activity-icon brand-green me-3">
+                <i class="fas fa-check-circle"></i>
+              </span>
+              <div>
+                <div class="activity-time">3:30 PM</div>
+                <div class="activity-desc">
+                  Offer letter accepted by candidate Mark Brown for the Financial Analyst position
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-md-6">
-      <div class="card shadow mb-4">
+    <!-- Right Column -->
+    <div class="col-md-6 d-flex flex-column" style="height: 100%;">
+      <div class="card shadow-sm mb-4 flex-fill">
+        <div class="card-body">
+          <h5 class="card-title">Job Applications by Status</h5>
+          <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
+          </canvas>
+        </div>
+      </div>
+      <div class="card shadow-sm flex-fill">
         <div class="card-body">
           <h5 class="card-title">Job Categories</h5>
-          <canvas baseChart
-            [data]="pieChartData"
-            [options]="pieChartOptions"
-            [type]="pieChartType">
+          <canvas baseChart [data]="pieChartData" [options]="pieChartOptions" [type]="pieChartType">
           </canvas>
         </div>
       </div>

@@ -1,21 +1,102 @@
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="mb-0">Job Listings</h2>
-    <a class="nav-link" routerLink="/job-create" routerLinkActive="active"><button class="btn btn-success">Create Job</button></a>
-  </div>
-  <div class="row">
-    <div class="col-md-4" *ngFor="let job of jobs">
-      <div class="card shadow mb-4">
-        <div class="card-body">
-          <h5 class="card-title">{{ job.title }}</h5>
-          <h6 class="card-subtitle mb-2 text-muted">{{ job.company }}</h6>
-          <p class="card-text">
-            <i class="fas fa-map-marker-alt me-2"></i>{{ job.location }}<br>
-            {{ job.description }}
-          </p>
-          <button class="btn btn-primary" (click)="postJob(job.id, job.title)">Post Job</button>
-        </div>
+<div class="container mt-4 jobs-bg">
+  <div class="jobs-floating-container p-4 mb-4">
+    <!-- Top Bar -->
+    <div class="top-bar d-flex flex-wrap justify-content-between align-items-center mb-3 gap-3">
+      <div class="d-flex flex-grow-1 gap-2">
+        <input class="form-control" style="max-width:320px;" placeholder="Search position, department, etc" />
+        <button class="btn btn-outline-secondary"><i class="fas fa-filter"></i> Filter</button>
+      </div>
+      <a [routerLink]="['/jobs/create-job']" class="btn brand-green-btn ms-auto">Post a Job</a>
+    </div>
+
+    <!-- Helper Nav Bar -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-3">
+      <div>
+        Showing <b>{{ jobs.length }}</b> Jobs
+      </div>
+      <div class="d-flex align-items-center gap-2 ms-auto">
+        <span>Sort by:</span>
+        <select class="form-select form-select-sm" style="width:auto;">
+          <option>Last Updated</option>
+          <option>Title</option>
+          <option>Applicants</option>
+        </select>
+        <button class="btn layout-toggle" [class.active]="isGridView" (click)="toggleView(true)" title="Grid View">
+          <i class="fas fa-th"></i>
+        </button>
+        <button class="btn layout-toggle" [class.active]="!isGridView" (click)="toggleView(false)" title="Table View">
+          <i class="fas fa-list"></i>
+        </button>
       </div>
     </div>
   </div>
+
+  <!-- Job Cards Grid -->
+  <div class="row g-4" *ngIf="isGridView">
+    <div class="col-md-4" *ngFor="let job of jobs">
+      <div class="job-card p-3 shadow-sm">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <span class="job-icon brand-green"><i class="fas fa-code"></i></span>
+          <span class="badge job-status-badge" [ngClass]="{
+              'brand-green-bg': job.isActive === true,
+              'brand-yellow-bg': job.isActive === false,
+            }">
+            {{job.isActive}}
+          </span>
+        </div>
+        <div class="fw-bold fs-5 mb-1">{{ job.title }}</div>
+        <div class="text-muted mb-2">{{ job.role }}</div>
+        <div class="mb-2">
+          <span class="job-meta"><i class="fas fa-briefcase me-1"></i>&nbsp;&nbsp;{{job.level}}</span>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <span class="job-meta ms-3"><i class="fas fa-clock me-1"></i>&nbsp;&nbsp;{{job.type}}</span>
+        </div>
+        <div class="mb-2">
+          <span class="badge text-dark"
+            style="border-radius: 6px; padding: 10px; background-color: #eeecec;">{{job.location}}</span>
+        </div>
+        <div class="fs-3 mb-4 pb-4 pt-4 border-bottom"
+          style="border-bottom-width:2px; border-bottom-style:solid; border-bottom-color:#3d3d3d;">${{job.salaryMin}}-${{job.salaryMax}}
+        </div>
+        <div class="text-muted small"><i class="fas fa-users me-1"></i>{{job.applicants}} Applicants</div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!isGridView">
+    <table class="table table-hover align-middle job-table-view">
+      <thead class="table-head">
+        <tr>
+          <th>Position</th>
+          <th>Department</th>
+          <th>Status</th>
+          <th>Level</th>
+          <th>Type</th>
+          <th>Applicants</th>
+          <th>Salary</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let job of jobs">
+          <td>
+            <span class="job-icon-table brand-green me-2"><i class="fas fa-code"></i></span>
+            {{ job.title }}
+          </td>
+          <td>{{ job.role }}</td>
+          <td>
+            <span class="badge job-status-badge" [ngClass]="{
+              'brand-green-bg': job.isActive === true,
+              'brand-yellow-bg': job.isActive === false,
+            }">
+              {{ job.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td>{{ job.level }}</td>
+<td>{{ job.type }}</td>
+          <td>{{ job.applicants }}</td>
+          <td>${{ job.salaryMin }}-{{ job.salaryMax }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
 </div>

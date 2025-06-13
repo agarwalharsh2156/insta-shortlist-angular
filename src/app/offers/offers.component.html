@@ -1,0 +1,110 @@
+<div class="offers-dashboard-bg p-4">
+  <div class="row g-4">
+    <!-- Stat Cards -->
+    <div class="col-md-4" *ngFor="let stat of stats">
+      <div class="stat-card d-flex align-items-center p-3 rounded shadow-sm">
+        <div class="stat-icon me-3" [style.background]="stat.color">
+          <i class="fas" [ngClass]="stat.icon"></i>
+        </div>
+        <div>
+          <div class="stat-value fw-bold fs-3">{{ stat.value }}</div>
+          <div class="stat-label text-muted">{{ stat.label }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mt-2 align-items-stretch flex-wrap" style="flex-wrap: wrap;">
+    <!-- Offer Patterns Chart -->
+    <div class="col-md-6 d-flex">
+      <div class="card p-3 flex-fill h-100 chart-card">
+        <div class="fw-bold mb-2">Offer Patterns</div>
+        <canvas
+          baseChart
+          [data]="offerPatternsData"
+          [options]="offerPatternsOptions"
+          [type]="offerPatternsType"
+          height="380">
+        </canvas>
+      </div>
+    </div>
+    <!-- Offers by Department -->
+    <div class="col-md-3 d-flex">
+      <div class="card p-3 flex-fill h-100 chart-card">
+        <div class="fw-bold mb-2">Offers by Department</div>
+        <div *ngFor="let dept of offersByDepartment" class="mb-2">
+          <div class="d-flex justify-content-between">
+            <span>{{ dept.label }}</span>
+            <span>{{ dept.value }}</span>
+          </div>
+          <div class="progress" style="height: 6px;">
+            <div class="progress-bar" [style.width.%]="dept.value / 158 * 100" style="background:#bfcaff"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Decline Reasons Chart -->
+    <div class="col-md-3 d-flex">
+      <div class="card p-3 flex-fill h-100 chart-card">
+        <div class="fw-bold mb-2">Decline Reasons</div>
+        <canvas
+          baseChart
+          [data]="declineReasonsData"
+          [options]="declineReasonsOptions"
+          [type]="'doughnut'"
+          height="380">
+        </canvas>
+        <div class="mt-3">
+          <div *ngFor="let reason of declineReasons" class="d-flex justify-content-between small">
+            <span>{{ reason.label }}</span>
+            <span>{{ reason.value }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Candidates Table -->
+  <div class="card p-3 mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="fw-bold fs-5">Candidates</div>
+      <input type="text" class="form-control w-auto" placeholder="Search candidates name, role, etc">
+    </div>
+    <div class="table-responsive">
+      <table class="table align-middle table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Employment Type</th>
+            <th>Work Type</th>
+            <th>Offer Date</th>
+            <th>Salary Offered</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of candidates">
+            <td>
+              <span class="candidate-avatar me-2">
+              </span>
+              {{ c.name }}
+            </td>
+            <td>{{ c.role }}</td>
+            <td>{{ c.employmentType }}</td>
+            <td>{{ c.workType }}</td>
+            <td>{{ c.offerDate }}</td>
+            <td>{{ c.salary }}</td>
+            <td>
+              <span class="badge" [ngClass]="{
+              'bg-primary': c.status === 'Sent',
+              'bg-success': c.status === 'Accepted',
+              'bg-danger': c.status === 'Declined'
+            }">{{ c.status }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>

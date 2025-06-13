@@ -14,25 +14,47 @@ import { AuthService } from '../auth.service';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   isFontAwesomeEnabled = true;
+  isLoading = false;
+  errorMessage = '';
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      username: ['', Validators.required],
       password: ['', Validators.required]
     });
   }
 
   ngOnInit(): void {}
 
-  get email() { return this.loginForm.get('email'); }
+  get username() { return this.loginForm.get('username'); }
   get password() { return this.loginForm.get('password'); }
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      console.log('Form Submitted!', this.loginForm.value);
-      // Simulate successful login (replace with backend call later)
-      this.authService.login();
-      this.router.navigate(['/dashboard']);
+      this.isLoading = true;
+      this.errorMessage = '';
+      
+      const credentials = {
+        username: this.loginForm.value.username,
+        password: this.loginForm.value.password
+      };
+
+      this.authService.login(credentials).subscribe({
+        next: (success) => {
+          if (success) {
+            console.log('Login successful');
+            this.router.navigate(['/dashboard']);
+          }
+        },
+        error: (error) => {
+          console.error('Login failed:', error);
+          this.errorMessage = error;
+          this.isLoading = false;
+        },
+        complete: () => {
+          this.isLoading = false;
+        }
+      });
     }
   }
 }

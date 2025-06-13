@@ -1,0 +1,75 @@
+.candidates-bg {
+  background: rgb(253, 253, 253) !important;
+  border-radius: 20px;
+  box-shadow:0 8px 32px rgba(60,60,60,0.08), 0 1.5px 4px rgba(60,60,60,0.06);
+}
+
+.candidates-table {
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgb(253, 253, 253);
+  box-shadow: 0 2px 12px rgba(60,60,60,0.06);
+}
+
+.candidates-table thead th {
+  background-color: rgb(202, 210, 255) !important; /* brand purple */
+  color: #222 !important;
+  border-bottom: 2px solid #e2e1e1;
+  font-weight: 600;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  vertical-align: middle;
+}
+
+.candidates-table tbody td {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  vertical-align: middle;
+}
+
+.status-badge {
+  font-size: 0.98rem;
+  border-radius: 8px;
+  padding: 6px 18px;
+  font-weight: 500;
+}
+
+.brand-green-bg {
+  background: rgb(210, 245, 91) !important;
+  color: #222 !important;
+}
+.brand-purple-bg {
+  background: rgb(202, 210, 255) !important;
+  color: #222 !important;
+}
+.brand-red-bg {
+  background: #ff5a5a !important;
+  color: #fff !important;
+}
+
+.score-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  margin-right: 4px;
+}
+.score-green {
+  background: rgb(210, 245, 91);
+  color: #222;
+}
+.score-yellow {
+  background: #ffeeba;
+  color: #b8860b;
+}
+.score-red {
+  background: #ff5a5a;
+  color: #fff;
+}
+
+.brand-green-btn{
+  background-color: rgb(210, 245, 91);
+}

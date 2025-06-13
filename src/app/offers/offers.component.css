@@ -1,0 +1,70 @@
+.offers-dashboard-bg {
+  background: transparent !important;
+  min-height: 100vh;
+}
+.stat-card {
+  background: rgb(253, 253, 253);
+  border-radius: 12px;
+  min-height: 90px;
+}
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+.card {
+  background: #fff;
+  border-radius: 12px;
+}
+.candidate-avatar {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #e6ff5c;
+  vertical-align: middle;
+}
+.badge.bg-primary { background: #bfcaff !important; color: #222; }
+.badge.bg-success { background: #e6ff5c !important; color: #222; }
+.badge.bg-danger { background: #bfcaff !important; color: #222; }
+.chart-card {
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: #f6f8fa;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #e6ff5c33;
+  transition: background 0.2s;
+}
+
+.candidate-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e6ff5c;
+  color: #222;
+  font-weight: bold;
+  font-size: 1rem;
+  margin-right: 8px;
+}
+
+.badge {
+  border-radius: 999px;
+  padding: 0.4em 1em;
+  font-size: 0.95em;
+  font-weight: 500;
+  border: none;
+}
