@@ -48,6 +48,41 @@ export interface CreateJobRequest {
   applicants: number;
 }
 
+export interface Candidate {
+  id?: number;
+  name: string;
+  role: string;
+  appliedRole: string;
+  department: string;
+  employmentType: string;
+  workType: string;
+  appliedDate: string;
+  attachments: string;
+  status: string;
+  score: number;
+  email: string;
+  phone: string;
+  position: string;
+  experience: number;
+}
+
+export interface CreateCandidateRequest {
+  name: string;
+  role: string;
+  appliedRole: string;
+  department: string;
+  employmentType: string;
+  workType: string;
+  appliedDate: string;
+  attachments: string;
+  status: string;
+  score: number;
+  email: string;
+  phone: string;
+  position: string;
+  experience: number;
+}
+
 export interface ApiError {
   error: string;
 }
@@ -56,7 +91,7 @@ export interface ApiError {
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = "https://66d9-2a09-bac1-36a0-120-00-2a5-9f.ngrok-free.app";
+  private baseUrl = "https://bd59-104-28-223-176.ngrok-free.app";
   
   // Replace 'YOUR_API_KEY_HERE' with your actual authorization key
   private apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaGFza2FyIiwiaWF0IjoxNzQ5ODAzMzg4LCJleHAiOjE3NDk4MzkzODh9.vs518QlQXCvHB-YUhauw9Pzbi_cg14F8z5j9SIsSINc';
@@ -86,6 +121,26 @@ export class ApiService {
   createJob(jobData: CreateJobRequest): Observable<Job> {
     const headers = this.getAuthHeaders();
     return this.http.post<Job>(`${this.baseUrl}/api/jobs`, jobData, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  // NEW: Get all jobs method
+  getJobs(): Observable<Job[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<Job[]>(`${this.baseUrl}/api/jobs`, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  // Candidate methods
+  createCandidate(candidateData: CreateCandidateRequest): Observable<Candidate> {
+    const headers = this.getAuthHeaders();
+    return this.http.post<Candidate>(`${this.baseUrl}/api/candidates`, candidateData, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  getCandidates(): Observable<Candidate[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<Candidate[]>(`${this.baseUrl}/api/candidates`, { headers })
       .pipe(catchError(this.handleError));
   }
 

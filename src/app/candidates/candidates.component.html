@@ -2,13 +2,16 @@
   <!-- Top Bar -->
   <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-3">
     <div class="d-flex flex-grow-1 gap-2">
-      <input class="form-control" placeholder="Search candidates name, role, etc" />
-      <button class="btn btn-outline-secondary"><i class="fas fa-filter"></i> Filter</button>
+      <input class="form-control" placeholder="Search candidates name, role, etc" [disabled]="loading" />
+      <button class="btn btn-outline-secondary" [disabled]="loading"><i class="fas fa-filter"></i> Filter</button>
     </div>
     <div class="d-flex align-items-center gap-2">
-      <input type="text" class="form-control" style="width:180px;" placeholder="1-30 October, 2030" />
+      <button class="btn btn-outline-secondary btn-sm" (click)="refreshCandidates()" [disabled]="loading">
+        <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i> Refresh
+      </button>
+      <input type="text" class="form-control" style="width:180px;" placeholder="1-30 October, 2030" [disabled]="loading" />
       <span>Sort by:</span>
-      <select class="form-select form-select-sm" style="width:auto;">
+      <select class="form-select form-select-sm" style="width:auto;" [disabled]="loading">
         <option>Latest</option>
         <option>Oldest</option>
       </select>
@@ -16,15 +19,46 @@
     </div>
   </div>
 
+  <!-- Error Alert -->
+  <div class="alert alert-warning alert-dismissible fade show" *ngIf="error" role="alert">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    <strong>API Error:</strong> {{ error }}
+    <br><small class="text-muted">Showing fallback data instead.</small>
+    <button type="button" class="btn-close" (click)="clearError()"></button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="text-center py-5" *ngIf="loading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2 text-muted">Loading candidates from API...</p>
+  </div>
+
   <!-- Tabs -->
-  <ul class="nav nav-tabs mb-3">
+  <ul class="nav nav-tabs mb-3" *ngIf="!loading">
     <li class="nav-item" *ngFor="let tab of tabs">
-      <a class="nav-link" [class.active]="activeTab === tab" (click)="setTab(tab)">{{ tab }}</a>
+      <a class="nav-link" [class.active]="activeTab === tab" (click)="setTab(tab)">
+        {{ tab }}
+        <span class="badge bg-light text-dark ms-1">
+          {{ getCandidateCountForTab(tab) }}
+        </span>
+      </a>
     </li>
   </ul>
 
+  <!-- No Candidates Message -->
+  <div class="text-center py-5" *ngIf="!loading && candidates.length === 0 && !error">
+    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+    <h4 class="text-muted">No Candidates Found</h4>
+    <p class="text-muted">There are no candidates available at the moment.</p>
+    <a [routerLink]="['/candidates/create-candidate']" class="btn brand-green-btn">
+      <i class="fas fa-plus me-2"></i>Add Your First Candidate
+    </a>
+  </div>
+
   <!-- Table -->
-  <div class="table-responsive">
+  <div class="table-responsive" *ngIf="!loading && candidates.length > 0">
     <table class="table table-hover align-middle candidates-table">
       <thead>
         <tr>
@@ -50,10 +84,13 @@
           </td>
           <td>{{ candidate.employmentType }}</td>
           <td>{{ candidate.workType }}</td>
-          <td>{{ candidate.appliedDate }}</td>
+          <td>{{ candidate.appliedDate | date:'shortDate' }}</td>
           <td>
             <div *ngFor="let att of candidate.attachments">
               <i class="far fa-file-alt me-1"></i>{{ att }}
+            </div>
+            <div *ngIf="candidate.attachments.length === 0" class="text-muted small">
+              No attachments
             </div>
           </td>
           <td>
@@ -61,7 +98,8 @@
               [ngClass]="{
                 'brand-green-bg': candidate.status === 'Interview',
                 'brand-purple-bg': candidate.status === 'In-Review' || candidate.status === 'Hired',
-                'brand-red-bg': candidate.status === 'Rejected'
+                'brand-red-bg': candidate.status === 'Rejected',
+                'bg-info': candidate.status === 'Shortlisted'
               }">
               {{ candidate.status }}
             </span>
@@ -79,5 +117,13 @@
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <!-- Results Count -->
+  <div class="mt-3 text-muted" *ngIf="!loading && candidates.length > 0">
+    <small>
+      Showing {{ filteredCandidates.length }} of {{ candidates.length }} candidates
+      <span *ngIf="activeTab !== 'All'"> in {{ activeTab }} status</span>
+    </small>
   </div>
 </div>

@@ -73,3 +73,7 @@
 .brand-green-btn{
   background-color: rgb(210, 245, 91);
 }
+
+.nav-link:hover{
+  cursor: pointer
+}

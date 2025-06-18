@@ -2,24 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-
-interface Candidate {
-  id: number;
-  name: string;
-  role: string;
-  appliedRole: string;
-  department: string;
-  employmentType: string;
-  workType: string;
-  appliedDate: string;
-  attachments: string[];
-  status: string;
-  score: number;
-  email: string;
-  phone: string;
-  position: string;
-  experience: number;
-}
+import { ApiService, CreateCandidateRequest, Candidate } from '../../api.service';
 
 @Component({
   selector: 'app-create-candidate',
@@ -35,10 +18,10 @@ export class CreateCandidateComponent {
     role: '',
     appliedRole: '',
     department: '',
-    employmentType: '',
-    workType: '',
+    employmentType: 'Full-time',
+    workType: 'Onsite',
     appliedDate: '',
-    attachments: [],
+    attachments: '',
     status: 'Shortlisted',
     score: 0,
     email: '',
@@ -47,25 +30,69 @@ export class CreateCandidateComponent {
     experience: 0
   };
 
-  constructor(private router: Router) {}
+  loading = false;
+  error: string | null = null;
+  success = false;
 
-  onAttachmentsChange(value: string) {
-    this.candidate.attachments = value
-      .split(',')
-      .map(a => a.trim())
-      .filter(a => a);
-  }
+  constructor(
+    private router: Router,
+    private apiService: ApiService
+  ) {}
+
+  // onAttachmentsChange(value: string) {
+  //   this.candidate.attachments = value
+  //     .split(',')
+  //     .map(a => a.trim())
+  //     .filter(a => a);
+  // }
 
   onSubmit(form: any) {
     if (form.valid) {
-      const candidates: Candidate[] = JSON.parse(localStorage.getItem('candidates') || '[]');
-      const newCandidate: Candidate = {
-        ...this.candidate,
-        id: Date.now()
+      this.loading = true;
+      this.error = null;
+      this.success = false;
+
+      const candidateData: CreateCandidateRequest = {
+        name: this.candidate.name,
+        role: this.candidate.role,
+        appliedRole: this.candidate.appliedRole,
+        department: this.candidate.department,
+        employmentType: this.candidate.employmentType,
+        workType: this.candidate.workType,
+        appliedDate: this.candidate.appliedDate,
+        attachments: this.candidate.attachments,
+        status: this.candidate.status,
+        score: Number(this.candidate.score),
+        email: this.candidate.email,
+        phone: this.candidate.phone,
+        position: this.candidate.position,
+        experience: Number(this.candidate.experience)
       };
-      candidates.push(newCandidate);
-      localStorage.setItem('candidates', JSON.stringify(candidates));
-      this.router.navigate(['/candidates']);
+
+      this.apiService.createCandidate(candidateData).subscribe({
+        next: (createdCandidate) => {
+          console.log('Candidate created successfully:', createdCandidate);
+          this.loading = false;
+          this.success = true;
+          
+          // Navigate to candidates page after short delay
+          setTimeout(() => {
+            this.router.navigate(['/candidates']);
+          }, 1500);
+        },
+        error: (error) => {
+          console.error('Error creating candidate:', error);
+          this.error = error;
+          this.loading = false;
+          
+          // Note: Not using localStorage fallback as mentioned in constraints
+          // You could implement a different fallback strategy here if needed
+        }
+      });
     }
+  }
+
+  clearError() {
+    this.error = null;
   }
 }

@@ -12,27 +12,57 @@
     <!-- Helper Nav Bar -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-3">
       <div>
-        Showing <b>{{ jobs.length }}</b> Jobs
+        <span *ngIf="!loading">Showing <b>{{ jobs.length }}</b> Jobs</span>
+        <span *ngIf="loading">Loading jobs...</span>
       </div>
       <div class="d-flex align-items-center gap-2 ms-auto">
+        <button class="btn btn-outline-secondary btn-sm" (click)="refreshJobs()" [disabled]="loading">
+          <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i> Refresh
+        </button>
         <span>Sort by:</span>
-        <select class="form-select form-select-sm" style="width:auto;">
+        <select class="form-select form-select-sm" style="width:auto;" [disabled]="loading">
           <option>Last Updated</option>
           <option>Title</option>
           <option>Applicants</option>
         </select>
-        <button class="btn layout-toggle" [class.active]="isGridView" (click)="toggleView(true)" title="Grid View">
+        <button class="btn layout-toggle" [class.active]="isGridView" (click)="toggleView(true)" title="Grid View" [disabled]="loading">
           <i class="fas fa-th"></i>
         </button>
-        <button class="btn layout-toggle" [class.active]="!isGridView" (click)="toggleView(false)" title="Table View">
+        <button class="btn layout-toggle" [class.active]="!isGridView" (click)="toggleView(false)" title="Table View" [disabled]="loading">
           <i class="fas fa-list"></i>
         </button>
       </div>
     </div>
   </div>
 
+  <!-- Error Alert -->
+  <div class="alert alert-warning alert-dismissible fade show" *ngIf="error" role="alert">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    <strong>API Error:</strong> {{ error }}
+    <br><small class="text-muted">Showing fallback data instead.</small>
+    <button type="button" class="btn-close" (click)="clearError()"></button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="text-center py-5" *ngIf="loading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2 text-muted">Loading jobs from API...</p>
+  </div>
+
+  <!-- No Jobs Message -->
+  <div class="text-center py-5" *ngIf="!loading && jobs.length === 0 && !error">
+    <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
+    <h4 class="text-muted">No Jobs Found</h4>
+    <p class="text-muted">There are no jobs available at the moment.</p>
+    <a [routerLink]="['/jobs/create-job']" class="btn brand-green-btn">
+      <i class="fas fa-plus me-2"></i>Post Your First Job
+    </a>
+  </div>
+
   <!-- Job Cards Grid -->
-  <div class="row g-4" *ngIf="isGridView">
+  <div class="row g-4" *ngIf="isGridView && !loading && jobs.length > 0">
     <div class="col-md-4" *ngFor="let job of jobs">
       <div class="job-card p-3 shadow-sm">
         <div class="d-flex justify-content-between align-items-start mb-2">
@@ -41,7 +71,7 @@
               'brand-green-bg': job.isActive === true,
               'brand-yellow-bg': job.isActive === false,
             }">
-            {{job.isActive}}
+            {{job.isActive ? 'Active' : 'Inactive'}}
           </span>
         </div>
         <div class="fw-bold fs-5 mb-1">{{ job.title }}</div>
@@ -62,7 +92,9 @@
       </div>
     </div>
   </div>
-  <div *ngIf="!isGridView">
+
+  <!-- Job Table View -->
+  <div *ngIf="!isGridView && !loading && jobs.length > 0">
     <table class="table table-hover align-middle job-table-view">
       <thead class="table-head">
         <tr>
@@ -91,7 +123,7 @@
             </span>
           </td>
           <td>{{ job.level }}</td>
-<td>{{ job.type }}</td>
+          <td>{{ job.type }}</td>
           <td>{{ job.applicants }}</td>
           <td>${{ job.salaryMin }}-{{ job.salaryMax }}</td>
         </tr>

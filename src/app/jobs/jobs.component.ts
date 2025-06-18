@@ -23,11 +23,28 @@ export class JobsComponent implements OnInit {
   }
 
   loadJobs() {
-    // Load from localStorage and static data since API only supports POST
-    this.loadFallbackJobs();
+    this.loading = true;
+    this.error = null;
+
+    this.apiService.getJobs().subscribe({
+      next: (jobs) => {
+        console.log('Jobs loaded successfully:', jobs);
+        this.jobs = jobs;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading jobs:', error);
+        this.error = error;
+        this.loading = false;
+        
+        // Fallback to static data if API fails
+        this.loadFallbackJobs();
+      }
+    });
   }
 
   private loadFallbackJobs() {
+    console.log('Loading fallback jobs due to API error');
     this.jobs = [
       {
         id: 1,
@@ -69,5 +86,10 @@ export class JobsComponent implements OnInit {
 
   refreshJobs() {
     this.loadJobs();
+  }
+
+  // Clear error message
+  clearError() {
+    this.error = null;
   }
 }
