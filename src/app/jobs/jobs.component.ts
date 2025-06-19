@@ -15,6 +15,7 @@ export class JobsComponent implements OnInit {
   isGridView = true;
   loading = false;
   error: string | null = null;
+  deletingJobId: number | null = null;
 
   constructor(private apiService: ApiService) {}
 
@@ -91,5 +92,44 @@ export class JobsComponent implements OnInit {
   // Clear error message
   clearError() {
     this.error = null;
+  }
+
+  // DELETE Job functionality
+  deleteJob(job: Job) {
+    if (!job.id) {
+      console.error('Job ID is required for deletion');
+      return;
+    }
+
+    const confirmDelete = confirm(`Are you sure you want to delete "${job.title}"? This action cannot be undone.`);
+    
+    if (confirmDelete) {
+      this.deletingJobId = job.id;
+      
+      this.apiService.deleteJob(job.id).subscribe({
+        next: () => {
+          console.log(`Job ${job.title} deleted successfully`);
+          // Remove the job from the local array
+          this.jobs = this.jobs.filter(j => j.id !== job.id);
+          this.deletingJobId = null;
+        },
+        error: (error) => {
+          console.error('Error deleting job:', error);
+          this.deletingJobId = null;
+          
+          // Show error message temporarily
+          const errorMsg = this.error;
+          this.error = `Failed to delete job: ${error}`;
+          setTimeout(() => {
+            this.error = errorMsg;
+          }, 3000);
+        }
+      });
+    }
+  }
+
+  // Helper method to check if a job is being deleted
+  isDeletingJob(jobId: number | undefined): boolean {
+    return this.deletingJobId === jobId;
   }
 }

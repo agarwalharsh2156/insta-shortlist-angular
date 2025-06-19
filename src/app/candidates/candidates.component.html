@@ -27,6 +27,13 @@
     <button type="button" class="btn-close" (click)="clearError()"></button>
   </div>
 
+  <!-- Delete Success Alert -->
+  <div class="alert alert-success alert-dismissible fade show" *ngIf="deleteSuccess" role="alert">
+    <i class="fas fa-check-circle me-2"></i>
+    <strong>Success!</strong> {{ deleteSuccess }}
+    <button type="button" class="btn-close" (click)="clearDeleteSuccess()"></button>
+  </div>
+
   <!-- Loading Spinner -->
   <div class="text-center py-5" *ngIf="loading">
     <div class="spinner-border text-primary" role="status">
@@ -70,6 +77,7 @@
           <th>Attachment</th>
           <th>Status</th>
           <th>Score (%)</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -86,8 +94,8 @@
           <td>{{ candidate.workType }}</td>
           <td>{{ candidate.appliedDate | date:'shortDate' }}</td>
           <td>
-            <div *ngFor="let att of candidate.attachments">
-              <i class="far fa-file-alt me-1"></i>{{ att }}
+            <div>
+              <i class="far fa-file-alt me-1"></i>{{ candidate.attachments }}
             </div>
             <div *ngIf="candidate.attachments.length === 0" class="text-muted small">
               No attachments
@@ -113,6 +121,29 @@
               <i class="fas fa-circle-notch"></i>
             </span>
             {{ candidate.score }}%
+          </td>
+          <td>
+            <div class="d-flex gap-1">
+              <!-- Edit Button -->
+              <a [routerLink]="['/candidates/edit-candidate', candidate.id]" 
+                 class="btn btn-outline-primary btn-sm" 
+                 title="Edit Candidate"
+                 [class.disabled]="isDeletingCandidate(candidate.id)">
+                <i class="fas fa-edit"></i>
+              </a>
+              
+              <!-- Delete Button -->
+              <button class="btn btn-outline-danger btn-sm" 
+                      title="Delete Candidate"
+                      (click)="deleteCandidate(candidate)"
+                      [disabled]="isDeletingCandidate(candidate.id)">
+                <span *ngIf="isDeletingCandidate(candidate.id)" 
+                      class="spinner-border spinner-border-sm" 
+                      role="status">
+                </span>
+                <i class="fas fa-trash" *ngIf="!isDeletingCandidate(candidate.id)"></i>
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>

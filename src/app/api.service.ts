@@ -91,7 +91,7 @@ export interface ApiError {
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = "https://bd59-104-28-223-176.ngrok-free.app";
+  private baseUrl = "https://c540-2a09-bac5-3c94-1aa0-00-2a7-d2.ngrok-free.app";
   
   // Replace 'YOUR_API_KEY_HERE' with your actual authorization key
   private apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaGFza2FyIiwiaWF0IjoxNzQ5ODAzMzg4LCJleHAiOjE3NDk4MzkzODh9.vs518QlQXCvHB-YUhauw9Pzbi_cg14F8z5j9SIsSINc';
@@ -131,6 +131,26 @@ export class ApiService {
       .pipe(catchError(this.handleError));
   }
 
+  updateJob(id: number, jobData: CreateJobRequest): Observable<Job> {
+  const headers = this.getAuthHeaders();
+  return this.http.put<Job>(`${this.baseUrl}/api/jobs/${id}`, jobData, { headers })
+    .pipe(catchError(this.handleError));
+}
+
+// DELETE Job method
+deleteJob(id: number): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.delete(`${this.baseUrl}/api/jobs/${id}`, { headers })
+    .pipe(catchError(this.handleError));
+}
+
+// GET single job by ID (helpful for edit form)
+getJobById(id: number): Observable<Job> {
+  const headers = this.getAuthHeaders();
+  return this.http.get<Job>(`${this.baseUrl}/api/jobs/${id}`, { headers })
+    .pipe(catchError(this.handleError));
+}
+
   // Candidate methods
   createCandidate(candidateData: CreateCandidateRequest): Observable<Candidate> {
     const headers = this.getAuthHeaders();
@@ -141,6 +161,27 @@ export class ApiService {
   getCandidates(): Observable<Candidate[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<Candidate[]>(`${this.baseUrl}/api/candidates`, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  // NEW: Get single candidate by ID
+  getCandidateById(id: number): Observable<Candidate> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<Candidate>(`${this.baseUrl}/api/candidates/${id}`, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  // NEW: Update candidate
+  updateCandidate(id: number, candidateData: CreateCandidateRequest): Observable<Candidate> {
+    const headers = this.getAuthHeaders();
+    return this.http.put<Candidate>(`${this.baseUrl}/api/candidates/${id}`, candidateData, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  // NEW: Delete candidate
+  deleteCandidate(id: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.delete(`${this.baseUrl}/api/candidates/${id}`, { headers })
       .pipe(catchError(this.handleError));
   }
 

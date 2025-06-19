@@ -1,0 +1,113 @@
+<div class="create-job-bg d-flex align-items-center justify-content-center min-vh-90 w-100">
+  <div class="create-job-card p-5 shadow-lg w-100">
+    <div class="text-center mb-4">
+      <div class="brand-icon mb-2">
+        <i class="fas fa-edit"></i>
+      </div>
+      <h2 class="brand-heading mb-1">Edit Job</h2>
+      <div class="brand-subheading mb-3">Update the job details below</div>
+    </div>
+
+    <!-- Loading Job Data -->
+    <div *ngIf="loadingJob" class="alert alert-info">
+      <i class="fas fa-spinner fa-spin me-2"></i>Loading job data...
+    </div>
+
+    <!-- Updating Job -->
+    <div *ngIf="loading" class="alert alert-info">
+      <i class="fas fa-spinner fa-spin me-2"></i>Updating job...
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="success" class="alert alert-success">
+      <i class="fas fa-check-circle me-2"></i>Job updated successfully! Redirecting...
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="alert alert-danger">
+      <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+      <button type="button" class="btn-close float-end" (click)="clearError()"></button>
+    </div>
+    
+    <!-- Edit Form -->
+    <form #editJobForm="ngForm" (ngSubmit)="onSubmit(editJobForm)" *ngIf="!loadingJob">
+      <div class="row g-4">
+        <div class="col-md-6">
+          <label for="title" class="form-label">Job Title</label>
+          <input type="text" class="form-control" id="title" name="title" [(ngModel)]="job.title" placeholder="@eg-Software Developer" required>
+        </div>
+        <div class="col-md-6">
+          <label for="role" class="form-label">Job Role</label>
+          <input type="text" class="form-control" id="role" name="role" [(ngModel)]="job.role" placeholder="@eg-Developer" required>
+        </div>
+        <div class="col-md-6">
+          <label for="location" class="form-label">Location</label>
+          <input type="text" class="form-control" id="location" name="location" [(ngModel)]="job.location" placeholder="@eg-Remote" required>
+        </div>
+        <div class="col-md-6">
+          <label for="type" class="form-label">Employment Type</label>
+          <select class="form-select" id="type" name="type" [(ngModel)]="job.type">
+            <option>Full-time</option>
+            <option>Part-time</option>
+            <option>Contract</option>
+            <option>Internship</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="level" class="form-label">Seniority Level</label>
+          <select class="form-select" id="level" name="level" [(ngModel)]="job.level">
+            <option>Entry-level</option>
+            <option>Mid-level</option>
+            <option>Senior-level</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="salaryMin" class="form-label">Min Salary</label>
+          <input type="number" class="form-control" id="salaryMin" name="salaryMin" [(ngModel)]="job.salaryMin" placeholder="@eg-1000" required>
+        </div>
+        <div class="col-md-3">
+          <label for="salaryMax" class="form-label">Max Salary</label>
+          <input type="number" class="form-control" id="salaryMax" name="salaryMax" [(ngModel)]="job.salaryMax" placeholder="@eg-10000" required>
+        </div>
+        
+        <!-- Job Status Toggle -->
+        <div class="col-md-6">
+          <label class="form-label">Job Status</label>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="isActive" name="isActive" [(ngModel)]="job.isActive">
+            <label class="form-check-label" for="isActive">
+              <span class="badge" [ngClass]="job.isActive ? 'brand-green-bg' : 'brand-yellow-bg'">
+                {{ job.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Current Applicants (Read-only) -->
+        <div class="col-md-6">
+          <label for="applicants" class="form-label">Current Applicants</label>
+          <input type="number" class="form-control" id="applicants" name="applicants" [(ngModel)]="job.applicants" readonly style="background-color: #f8f9fa;">
+        </div>
+
+        <div class="col-12">
+          <label for="description" class="form-label">Job Description</label>
+          <textarea class="form-control" id="description" name="description" rows="6" [(ngModel)]="job.description" placeholder="@eg-This role demands..." required></textarea>
+        </div>
+        
+        <div class="col-12 d-flex justify-content-between align-items-center mt-4">
+          <a routerLink="/jobs" class="btn brand-outline-btn">Cancel</a>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-secondary" (click)="toggleJobStatus()">
+              <i class="fas fa-toggle-on me-1" *ngIf="job.isActive"></i>
+              <i class="fas fa-toggle-off me-1" *ngIf="!job.isActive"></i>
+              {{ job.isActive ? 'Deactivate' : 'Activate' }} Job
+            </button>
+            <button type="submit" class="btn brand-green-btn px-4" [disabled]="!editJobForm.valid || loading">
+              <i class="fas fa-save me-1"></i>Update Job
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

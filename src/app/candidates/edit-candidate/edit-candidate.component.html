@@ -1,0 +1,156 @@
+<div class="create-job-bg d-flex align-items-center justify-content-center min-vh-90 w-100">
+  <div class="create-job-card p-5 shadow-lg w-100">
+    <!-- Success Alert -->
+    <div class="alert alert-success alert-dismissible fade show" *ngIf="success" role="alert">
+      <i class="fas fa-check-circle me-2"></i>
+      <strong>Success!</strong> Candidate has been updated successfully. Redirecting...
+      <button type="button" class="btn-close" (click)="success = false"></button>
+    </div>
+
+    <!-- Error Alert -->
+    <div class="alert alert-danger alert-dismissible fade show" *ngIf="error" role="alert">
+      <i class="fas fa-exclamation-triangle me-2"></i>
+      <strong>Error:</strong> {{ error }}
+      <button type="button" class="btn-close" (click)="clearError()"></button>
+    </div>
+
+    <!-- Loading Candidate -->
+    <div class="text-center py-5" *ngIf="loadingCandidate">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2 text-muted">Loading candidate details...</p>
+    </div>
+
+    <!-- Form -->
+    <div *ngIf="!loadingCandidate && !error">
+      <!-- Header -->
+      <div class="text-center mb-4">
+        <div class="brand-icon">
+          <i class="fas fa-user-edit"></i>
+        </div>
+        <h2 class="brand-heading">Edit Candidate</h2>
+        <p class="brand-subheading">Update candidate information</p>
+      </div>
+
+      <!-- Loading Overlay -->
+      <div class="position-relative">
+        <div class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center" 
+             style="background: rgba(255,255,255,0.8); z-index: 1000;" *ngIf="loading">
+          <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted">Updating candidate...</p>
+          </div>
+        </div>
+
+        <form #editCandidateForm="ngForm" (ngSubmit)="onSubmit(editCandidateForm)">
+          <div class="row g-4">
+            <div class="col-md-6">
+              <label class="form-label">Name <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="name" [(ngModel)]="candidate.name" required [disabled]="loading">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Role <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="role" [(ngModel)]="candidate.role" required [disabled]="loading">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Applied Role <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="appliedRole" [(ngModel)]="candidate.appliedRole" required [disabled]="loading">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Department <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="department" [(ngModel)]="candidate.department" required [disabled]="loading">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Employment Type <span class="text-danger">*</span></label>
+              <select class="form-select" name="employmentType" [(ngModel)]="candidate.employmentType" required [disabled]="loading">
+                <option>Full-time</option>
+                <option>Part-time</option>
+                <option>Contract</option>
+                <option>Internship</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Work Type <span class="text-danger">*</span></label>
+              <select class="form-select" name="workType" [(ngModel)]="candidate.workType" required [disabled]="loading">
+                <option>Onsite</option>
+                <option>Remote</option>
+                <option>Hybrid</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Applied Date</label>
+              <input type="date" class="form-control" name="appliedDate" [(ngModel)]="candidate.appliedDate" [disabled]="loading">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Attachments (comma separated)</label>
+              <input type="text" class="form-control" name="attachments" [(ngModel)]="candidate.attachments"
+                placeholder="Resume, Cover Letter, Portfolio"
+                [disabled]="loading">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Status <span class="text-danger">*</span></label>
+              <select class="form-select" name="status" [(ngModel)]="candidate.status" required [disabled]="loading">
+                <option>Shortlisted</option>
+                <option>In-Review</option>
+                <option>Interview</option>
+                <option>Hired</option>
+                <option>Rejected</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Score (%) <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" name="score" [(ngModel)]="candidate.score" required 
+                     min="0" max="100" [disabled]="loading">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" name="email" [(ngModel)]="candidate.email" required [disabled]="loading">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="phone" [(ngModel)]="candidate.phone" required [disabled]="loading">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Position <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" name="position" [(ngModel)]="candidate.position" required [disabled]="loading">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Experience (years) <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" name="experience" [(ngModel)]="candidate.experience" required 
+                     min="0" [disabled]="loading">
+            </div>
+            <div class="col-12 d-flex justify-content-between align-items-center mt-4">
+              <a routerLink="/candidates" class="btn brand-outline-btn" [class.disabled]="loading">
+                <i class="fas fa-arrow-left me-2"></i>Back to Candidates
+              </a>
+              <button type="submit" class="btn brand-green-btn px-4" 
+                      [disabled]="!editCandidateForm.valid || loading">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                <i class="fas fa-save me-2" *ngIf="!loading"></i>
+                {{ loading ? 'Updating...' : 'Update Candidate' }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div class="text-center py-5" *ngIf="!loadingCandidate && error">
+      <i class="fas fa-exclamation-circle fa-3x text-danger mb-3"></i>
+      <h4 class="text-danger">Unable to Load Candidate</h4>
+      <p class="text-muted">{{ error }}</p>
+      <div class="d-flex justify-content-center gap-2">
+        <button class="btn brand-outline-btn" (click)="loadCandidate()">
+          <i class="fas fa-refresh me-2"></i>Try Again
+        </button>
+        <a routerLink="/candidates" class="btn brand-green-btn">
+          <i class="fas fa-arrow-left me-2"></i>Back to Candidates
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
