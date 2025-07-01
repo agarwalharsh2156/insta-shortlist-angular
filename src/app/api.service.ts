@@ -118,7 +118,7 @@ export interface ApiError {
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = "https://e444-2a09-bac1-3680-120-00-1c5-106.ngrok-free.app";
+  private baseUrl = "https://96e3-47-247-94-96.ngrok-free.app";
   
   private apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaGFza2FyIiwiaWF0IjoxNzQ5ODAzMzg4LCJleHAiOjE3NDk4MzkzODh9.vs518QlQXCvHB-YUhauw9Pzbi_cg14F8z5j9SIsSINc';
   
