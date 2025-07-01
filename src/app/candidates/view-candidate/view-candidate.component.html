@@ -1,0 +1,162 @@
+<div class="container-fluid px-4 py-3">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+    <div class="text-center">
+      <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+      <p class="text-muted fs-5">Loading candidate details...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="alert alert-warning border-0 shadow-sm rounded-3 mx-auto mb-4" style="max-width: 800px;">
+    <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+  </div>
+
+  <!-- Candidate Details -->
+  <div *ngIf="candidate && !loading">
+    <!-- Header Card -->
+    <div class="candidate-header-card">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <div class="candidate-avatar">
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
+        <div class="col">
+          <h1 class="candidate-name mb-2">{{ candidate.name }}</h1>
+          <p class="candidate-role mb-3">{{ candidate.appliedRole }}</p>
+          <div class="d-flex align-items-center gap-3 flex-wrap">
+            <span class="badge status-badge" [ngClass]="{
+              'brand-green-bg': candidate.status === 'Hired' || candidate.status === 'Interview',
+              'brand-purple-bg': candidate.status === 'In-Review',
+              'brand-red-bg': candidate.status === 'Rejected',
+              'bg-info text-white': candidate.status === 'Shortlisted'
+            }">
+              <i class="fas fa-circle me-1" style="font-size: 0.6rem;"></i>{{ candidate.status }}
+            </span>
+            <div class="score-display">
+              <span class="score-circle" [ngClass]="{
+                'score-green': candidate.score >= 70,
+                'score-yellow': candidate.score >= 40 && candidate.score < 70,
+                'score-red': candidate.score < 40
+              }">
+                {{ candidate.score }}%
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto">
+          <button [routerLink]="['/candidates/edit-candidate', candidate.id]" class="btn btn-primary btn-lg rounded-pill px-4">
+            <i class="fas fa-edit me-2"></i>Edit Profile
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Information Cards Grid -->
+    <div class="row g-4">
+      <!-- Personal Information -->
+      <div class="col-lg-6">
+        <div class="info-card">
+          <div class="info-header">
+            <i class="fas fa-user-circle text-primary me-2"></i>
+            <h5 class="mb-0">Personal Information</h5>
+          </div>
+          <div class="info-content">
+            <div class="info-item">
+              <span class="info-label">Email</span>
+              <span class="info-value">
+                <i class="fas fa-envelope me-2 text-muted"></i>{{ candidate.email }}
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Phone</span>
+              <span class="info-value">
+                <i class="fas fa-phone me-2 text-muted"></i>{{ candidate.phone }}
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Experience</span>
+              <span class="info-value">
+                <i class="fas fa-briefcase me-2 text-muted"></i>{{ candidate.experience }} years
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Job Details -->
+      <div class="col-lg-6">
+        <div class="info-card">
+          <div class="info-header">
+            <i class="fas fa-briefcase text-success me-2"></i>
+            <h5 class="mb-0">Job Application</h5>
+          </div>
+          <div class="info-content">
+            <div class="info-item">
+              <span class="info-label">Department</span>
+              <span class="info-value">{{ candidate.department }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Applied Date</span>
+              <span class="info-value">
+                <i class="fas fa-calendar me-2 text-muted"></i>{{ candidate.appliedDate | date:'mediumDate' }}
+              </span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Current Role</span>
+              <span class="info-value">{{ candidate.role }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Employment Details -->
+      <div class="col-lg-6">
+        <div class="info-card">
+          <div class="info-header">
+            <i class="fas fa-building text-warning me-2"></i>
+            <h5 class="mb-0">Employment Details</h5>
+          </div>
+          <div class="info-content">
+            <div class="info-item">
+              <span class="info-label">Employment Type</span>
+              <span class="badge bg-light text-dark border">{{ candidate.employmentType }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Work Type</span>
+              <span class="badge bg-light text-dark border">{{ candidate.workType }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Documents & Attachments -->
+      <div class="col-lg-6">
+        <div class="info-card">
+          <div class="info-header">
+            <i class="fas fa-paperclip text-info me-2"></i>
+            <h5 class="mb-0">Documents</h5>
+          </div>
+          <div class="info-content">
+            <div class="info-item">
+              <span class="info-label">Attachments</span>
+              <div class="attachment-list">
+                <span class="badge bg-primary me-1 mb-1" *ngFor="let attachment of candidate.attachments.split(',')">
+                  <i class="fas fa-file me-1"></i>{{ attachment.trim() }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="text-center mt-5">
+      <button routerLink="/candidates" class="btn btn-outline-secondary btn-lg rounded-pill px-5">
+        <i class="fas fa-arrow-left me-2"></i>Back to Candidates
+      </button>
+    </div>
+  </div>
+</div>

@@ -27,7 +27,8 @@ export class EditCandidateComponent implements OnInit {
     email: '',
     phone: '',
     position: '',
-    experience: 0
+    experience: 0,
+    jobId: undefined // Added jobId field
   };
 
   candidateId: number = 0;
@@ -35,6 +36,7 @@ export class EditCandidateComponent implements OnInit {
   loadingCandidate = false;
   error: string | null = null;
   success = false;
+  attachments: File[] = [];
 
   constructor(
     private router: Router,
@@ -75,36 +77,58 @@ export class EditCandidateComponent implements OnInit {
       this.error = null;
       this.success = false;
 
-      const candidateData: CreateCandidateRequest = {
-        name: this.candidate.name,
-        role: this.candidate.role,
-        appliedRole: this.candidate.appliedRole,
-        department: this.candidate.department,
-        employmentType: this.candidate.employmentType,
-        workType: this.candidate.workType,
-        appliedDate: this.candidate.appliedDate,
-        attachments: this.candidate.attachments,
-        status: this.candidate.status,
-        score: Number(this.candidate.score),
-        email: this.candidate.email,
-        phone: this.candidate.phone,
-        position: this.candidate.position,
-        experience: Number(this.candidate.experience)
-      };
+      let body: any;
 
-      this.apiService.updateCandidate(this.candidateId, candidateData).subscribe({
+      if (this.attachments.length > 0) {
+        // Use FormData for file upload
+        body = new FormData();
+        body.append('name', this.candidate.name);
+        body.append('role', this.candidate.role);
+        body.append('appliedRole', this.candidate.appliedRole);
+        body.append('department', this.candidate.department);
+        body.append('employmentType', this.candidate.employmentType);
+        body.append('workType', this.candidate.workType);
+        body.append('appliedDate', this.candidate.appliedDate);
+        body.append('status', this.candidate.status);
+        body.append('score', String(this.candidate.score));
+        body.append('email', this.candidate.email);
+        body.append('phone', this.candidate.phone);
+        body.append('position', this.candidate.position);
+        body.append('experience', String(this.candidate.experience));
+        body.append('jobId', String(this.candidate.jobId || 1));
+        for (const file of this.attachments) {
+          body.append('attachments', file, file.name);
+        }
+      } else {
+        // Fallback to JSON if no new files
+        body = {
+          name: this.candidate.name,
+          role: this.candidate.role,
+          appliedRole: this.candidate.appliedRole,
+          department: this.candidate.department,
+          employmentType: this.candidate.employmentType,
+          workType: this.candidate.workType,
+          appliedDate: this.candidate.appliedDate,
+          attachments: this.candidate.attachments,
+          status: this.candidate.status,
+          score: Number(this.candidate.score),
+          email: this.candidate.email,
+          phone: this.candidate.phone,
+          position: this.candidate.position,
+          experience: Number(this.candidate.experience),
+          jobId: this.candidate.jobId || 1
+        };
+      }
+
+      this.apiService.updateCandidate(this.candidateId, body).subscribe({
         next: (updatedCandidate) => {
-          console.log('Candidate updated successfully:', updatedCandidate);
           this.loading = false;
           this.success = true;
-          
-          // Navigate to candidates page after short delay
           setTimeout(() => {
             this.router.navigate(['/candidates']);
           }, 1500);
         },
         error: (error) => {
-          console.error('Error updating candidate:', error);
           this.error = error;
           this.loading = false;
         }
@@ -114,5 +138,12 @@ export class EditCandidateComponent implements OnInit {
 
   clearError() {
     this.error = null;
+  }
+
+  onAttachmentsChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      this.attachments = Array.from(input.files);
+    }
   }
 }

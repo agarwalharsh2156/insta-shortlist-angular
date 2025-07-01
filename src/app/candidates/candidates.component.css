@@ -77,3 +77,9 @@
 .nav-link:hover{
   cursor: pointer
 }
+
+.badge.bg-applied,
+.status-badge.bg-applied {
+  background: #e6ff5c !important;
+  color: #222 !important;
+}

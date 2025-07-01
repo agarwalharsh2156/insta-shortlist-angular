@@ -85,14 +85,23 @@
               <input type="date" class="form-control" name="appliedDate" [(ngModel)]="candidate.appliedDate" [disabled]="loading">
             </div>
             <div class="col-md-6">
-              <label class="form-label">Attachments (comma separated)</label>
-              <input type="text" class="form-control" name="attachments" [(ngModel)]="candidate.attachments"
-                placeholder="Resume, Cover Letter, Portfolio"
-                [disabled]="loading">
+              <label class="form-label">Attachments</label>
+              <input
+                type="file"
+                class="form-control"
+                name="attachments"
+                (change)="onAttachmentsChange($event)"
+                [disabled]="loading"
+                multiple
+              >
+              <div *ngIf="candidate.attachments">
+                <small class="text-muted">Current: {{ candidate.attachments }}</small>
+              </div>
             </div>
             <div class="col-md-6">
               <label class="form-label">Status <span class="text-danger">*</span></label>
               <select class="form-select" name="status" [(ngModel)]="candidate.status" required [disabled]="loading">
+                <option>Applied</option>
                 <option>Shortlisted</option>
                 <option>In-Review</option>
                 <option>Interview</option>

@@ -46,34 +46,7 @@ export class JobsComponent implements OnInit {
 
   private loadFallbackJobs() {
     console.log('Loading fallback jobs due to API error');
-    this.jobs = [
-      {
-        id: 1,
-        title: 'Software Engineer',
-        role: 'Tech Corp',
-        location: 'Bangalore, India',
-        description: 'Develop and maintain web applications using Angular and Spring Boot.',
-        isActive: true,
-        applicants: 120,
-        salaryMin: 12000,
-        salaryMax: 30000,
-        type: 'Full-time',
-        level: 'Mid-level'
-      },
-      {
-        id: 2,
-        title: 'Frontend Developer',
-        role: 'Web Solutions',
-        location: 'Mumbai, India',
-        description: 'Create responsive user interfaces using modern web technologies.',
-        isActive: true,
-        applicants: 85,
-        salaryMin: 8000,
-        salaryMax: 25000,
-        type: 'Full-time',
-        level: 'Entry-level'
-      }
-    ];
+    this.jobs = ApiService.getFallbackJobs();
   }
 
   toggleView(isGrid: boolean) {

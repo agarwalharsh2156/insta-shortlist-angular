@@ -93,6 +93,12 @@
   box-shadow: 0 0 0 2px rgba(210,245,91,0.15);
 }
 
+.badge.bg-applied,
+.brand-applied-bg {
+  background: #e6ff5c !important;
+  color: #222 !important;
+}
+
 @media (max-width: 900px) {
   .create-job-card {
     max-width: 98vw;

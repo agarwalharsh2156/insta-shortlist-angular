@@ -81,7 +81,9 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let candidate of filteredCandidates">
+        <tr *ngFor="let candidate of filteredCandidates"
+        style="cursor:pointer"
+    [routerLink]="['/candidates/view-candidate', candidate.id]">
           <td>
             <div>{{ candidate.name }}</div>
             <div class="text-muted small">{{ candidate.role }}</div>
@@ -97,13 +99,14 @@
             <div>
               <i class="far fa-file-alt me-1"></i>{{ candidate.attachments }}
             </div>
-            <div *ngIf="candidate.attachments.length === 0" class="text-muted small">
+            <!-- <div *ngIf="candidate.attachments.length === 0" class="text-muted small">
               No attachments
-            </div>
+            </div> -->
           </td>
           <td>
             <span class="badge status-badge"
               [ngClass]="{
+                'bg-applied': candidate.status === 'Applied',
                 'brand-green-bg': candidate.status === 'Interview',
                 'brand-purple-bg': candidate.status === 'In-Review' || candidate.status === 'Hired',
                 'brand-red-bg': candidate.status === 'Rejected',

@@ -1,0 +1,193 @@
+/* Info Cards */
+.info-card {
+  background: rgb(253, 253, 253);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.2s ease;
+  height: 100%;
+}
+
+.info-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(60,60,60,0.1);
+}
+
+.info-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.info-card-label {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.info-card-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #222;
+}
+
+/* Salary Section */
+.salary-icon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+}
+
+.salary-amount {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #059669;
+}
+
+/* Description Section */
+.section-icon {
+  width: 32px;
+  height: 32px;
+  background: rgb(202, 210, 255);
+  color: #222;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.description-content {
+  position: relative;
+  overflow: hidden;
+}
+
+.description-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, rgb(210, 245, 91), rgba(210, 245, 91, 0.5));
+}
+
+/* Location Badge */
+.location-badge {
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
+}
+
+/* Enhanced Job Status Badge */
+.job-status-badge {
+  font-size: 0.9rem;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Loading and Error States */
+.jobs-floating-container .spinner-border {
+  border-color: rgb(210, 245, 91);
+  border-right-color: transparent;
+}
+
+/* Button Enhancements */
+.btn {
+  font-weight: 600;
+  padding: 8px 20px;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.brand-green-btn:hover {
+  background: rgb(190, 225, 71) !important;
+  box-shadow: 0 4px 12px rgba(210, 245, 91, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .info-card {
+    padding: 1rem;
+  }
+  
+  .info-card-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+  
+  .salary-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.2rem;
+  }
+  
+  .salary-amount {
+    font-size: 1.2rem;
+  }
+  
+  .top-bar .d-flex {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 1rem;
+  }
+  
+  .top-bar .d-flex > div:last-child {
+    width: 100%;
+    justify-content: stretch;
+  }
+  
+  .top-bar .d-flex > div:last-child .btn {
+    flex: 1;
+  }
+}
+
+/* Animation for cards */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.info-card {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.info-card:nth-child(1) { animation-delay: 0.1s; }
+.info-card:nth-child(2) { animation-delay: 0.2s; }
+.info-card:nth-child(3) { animation-delay: 0.3s; }
+.info-card:nth-child(4) { animation-delay: 0.4s; }
