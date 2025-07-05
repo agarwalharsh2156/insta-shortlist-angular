@@ -57,7 +57,8 @@ export interface BackendCandidate {
   department: string;
   employmentType: string;
   workType: string;
-  appliedDate: string;
+  appliedDateStr: string; // Backend uses appliedDateStr
+  resumeUrl?: string; // Backend uses resumeUrl
   attachment?: {
     base64: string;
     fileName: string;
@@ -81,7 +82,7 @@ export interface Candidate {
   department: string;
   employmentType: string;
   workType: string;
-  appliedDate: string;
+  appliedDate: string; // Frontend uses appliedDate
   attachments: string; // For display purposes
   status: string;
   score: number;
@@ -92,6 +93,7 @@ export interface Candidate {
   jobId?: number;
 }
 
+// Request structure for creating/updating candidates (what API expects)
 export interface CreateCandidateRequest {
   name: string;
   role: string;
@@ -99,8 +101,8 @@ export interface CreateCandidateRequest {
   department: string;
   employmentType: string;
   workType: string;
-  appliedDate: string;
-  attachments: string;
+  appliedDateStr: string; // Backend expects appliedDateStr
+  resumeUrl?: string; // Backend expects resumeUrl
   status: string;
   score: number;
   email: string;
@@ -108,6 +110,22 @@ export interface CreateCandidateRequest {
   position: string;
   experience: number;
   jobId: number;
+}
+
+// New interfaces for assessment steps
+export interface CandidateStep {
+  id: number;
+  candidateId: number;
+  assessmentId: number | null;
+  stepOrder: number | null;
+  stepName: string;
+  status: string;
+  completed: boolean;
+}
+
+export interface CandidateAssessment {
+  candidateId: number;
+  steps: CandidateStep[];
 }
 
 export interface ApiError {
@@ -118,7 +136,7 @@ export interface ApiError {
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = "https://96e3-47-247-94-96.ngrok-free.app";
+  private baseUrl = "https://9e04-2409-40c1-4143-8cdd-8190-bf8d-51f5-5b54.ngrok-free.app";
   
   private apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaGFza2FyIiwiaWF0IjoxNzQ5ODAzMzg4LCJleHAiOjE3NDk4MzkzODh9.vs518QlQXCvHB-YUhauw9Pzbi_cg14F8z5j9SIsSINc';
   
@@ -142,8 +160,8 @@ export class ApiService {
       department: backendCandidate.department,
       employmentType: backendCandidate.employmentType,
       workType: backendCandidate.workType,
-      appliedDate: backendCandidate.appliedDate,
-      attachments: backendCandidate.attachment?.fileName || 'No attachment',
+      appliedDate: backendCandidate.appliedDateStr, // Map appliedDateStr to appliedDate
+      attachments: backendCandidate.resumeUrl || backendCandidate.attachment?.fileName || 'No attachment',
       status: backendCandidate.status,
       score: backendCandidate.score,
       email: backendCandidate.email,
@@ -151,6 +169,27 @@ export class ApiService {
       position: backendCandidate.position,
       experience: backendCandidate.experience,
       jobId: backendCandidate.jobId
+    };
+  }
+
+  // Transform frontend candidate to backend request format
+  private transformCandidateForAPI(candidate: Candidate): CreateCandidateRequest {
+    return {
+      name: candidate.name,
+      role: candidate.role,
+      appliedRole: candidate.appliedRole,
+      department: candidate.department,
+      employmentType: candidate.employmentType,
+      workType: candidate.workType,
+      appliedDateStr: candidate.appliedDate, // Map appliedDate to appliedDateStr
+      resumeUrl: candidate.attachments !== 'No attachment' ? candidate.attachments : undefined,
+      status: candidate.status,
+      score: Number(candidate.score),
+      email: candidate.email,
+      phone: candidate.phone,
+      position: candidate.position,
+      experience: Number(candidate.experience),
+      jobId: candidate.jobId || 1
     };
   }
 
@@ -196,8 +235,8 @@ export class ApiService {
       .pipe(catchError(this.handleError));
   }
 
-  // Candidate methods - Updated to transform data
-  createCandidate(candidateData: FormData | CreateCandidateRequest) {
+  // Candidate methods - Updated to handle both FormData and JSON
+  createCandidate(candidateData: FormData | Candidate): Observable<Candidate> {
     if (candidateData instanceof FormData) {
       const headers = new HttpHeaders({
         'ngrok-skip-browser-warning': 'true',
@@ -210,7 +249,8 @@ export class ApiService {
           catchError(this.handleError)
         );
     } else {
-      return this.http.post<BackendCandidate>(`${this.baseUrl}/api/candidates`, candidateData, this.httpOptions)
+      const requestData = this.transformCandidateForAPI(candidateData);
+      return this.http.post<BackendCandidate>(`${this.baseUrl}/api/candidates`, requestData, this.httpOptions)
         .pipe(
           map(candidate => this.transformCandidate(candidate)),
           catchError(this.handleError)
@@ -236,19 +276,62 @@ export class ApiService {
       );
   }
 
-  updateCandidate(id: number, candidateData: CreateCandidateRequest): Observable<Candidate> {
-    const headers = this.getAuthHeaders();
-    return this.http.put<BackendCandidate>(`${this.baseUrl}/api/candidates/${id}`, candidateData, { headers })
-      .pipe(
-        map(candidate => this.transformCandidate(candidate)),
-        catchError(this.handleError)
-      );
+  updateCandidate(id: number, candidateData: FormData | Candidate): Observable<Candidate> {
+    if (candidateData instanceof FormData) {
+      const headers = new HttpHeaders({
+        'ngrok-skip-browser-warning': 'true',
+        'Authorization': `Bearer ${this.apiKey}`
+      });
+      
+      return this.http.put<BackendCandidate>(`${this.baseUrl}/api/candidates/${id}`, candidateData, { headers })
+        .pipe(
+          map(candidate => this.transformCandidate(candidate)),
+          catchError(this.handleError)
+        );
+    } else {
+      const requestData = this.transformCandidateForAPI(candidateData);
+      const headers = this.getAuthHeaders();
+      return this.http.put<BackendCandidate>(`${this.baseUrl}/api/candidates/${id}`, requestData, { headers })
+        .pipe(
+          map(candidate => this.transformCandidate(candidate)),
+          catchError(this.handleError)
+        );
+    }
   }
 
   deleteCandidate(id: number): Observable<any> {
     const headers = this.getAuthHeaders();
     return this.http.delete(`${this.baseUrl}/api/candidates/${id}`, { headers })
       .pipe(catchError(this.handleError));
+  }
+
+  // NEW: Assessment/Steps methods
+  getCandidateSteps(candidateId: number): Observable<CandidateStep[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<CandidateStep[]>(`${this.baseUrl}/api/candidate-steps/by-candidate/${candidateId}`, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  getCandidateAssessment(candidateId: number): Observable<CandidateAssessment> {
+    return this.getCandidateSteps(candidateId).pipe(
+      map(steps => ({
+        candidateId: candidateId,
+        steps: steps
+      }))
+    );
+  }
+
+  // Helper method to get step status summary
+  getStepStatusSummary(steps: CandidateStep[]): { completed: number; total: number; currentStep: string | null } {
+    const completedSteps = steps.filter(step => step.completed).length;
+    const totalSteps = steps.length;
+    const currentStep = steps.find(step => !step.completed && step.status !== 'COMPLETED')?.stepName || null;
+    
+    return {
+      completed: completedSteps,
+      total: totalSteps,
+      currentStep: currentStep
+    };
   }
 
   private getAuthHeaders(): HttpHeaders {
@@ -390,5 +473,26 @@ export class ApiService {
         jobId: 2
       }
     ];
+  }
+
+  // NEW: Fallback assessment steps for testing
+  static getFallbackCandidateSteps(candidateId: number): CandidateStep[] {
+    const stepTemplates = [
+      { stepName: 'Application Review', status: 'COMPLETED', completed: true },
+      { stepName: 'Resume Screening', status: 'COMPLETED', completed: true },
+      { stepName: 'Technical Interview', status: 'PENDING', completed: false },
+      { stepName: 'HR Interview', status: 'PENDING', completed: false },
+      { stepName: 'Final Decision', status: 'PENDING', completed: false }
+    ];
+
+    return stepTemplates.map((template, index) => ({
+      id: candidateId * 10 + index + 1,
+      candidateId: candidateId,
+      assessmentId: null,
+      stepOrder: index + 1,
+      stepName: template.stepName,
+      status: template.status,
+      completed: template.completed
+    }));
   }
 }

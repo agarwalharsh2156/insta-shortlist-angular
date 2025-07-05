@@ -10,6 +10,9 @@
   <!-- Error State -->
   <div *ngIf="error && !loading" class="alert alert-warning border-0 shadow-sm rounded-3 mx-auto mb-4" style="max-width: 800px;">
     <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+    <button type="button" class="btn btn-sm btn-outline-warning ms-2" (click)="refreshAll()">
+      <i class="fas fa-refresh me-1"></i>Retry
+    </button>
   </div>
 
   <!-- Candidate Details -->
@@ -49,6 +52,122 @@
           <button [routerLink]="['/candidates/edit-candidate', candidate.id]" class="btn btn-primary btn-lg rounded-pill px-4">
             <i class="fas fa-edit me-2"></i>Edit Profile
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Assessment Progress Section -->
+    <div class="row g-4 mb-4">
+      <div class="col-12">
+        <div class="info-card">
+          <div class="info-header">
+            <i class="fas fa-chart-line text-success me-2"></i>
+            <h5 class="mb-0">Assessment Progress</h5>
+          </div>
+          
+          <!-- Loading Steps -->
+          <div *ngIf="loadingSteps" class="text-center py-4">
+            <div class="spinner-border text-primary me-2" style="width: 1.5rem; height: 1.5rem;" role="status"></div>
+            <span class="text-muted">Loading assessment steps...</span>
+          </div>
+
+          <!-- Steps Error -->
+          <div *ngIf="stepsError && !loadingSteps" class="alert alert-info border-0 rounded-3 mb-3">
+            <i class="fas fa-info-circle me-2"></i>{{ stepsError }}
+          </div>
+
+          <!-- Assessment Content -->
+          <div *ngIf="!loadingSteps && candidateSteps.length > 0">
+            <!-- Progress Summary -->
+            <div class="progress-summary mb-4">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <div class="progress-stats">
+                    <h6>Overall Progress</h6>
+                    <div class="progress-bar-container">
+                      <div class="progress" style="height: 10px;">
+                        <div class="progress-bar" 
+                             [style.width.%]="getProgressPercentage()" 
+                             role="progressbar" 
+                             [attr.aria-valuenow]="getProgressPercentage()" 
+                             aria-valuemin="0" 
+                             aria-valuemax="100">
+                        </div>
+                      </div>
+                    </div>
+                    <small class="text-muted">
+                      {{ getCompletedStepsCount() }} of {{ getTotalStepsCount() }} steps completed
+                    </small>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="text-center">
+                    <div class="score-circle" [ngClass]="{
+                      'score-green': getProgressPercentage() >= 70,
+                      'score-yellow': getProgressPercentage() >= 40 && getProgressPercentage() < 70,
+                      'score-red': getProgressPercentage() < 40
+                    }">
+                      {{ getProgressPercentage() }}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Current Step Highlight -->
+            <div *ngIf="getCurrentStep()" class="current-step-highlight mb-4">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <i class="fas fa-arrow-right text-info"></i>
+                </div>
+                <div class="col">
+                  <h6 class="mb-1 text-info">Current Step</h6>
+                  <p class="mb-0 fw-bold">{{ getCurrentStep()?.stepName }}</p>
+                </div>
+                <div class="col-auto">
+                  <span class="badge bg-info text-white">Step {{ getCurrentStep()?.stepOrder }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- All Steps -->
+            <div class="steps-list">
+              <h6>Assessment Steps</h6>
+              <div class="row g-3">
+                <div class="col-md-6 col-lg-4" *ngFor="let step of candidateSteps">
+                  <div class="step-card" [ngClass]="getStepStatusClass(step)">
+                    <div class="step-card-content">
+                      <div class="step-header">
+                        <div class="step-icon">
+                          <i [class]="getStepStatusIcon(step)"></i>
+                        </div>
+                        <div class="step-info">
+                          <h6 class="step-title">{{ step.stepName }}</h6>
+                          <small class="step-order">Step {{ step.stepOrder }}</small>
+                        </div>
+                      </div>
+                      <div class="step-status">
+                        <span class="badge" [ngClass]="{
+                          'badge-completed': step.completed,
+                          'badge-pending': step.status === 'PENDING',
+                          'badge-in-progress': step.status === 'IN_PROGRESS',
+                          'badge-default': step.status !== 'PENDING' && step.status !== 'IN_PROGRESS' && !step.completed
+                        }">
+                          {{ step.completed ? 'Completed' : step.status }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- No Steps Available -->
+          <div *ngIf="!loadingSteps && candidateSteps.length === 0" class="text-center py-4">
+            <i class="fas fa-clipboard-list text-muted mb-3" style="font-size: 3rem;"></i>
+            <p class="text-muted">No assessment steps available for this candidate.</p>
+          </div>
         </div>
       </div>
     </div>

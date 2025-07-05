@@ -66,18 +66,20 @@
             <div class="col-md-6">
               <label class="form-label">Employment Type <span class="text-danger">*</span></label>
               <select class="form-select" name="employmentType" [(ngModel)]="candidate.employmentType" required [disabled]="loading">
-                <option>Full-time</option>
-                <option>Part-time</option>
-                <option>Contract</option>
-                <option>Internship</option>
+                <option value="">Select Employment Type</option>
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Contract">Contract</option>
+                <option value="Internship">Internship</option>
               </select>
             </div>
             <div class="col-md-6">
               <label class="form-label">Work Type <span class="text-danger">*</span></label>
               <select class="form-select" name="workType" [(ngModel)]="candidate.workType" required [disabled]="loading">
-                <option>Onsite</option>
-                <option>Remote</option>
-                <option>Hybrid</option>
+                <option value="">Select Work Type</option>
+                <option value="Onsite">Onsite</option>
+                <option value="Remote">Remote</option>
+                <option value="Hybrid">Hybrid</option>
               </select>
             </div>
             <div class="col-md-6">
@@ -85,34 +87,39 @@
               <input type="date" class="form-control" name="appliedDate" [(ngModel)]="candidate.appliedDate" [disabled]="loading">
             </div>
             <div class="col-md-6">
-              <label class="form-label">Attachments</label>
+              <label class="form-label">Resume/Attachments</label>
               <input
                 type="file"
                 class="form-control"
                 name="attachments"
                 (change)="onAttachmentsChange($event)"
                 [disabled]="loading"
+                accept=".pdf,.doc,.docx,.txt"
                 multiple
               >
-              <div *ngIf="candidate.attachments">
+              <div *ngIf="candidate.attachments && candidate.attachments !== 'No attachment'" class="mt-2">
                 <small class="text-muted">Current: {{ candidate.attachments }}</small>
+              </div>
+              <div *ngIf="attachments.length > 0" class="mt-2">
+                <small class="text-success">New files selected: {{ attachments.length }} file(s)</small>
               </div>
             </div>
             <div class="col-md-6">
               <label class="form-label">Status <span class="text-danger">*</span></label>
               <select class="form-select" name="status" [(ngModel)]="candidate.status" required [disabled]="loading">
-                <option>Applied</option>
-                <option>Shortlisted</option>
-                <option>In-Review</option>
-                <option>Interview</option>
-                <option>Hired</option>
-                <option>Rejected</option>
+                <option value="">Select Status</option>
+                <option value="Applied">Applied</option>
+                <option value="Shortlisted">Shortlisted</option>
+                <option value="In-Review">In-Review</option>
+                <option value="Interview">Interview</option>
+                <option value="Hired">Hired</option>
+                <option value="Rejected">Rejected</option>
               </select>
             </div>
             <div class="col-md-6">
               <label class="form-label">Score (%) <span class="text-danger">*</span></label>
               <input type="number" class="form-control" name="score" [(ngModel)]="candidate.score" required 
-                     min="0" max="100" [disabled]="loading">
+                     min="0" max="100" step="1" [disabled]="loading">
             </div>
             <div class="col-md-6">
               <label class="form-label">Email <span class="text-danger">*</span></label>
@@ -120,7 +127,7 @@
             </div>
             <div class="col-md-6">
               <label class="form-label">Phone <span class="text-danger">*</span></label>
-              <input type="text" class="form-control" name="phone" [(ngModel)]="candidate.phone" required [disabled]="loading">
+              <input type="tel" class="form-control" name="phone" [(ngModel)]="candidate.phone" required [disabled]="loading">
             </div>
             <div class="col-md-6">
               <label class="form-label">Position <span class="text-danger">*</span></label>
@@ -129,7 +136,7 @@
             <div class="col-md-6">
               <label class="form-label">Experience (years) <span class="text-danger">*</span></label>
               <input type="number" class="form-control" name="experience" [(ngModel)]="candidate.experience" required 
-                     min="0" [disabled]="loading">
+                     min="0" max="50" step="1" [disabled]="loading">
             </div>
             <div class="col-12 d-flex justify-content-between align-items-center mt-4">
               <a routerLink="/candidates" class="btn brand-outline-btn" [class.disabled]="loading">
