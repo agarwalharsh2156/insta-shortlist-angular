@@ -7,7 +7,7 @@
       <h2 class="brand-heading mb-1">Create a New Job</h2>
       <div class="brand-subheading mb-3">Fill in the details below to post a new job opening</div>
     </div>
-     <div *ngIf="loading" class="alert alert-info">
+    <div *ngIf="loading" class="alert alert-info">
       <i class="fas fa-spinner fa-spin me-2"></i>Creating job...
     </div>
 
@@ -19,55 +19,81 @@
       <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
       <button type="button" class="btn-close float-end" (click)="clearError()"></button>
     </div>
-    
+
     <form #createJobForm="ngForm" (ngSubmit)="onSubmit(createJobForm)">
-  <div class="row g-4">
-    <div class="col-md-6">
-      <label for="title" class="form-label">Job Title</label>
-      <input type="text" class="form-control" id="title" name="title" [(ngModel)]="job.title" placeholder="@eg-Software Developer" required>
-    </div>
-    <div class="col-md-6">
-  <label for="role" class="form-label">Job Role</label>
-  <input type="text" class="form-control" id="role" name="role" [(ngModel)]="job.role" placeholder="@eg-Developer" required>
-</div>
-    <div class="col-md-6">
-      <label for="location" class="form-label">Location</label>
-      <input type="text" class="form-control" id="location" name="location" [(ngModel)]="job.location" placeholder="@eg-Remote" required>
-    </div>
-    <div class="col-md-6">
-      <label for="type" class="form-label">Employment Type</label>
-      <select class="form-select" id="type" name="type" [(ngModel)]="job.type">
-        <option>Full-time</option>
-        <option>Part-time</option>
-        <option>Contract</option>
-        <option>Internship</option>
-      </select>
-    </div>
-    <div class="col-md-6">
-      <label for="level" class="form-label">Seniority Level</label>
-      <select class="form-select" id="level" name="level" [(ngModel)]="job.level">
-        <option>Entry-level</option>
-        <option>Mid-level</option>
-        <option>Senior-level</option>
-      </select>
-    </div>
-    <div class="col-md-3">
-      <label for="salaryMin" class="form-label">Min Salary</label>
-      <input type="number" class="form-control" id="salaryMin" name="salaryMin" [(ngModel)]="job.salaryMin" placeholder="@eg-1000" required>
-    </div>
-    <div class="col-md-3">
-      <label for="salaryMax" class="form-label">Max Salary</label>
-      <input type="number" class="form-control" id="salaryMax" name="salaryMax" [(ngModel)]="job.salaryMax"  placeholder="@eg-10000" required>
-    </div>
-    <div class="col-12">
-      <label for="description" class="form-label">Job Description</label>
-      <textarea class="form-control" id="description" name="description" rows="6" [(ngModel)]="job.description" placeholder="@eg-This role demands..." required></textarea>
-    </div>
-    <div class="col-12 d-flex justify-content-between align-items-center mt-4">
-      <a routerLink="/jobs" class="btn brand-outline-btn">Back to Jobs</a>
-      <button type="submit" class="btn brand-green-btn px-4" [disabled]="!createJobForm.valid">Create Job</button>
-    </div>
-  </div>
-</form>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <label for="title" class="form-label">Job Title</label>
+          <input type="text" class="form-control" id="title" name="title" [(ngModel)]="job.title"
+            placeholder="@eg-Software Developer" required>
+        </div>
+        <div class="col-md-6">
+          <label for="role" class="form-label">Job Role</label>
+          <input type="text" class="form-control" id="role" name="role" [(ngModel)]="job.role" (input)="onRoleChange()"
+            placeholder="@eg-Product Manager" required>
+        </div>
+        <div class="col-md-6">
+          <label for="location" class="form-label">Location</label>
+          <input type="text" class="form-control" id="location" name="location" [(ngModel)]="job.location"
+            placeholder="@eg-Remote" required>
+        </div>
+        <div class="col-md-6">
+          <label for="type" class="form-label">Employment Type</label>
+          <select class="form-select" id="type" name="type" [(ngModel)]="job.type">
+            <option>Full-time</option>
+            <option>Part-time</option>
+            <option>Contract</option>
+            <option>Internship</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="level" class="form-label">Seniority Level</label>
+          <select class="form-select" id="level" name="level" [(ngModel)]="job.level">
+            <option>Entry-level</option>
+            <option>Mid-level</option>
+            <option>Senior-level</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label for="salaryMin" class="form-label">Min Salary</label>
+          <input type="number" class="form-control" id="salaryMin" name="salaryMin" [(ngModel)]="job.salaryMin"
+            placeholder="@eg-1000" required>
+        </div>
+        <div class="col-md-3">
+          <label for="salaryMax" class="form-label">Max Salary</label>
+          <input type="number" class="form-control" id="salaryMax" name="salaryMax" [(ngModel)]="job.salaryMax"
+            placeholder="@eg-10000" required>
+        </div>
+        <div class="col-12">
+          <label for="assessmentTemplates" class="form-label">Assessment Templates</label>
+          <select class="form-select" id="assessmentTemplates" name="assessmentTemplates"
+            [(ngModel)]="job.assessmentTemplateIds" multiple [disabled]="availableStepNames.length === 0">
+            <option *ngFor="let stepName of availableStepNames; let i = index" [value]="i + 1">
+              {{ stepName }}
+            </option>
+          </select>
+          <div class="form-text">
+            <span *ngIf="availableStepNames.length === 0 && job.role">
+              No assessment templates found for "{{ job.role }}"
+            </span>
+            <span *ngIf="availableStepNames.length === 0 && !job.role">
+              Enter a job role to see available assessment templates
+            </span>
+            <span *ngIf="availableStepNames.length > 0">
+              Hold Ctrl/Cmd to select multiple templates ({{ availableStepNames.length }} available)
+            </span>
+          </div>
+        </div>
+        <div class="col-12">
+          <label for="description" class="form-label">Job Description</label>
+          <textarea class="form-control" id="description" name="description" rows="6" [(ngModel)]="job.description"
+            placeholder="@eg-This role demands..." required></textarea>
+        </div>
+        <div class="col-12 d-flex justify-content-between align-items-center mt-4">
+          <a routerLink="/jobs" class="btn brand-outline-btn">Back to Jobs</a>
+          <button type="submit" class="btn brand-green-btn px-4" [disabled]="!createJobForm.valid">Create Job</button>
+        </div>
+      </div>
+    </form>
   </div>
 </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApiService, Candidate, CandidateStep } from '../../api.service';
 
@@ -19,8 +19,7 @@ export class ViewCandidateComponent implements OnInit {
   stepsError: string | null = null;
   candidateId: number = 0;
 
-  constructor(private route: ActivatedRoute, private apiService: ApiService) {}
-
+  constructor(private route: ActivatedRoute, private router: Router, private apiService: ApiService) { }
   ngOnInit() {
     this.candidateId = Number(this.route.snapshot.paramMap.get('id'));
     this.loadCandidateDetails();
@@ -56,7 +55,7 @@ export class ViewCandidateComponent implements OnInit {
       error: (err) => {
         console.error('Error loading candidate steps:', err);
         this.stepsError = 'Unable to load assessment steps (API unavailable)';
-        
+
         // Fallback to static data
         this.candidateSteps = ApiService.getFallbackCandidateSteps(this.candidateId);
         this.loadingSteps = false;
@@ -103,5 +102,9 @@ export class ViewCandidateComponent implements OnInit {
     this.stepsError = null;
     this.loadCandidateDetails();
     this.loadCandidateSteps();
+  }
+
+  navigateToReview(step: CandidateStep) {
+    this.router.navigate(['/candidates/view-candidate', this.candidateId, 'review', step.id]);
   }
 }

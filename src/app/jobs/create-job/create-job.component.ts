@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { ApiService, CreateJobRequest } from '../../api.service';
-
+import { ApiService, CreateJobRequest, AssessmentTemplate } from '../../api.service';
 interface Job {
   id: number;
   title: string;
@@ -16,6 +15,7 @@ interface Job {
   salaryMax: number;
   type: string;
   level: string;
+  assessmentTemplateIds: number[];
 }
 
 @Component({
@@ -25,20 +25,25 @@ interface Job {
   templateUrl: './create-job.component.html',
   styleUrl: './create-job.component.css'
 })
-export class CreateJobComponent {
-  job: Job = {
-    id: 0,
-    title: '',
-    role: '',
-    location: '',
-    description: '',
-    status: 'Active',
-    applicants: 0,
-    salaryMin: 0,
-    salaryMax: 0,
-    type: 'Full-time',
-    level: 'Entry-level'
-  };
+export class CreateJobComponent implements OnInit {
+    job: Job = {
+      id: 0,
+      title: '',
+      role: '',
+      location: '',
+      description: '',
+      status: 'Active',
+      applicants: 0,
+      salaryMin: 0,
+      salaryMax: 0,
+      type: 'Full-time',
+      level: 'Entry-level',
+      assessmentTemplateIds: []
+
+    };
+  assessmentTemplates: AssessmentTemplate[] = [];
+  filteredAssessmentTemplates: AssessmentTemplate[] = [];
+  availableStepNames: string[] = [];
 
   loading = false;
   error: string | null = null;
@@ -47,7 +52,8 @@ export class CreateJobComponent {
   constructor(
     private router: Router,
     private apiService: ApiService
-  ) {}
+  ) { }
+
 
   onSubmit(form: any) {
     if (form.valid) {
@@ -65,7 +71,8 @@ export class CreateJobComponent {
         type: this.job.type,
         level: this.job.level,
         isActive: true,
-        applicants: 0
+        applicants: 0,
+        assessmentTemplateIds: this.job.assessmentTemplateIds
       };
 
       this.apiService.createJob(jobData).subscribe({
@@ -73,7 +80,7 @@ export class CreateJobComponent {
           console.log('Job created successfully:', createdJob);
           this.loading = false;
           this.success = true;
-          
+
           // Navigate to jobs page after short delay
           setTimeout(() => {
             this.router.navigate(['/jobs']);
@@ -83,12 +90,15 @@ export class CreateJobComponent {
           console.error('Error creating job:', error);
           this.error = error;
           this.loading = false;
-          
+
           // Fallback to localStorage if API fails
           this.saveToLocalStorage();
         }
       });
     }
+  }
+  ngOnInit() {
+    this.loadAssessmentTemplates();
   }
 
   private saveToLocalStorage() {
@@ -104,7 +114,7 @@ export class CreateJobComponent {
       };
       jobs.push(newJob);
       localStorage.setItem('jobs', JSON.stringify(jobs));
-      
+
       console.log('Job saved to localStorage as fallback');
       this.success = true;
       setTimeout(() => {
@@ -118,5 +128,41 @@ export class CreateJobComponent {
 
   clearError() {
     this.error = null;
+  }
+  private loadAssessmentTemplates() {
+    this.apiService.getAssessmentTemplates().subscribe({
+      next: (templates) => {
+        this.assessmentTemplates = templates;
+        this.filterAssessmentTemplates();
+      },
+      error: (error) => {
+        console.error('Error loading assessment templates:', error);
+        // Fallback to empty array
+        this.assessmentTemplates = [];
+        this.filteredAssessmentTemplates = [];
+      }
+    });
+  }
+
+  onRoleChange() {
+    this.filterAssessmentTemplates();
+  }
+
+  private filterAssessmentTemplates() {
+    if (!this.job.role || this.job.role.trim() === '') {
+      this.filteredAssessmentTemplates = [];
+      this.availableStepNames = [];
+      return;
+    }
+
+    // Filter templates by role (case-insensitive partial match)
+    this.filteredAssessmentTemplates = this.assessmentTemplates.filter(template =>
+      template.role.toLowerCase().includes(this.job.role.toLowerCase())
+    );
+
+    // Extract unique step names for the filtered role
+    this.availableStepNames = [...new Set(
+      this.filteredAssessmentTemplates.map(template => template.stepName)
+    )];
   }
 }

@@ -23,7 +23,8 @@ export class EditJobComponent implements OnInit {
     salaryMin: 0,
     salaryMax: 0,
     type: 'Full-time',
-    level: 'Entry-level'
+    level: 'Entry-level',
+    assessmentTemplateIds: []
   };
 
   loading = false;
@@ -36,7 +37,7 @@ export class EditJobComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private apiService: ApiService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Get job ID from route parameters
@@ -64,7 +65,7 @@ export class EditJobComponent implements OnInit {
         console.error('Error loading job:', error);
         this.error = `Failed to load job: ${error}`;
         this.loadingJob = false;
-        
+
         // Try to load from fallback data
         this.loadFallbackJob();
       }
@@ -85,7 +86,8 @@ export class EditJobComponent implements OnInit {
         salaryMin: 12000,
         salaryMax: 30000,
         type: 'Full-time',
-        level: 'Mid-level'
+        level: 'Mid-level',
+        assessmentTemplateIds: [1, 2]
       },
       {
         id: 2,
@@ -98,7 +100,8 @@ export class EditJobComponent implements OnInit {
         salaryMin: 8000,
         salaryMax: 25000,
         type: 'Full-time',
-        level: 'Entry-level'
+        level: 'Entry-level',
+        assessmentTemplateIds: [1]
       }
     ];
 
@@ -127,15 +130,15 @@ export class EditJobComponent implements OnInit {
         type: this.job.type,
         level: this.job.level,
         isActive: this.job.isActive,
-        applicants: this.job.applicants || 0
+        applicants: this.job.applicants,
+        assessmentTemplateIds: this.job.assessmentTemplateIds || []
       };
-
       this.apiService.updateJob(this.jobId, jobData).subscribe({
         next: (updatedJob) => {
           console.log('Job updated successfully:', updatedJob);
           this.loading = false;
           this.success = true;
-          
+
           // Navigate to jobs page after short delay
           setTimeout(() => {
             this.router.navigate(['/jobs']);
@@ -145,7 +148,7 @@ export class EditJobComponent implements OnInit {
           console.error('Error updating job:', error);
           this.error = `Failed to update job: ${error}`;
           this.loading = false;
-          
+
           // Fallback to localStorage if API fails (for demo purposes)
           this.updateLocalStorage();
         }

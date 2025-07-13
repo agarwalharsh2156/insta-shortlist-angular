@@ -13,7 +13,7 @@
 
 .info-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(60,60,60,0.1);
+  box-shadow: 0 8px 25px rgba(60, 60, 60, 0.1);
 }
 
 .info-card-icon {
@@ -133,40 +133,71 @@
   box-shadow: 0 4px 12px rgba(210, 245, 91, 0.3);
 }
 
+.assessment-step-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.section-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+}
+
+.question-text {
+  line-height: 1.6;
+  color: #555;
+}
+
+.option-item {
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.option-item:last-child {
+  border-bottom: none;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .info-card {
     padding: 1rem;
   }
-  
+
   .info-card-icon {
     width: 40px;
     height: 40px;
     font-size: 1rem;
   }
-  
+
   .salary-icon {
     width: 48px;
     height: 48px;
     font-size: 1.2rem;
   }
-  
+
   .salary-amount {
     font-size: 1.2rem;
   }
-  
+
   .top-bar .d-flex {
     flex-direction: column;
     align-items: flex-start !important;
     gap: 1rem;
   }
-  
-  .top-bar .d-flex > div:last-child {
+
+  .top-bar .d-flex>div:last-child {
     width: 100%;
     justify-content: stretch;
   }
-  
-  .top-bar .d-flex > div:last-child .btn {
+
+  .top-bar .d-flex>div:last-child .btn {
     flex: 1;
   }
 }
@@ -177,6 +208,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -187,7 +219,18 @@
   animation: fadeInUp 0.5s ease-out forwards;
 }
 
-.info-card:nth-child(1) { animation-delay: 0.1s; }
-.info-card:nth-child(2) { animation-delay: 0.2s; }
-.info-card:nth-child(3) { animation-delay: 0.3s; }
-.info-card:nth-child(4) { animation-delay: 0.4s; }
+.info-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.info-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.info-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.info-card:nth-child(4) {
+  animation-delay: 0.4s;
+}

@@ -27,8 +27,7 @@
             <div>
               <h1 class="fw-bold mb-1" style="font-size: 1.8rem; color: #222;">{{ job.title }}</h1>
               <div class="d-flex align-items-center gap-3 mt-2">
-                <span class="badge job-status-badge"
-                  [ngClass]="{
+                <span class="badge job-status-badge" [ngClass]="{
                     'brand-green-bg': job.isActive === true,
                     'brand-yellow-bg': job.isActive === false
                   }">
@@ -106,7 +105,8 @@
     </div>
 
     <!-- Salary Section -->
-    <div class="salary-section mb-4 p-4" style="background: linear-gradient(135deg, #f8f9ff 0%, #e8f5e8 100%); border-radius: 16px; border: 1px solid #e2e8f0;">
+    <div class="salary-section mb-4 p-4"
+      style="background: linear-gradient(135deg, #f8f9ff 0%, #e8f5e8 100%); border-radius: 16px; border: 1px solid #e2e8f0;">
       <div class="d-flex align-items-center">
         <div class="salary-icon me-3">
           <i class="fas fa-dollar-sign"></i>
@@ -131,8 +131,132 @@
         </div>
         <h4 class="mb-0 fw-bold" style="color: #222;">Job Description</h4>
       </div>
-      <div class="description-content p-4" style="background: #f8f9fa; border-radius: 12px; border-left: 4px solid rgb(210, 245, 91);">
+      <div class="description-content p-4"
+        style="background: #f8f9fa; border-radius: 12px; border-left: 4px solid rgb(210, 245, 91);">
         <div style="white-space: pre-line; line-height: 1.6; color: #555;">{{ job.description }}</div>
+      </div>
+    </div>
+  </div>
+  <!-- Assessment Steps Section -->
+  <div class="jobs-floating-container p-4 mb-4" *ngIf="!loading && job">
+    <div class="d-flex align-items-center mb-3">
+      <div class="section-icon me-2">
+        <i class="fas fa-clipboard-check"></i>
+      </div>
+      <h4 class="mb-0 fw-bold" style="color: #222;">Assessment Steps</h4>
+    </div>
+
+    <!-- Loading State for Steps -->
+    <div *ngIf="loadingSteps" class="text-center py-4">
+      <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;"></div>
+      <p class="mt-2 text-muted">Loading assessment steps...</p>
+    </div>
+
+    <!-- Error State for Steps -->
+    <div *ngIf="stepsError" class="alert alert-warning" style="border-radius: 12px;">
+      <i class="fas fa-exclamation-triangle me-2"></i>{{ stepsError }}
+    </div>
+
+    <!-- Assessment Steps List -->
+    <div *ngIf="!loadingSteps && !stepsError && assessmentSteps.length > 0" class="steps-container">
+      <div class="row">
+        <div class="col-12" *ngFor="let step of assessmentSteps; let i = index">
+          <div class="assessment-step-card mb-3 p-4" style="background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%); 
+                    border-radius: 16px; 
+                    border: 1px solid #e2e8f0;
+                    transition: all 0.3s ease;">
+            <div class="d-flex align-items-start">
+              <div class="step-number-badge me-3">
+                <span class="badge rounded-pill" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                           color: white; 
+                           width: 35px; 
+                           height: 35px; 
+                           display: flex; 
+                           align-items: center; 
+                           justify-content: center;
+                           font-weight: bold;">
+                  {{ step.stepOrder }}
+                </span>
+              </div>
+              <div class="flex-grow-1">
+                <h5 class="mb-2 fw-bold" style="color: #222;">{{ step.stepName }}</h5>
+
+                <!-- Question Section -->
+                <div *ngIf="step.question" class="question-section mb-3">
+                  <div class="question-label mb-2">
+                    <i class="fas fa-question-circle me-2" style="color: #667eea;"></i>
+                    <strong>Question:</strong>
+                  </div>
+                  <div class="question-text p-3" style="background: #f8f9fa; 
+                            border-radius: 8px; 
+                            border-left: 4px solid #667eea;">
+                    {{ step.question }}
+                  </div>
+                </div>
+
+                <!-- Options Section -->
+                <div *ngIf="step.options" class="options-section mb-3">
+                  <div class="options-label mb-2">
+                    <i class="fas fa-list me-2" style="color: #28a745;"></i>
+                    <strong>Options:</strong>
+                  </div>
+                  <div class="options-list">
+                    <div *ngFor="let option of step.options.split(','); let optionIndex = index"
+                      class="option-item mb-2">
+                      <div class="d-flex align-items-center">
+                        <span class="option-letter me-2" style="background: #e9ecef; 
+                                   border-radius: 50%; 
+                                   width: 25px; 
+                                   height: 25px; 
+                                   display: flex; 
+                                   align-items: center; 
+                                   justify-content: center; 
+                                   font-size: 12px; 
+                                   font-weight: bold;">
+                          {{ getOptionLetter(optionIndex) }}
+                        </span>
+                        <span>{{ option.trim() }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Correct Answer Section -->
+                <div *ngIf="step.correctAnswer" class="correct-answer-section mb-3">
+                  <div class="answer-label mb-2">
+                    <i class="fas fa-check-circle me-2" style="color: #28a745;"></i>
+                    <strong>Correct Answer:</strong>
+                  </div>
+                  <div class="answer-text p-2" style="background: #d4edda; 
+                            border-radius: 8px; 
+                            border-left: 4px solid #28a745; 
+                            color: #155724;">
+                    {{ step.correctAnswer }}
+                  </div>
+                </div>
+
+                <!-- Type Badge -->
+                <div *ngIf="step.type" class="type-section">
+                  <span class="badge" style="background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%); 
+                             color: #2d3436; 
+                             border-radius: 20px; 
+                             padding: 8px 16px;">
+                    <i class="fas fa-tag me-1"></i>
+                    {{ step.type }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Steps Message -->
+    <div *ngIf="!loadingSteps && !stepsError && assessmentSteps.length === 0" class="no-steps-message text-center py-4">
+      <div class="text-muted">
+        <i class="fas fa-info-circle me-2"></i>
+        No assessment steps found for this job role.
       </div>
     </div>
   </div>

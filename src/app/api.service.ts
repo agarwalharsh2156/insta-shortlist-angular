@@ -33,6 +33,7 @@ export interface Job {
   salaryMax: number;
   type: string;
   level: string;
+  assessmentTemplateIds: number[];
 }
 
 export interface CreateJobRequest {
@@ -46,6 +47,18 @@ export interface CreateJobRequest {
   level: string;
   isActive: boolean;
   applicants: number;
+  assessmentTemplateIds: number[];
+}
+
+export interface AssessmentTemplate {
+  id: number;
+  role: string;
+  stepOrder: number;
+  stepName: string;
+  question: string | null;
+  options: string | null;
+  correctAnswer: string | null;
+  type: string | null;
 }
 
 // Backend candidate structure (what API returns)
@@ -132,14 +145,29 @@ export interface ApiError {
   error: string;
 }
 
+export interface Review {
+  id?: number;
+  stepId: number;
+  reviewer: string;
+  feedback: string;
+  score: number;
+  createdAt?: string;
+}
+
+export interface CreateReviewRequest {
+  reviewer: string;
+  feedback: string;
+  score: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = "https://7564-2409-40c1-4111-13b4-7de8-ba9e-d704-98c6.ngrok-free.app";
-  
+  private baseUrl = "https://838beaa5e3ba.ngrok-free.app";
+
   private apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaGFza2FyIiwiaWF0IjoxNzQ5ODAzMzg4LCJleHAiOjE3NDk4MzkzODh9.vs518QlQXCvHB-YUhauw9Pzbi_cg14F8z5j9SIsSINc';
-  
+
   private httpOptions = {
     headers: {
       'Content-Type': 'application/json',
@@ -192,7 +220,17 @@ export class ApiService {
       jobId: candidate.jobId || 1
     };
   }
+  getAssessmentTemplates(): Observable<AssessmentTemplate[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<AssessmentTemplate[]>(`${this.baseUrl}/api/assessment-templates`, { headers })
+      .pipe(catchError(this.handleError));
+  }
 
+  getAssessmentTemplatesByRole(role: string): Observable<AssessmentTemplate[]> {
+  const headers = this.getAuthHeaders();
+  return this.http.get<AssessmentTemplate[]>(`${this.baseUrl}/api/assessment-templates/role/${role}`, { headers })
+    .pipe(catchError(this.handleError));
+}
   // Auth methods
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.baseUrl}/api/auth/login`, credentials, this.httpOptions)
@@ -242,7 +280,7 @@ export class ApiService {
         'ngrok-skip-browser-warning': 'true',
         'Authorization': `Bearer ${this.apiKey}`
       });
-      
+
       return this.http.post<BackendCandidate>(`${this.baseUrl}/api/candidates`, candidateData, { headers })
         .pipe(
           map(candidate => this.transformCandidate(candidate)),
@@ -282,7 +320,7 @@ export class ApiService {
         'ngrok-skip-browser-warning': 'true',
         'Authorization': `Bearer ${this.apiKey}`
       });
-      
+
       return this.http.put<BackendCandidate>(`${this.baseUrl}/api/candidates/${id}`, candidateData, { headers })
         .pipe(
           map(candidate => this.transformCandidate(candidate)),
@@ -321,12 +359,19 @@ export class ApiService {
     );
   }
 
+  // Review methods
+createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review> {
+  const headers = this.getAuthHeaders();
+  return this.http.post<Review>(`${this.baseUrl}/reviews/step/${stepId}`, reviewData, { headers })
+    .pipe(catchError(this.handleError));
+}
+
   // Helper method to get step status summary
   getStepStatusSummary(steps: CandidateStep[]): { completed: number; total: number; currentStep: string | null } {
     const completedSteps = steps.filter(step => step.completed).length;
     const totalSteps = steps.length;
     const currentStep = steps.find(step => !step.completed && step.status !== 'COMPLETED')?.stepName || null;
-    
+
     return {
       completed: completedSteps,
       total: totalSteps,
@@ -351,7 +396,7 @@ export class ApiService {
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred';
-    
+
     if (error.error instanceof ErrorEvent) {
       errorMessage = error.error.message;
     } else {
@@ -363,7 +408,7 @@ export class ApiService {
         errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
       }
     }
-    
+
     return throwError(() => errorMessage);
   }
 
@@ -380,7 +425,8 @@ export class ApiService {
         salaryMin: 12000,
         salaryMax: 30000,
         type: 'Full-time',
-        level: 'Mid-level'
+        level: 'Mid-level',
+        assessmentTemplateIds: [1, 2]
       },
       {
         id: 2,
@@ -393,7 +439,8 @@ export class ApiService {
         salaryMin: 8000,
         salaryMax: 25000,
         type: 'Full-time',
-        level: 'Entry-level'
+        level: 'Entry-level',
+        assessmentTemplateIds: [1]
       }
     ];
   }

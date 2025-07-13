@@ -12,6 +12,7 @@ import { EditCandidateComponent } from './candidates/edit-candidate/edit-candida
 import { OffersComponent } from './offers/offers.component';
 import { ViewJobComponent } from './jobs/view-job/view-job.component';
 import { ViewCandidateComponent } from './candidates/view-candidate/view-candidate.component';
+import { ReviewFormComponent } from './candidates/review-form/review-form.component'
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -29,4 +30,5 @@ export const routes: Routes = [
   { path: 'candidates/edit-candidate/:id', component: EditCandidateComponent, canActivate: [AuthGuard] },
   { path: 'jobs/view-job/:id', component: ViewJobComponent, canActivate: [AuthGuard] },
   { path: 'candidates/view-candidate/:id', component: ViewCandidateComponent, canActivate: [AuthGuard] },
+  { path: 'candidates/view-candidate/:id/review/:stepId', component: ReviewFormComponent, canActivate: [AuthGuard] },
 ];

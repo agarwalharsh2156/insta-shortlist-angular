@@ -1,0 +1,116 @@
+<div class="review-form-bg d-flex align-items-center justify-content-center min-vh-90 w-100">
+    <!-- Loading State -->
+    <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
+        <div class="text-center">
+            <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+            <p class="text-muted fs-5">Loading...</p>
+        </div>
+    </div>
+
+    <!-- Review Form -->
+    <div *ngIf="!loading" class="review-form-card p-5 shadow-lg w-100">
+        <div class="text-center mb-4">
+            <div class="brand-icon mb-2">
+                <i class="fas fa-star"></i>
+            </div>
+            <h2 class="brand-heading mb-1">Submit Review</h2>
+            <div class="brand-subheading mb-3" *ngIf="candidate && step">
+                {{ candidate.name }} - {{ step.stepName }}
+            </div>
+            <div class="brand-subheading mb-3" *ngIf="!candidate || !step">
+                Provide your detailed feedback and assessment
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="error" class="alert alert-danger border-0 rounded-3 mb-4">
+            <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+        </div>
+
+        <!-- Success Message -->
+        <div *ngIf="success" class="alert alert-success border-0 rounded-3 mb-4">
+            <i class="fas fa-check-circle me-2"></i>{{ success }}
+        </div>
+
+        <!-- Review Form -->
+        <form (ngSubmit)="onSubmit()" #reviewFormRef="ngForm">
+            <div class="row g-4">
+                <!-- Reviewer Email -->
+                <div class="col-md-6">
+                    <label for="reviewer" class="form-label">
+                        <i class="fas fa-user me-2 text-primary"></i>Reviewer Email
+                    </label>
+                    <input type="email" class="form-control" id="reviewer" name="reviewer"
+                        [(ngModel)]="reviewForm.reviewer" required email
+                        placeholder="Enter your email address" #reviewerInput="ngModel">
+                    <div *ngIf="reviewerInput.invalid && reviewerInput.touched"
+                        class="text-danger small mt-1">
+                        <span *ngIf="reviewerInput.errors?.['required']">Reviewer email is required</span>
+                        <span *ngIf="reviewerInput.errors?.['email']">Please enter a valid email address</span>
+                    </div>
+                </div>
+
+                <!-- Score -->
+                <div class="col-md-6">
+                    <label for="score" class="form-label">
+                        <i class="fas fa-chart-line me-2 text-success"></i>Score (0-100)
+                    </label>
+                    <div class="score-input-container">
+                        <input type="number" class="form-control" id="score"
+                            name="score" [(ngModel)]="reviewForm.score" required min="0" max="100"
+                            placeholder="Enter score" #scoreInput="ngModel">
+                        <div class="score-preview">
+                            <span class="badge fs-6 px-3 py-2" [ngClass]="{
+                                'bg-success': reviewForm.score >= 70,
+                                'bg-warning': reviewForm.score >= 40 && reviewForm.score < 70,
+                                'bg-danger': reviewForm.score < 40,
+                                'bg-secondary': reviewForm.score === 0 || !reviewForm.score
+                            }">
+                                {{ reviewForm.score || 0 }}%
+                            </span>
+                        </div>
+                    </div>
+                    <div *ngIf="scoreInput.invalid && scoreInput.touched" class="text-danger small mt-1">
+                        <span *ngIf="scoreInput.errors?.['required']">Score is required</span>
+                        <span *ngIf="scoreInput.errors?.['min']">Score must be at least 0</span>
+                        <span *ngIf="scoreInput.errors?.['max']">Score must be at most 100</span>
+                    </div>
+                </div>
+
+                <!-- Feedback -->
+                <div class="col-12">
+                    <label for="feedback" class="form-label">
+                        <i class="fas fa-comment-alt me-2 text-info"></i>Feedback
+                    </label>
+                    <textarea class="form-control" id="feedback" name="feedback"
+                        [(ngModel)]="reviewForm.feedback" required rows="6"
+                        placeholder="Provide detailed feedback about the candidate's performance in this step..."
+                        #feedbackInput="ngModel"></textarea>
+                    <div class="form-text">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Character count: {{ reviewForm.feedback.length || 0 }}
+                        </small>
+                    </div>
+                    <div *ngIf="feedbackInput.invalid && feedbackInput.touched"
+                        class="text-danger small mt-1">
+                        <span *ngIf="feedbackInput.errors?.['required']">Feedback is required</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="col-12 d-flex justify-content-between align-items-center mt-4">
+                    <button type="button" class="btn brand-outline-btn" (click)="goBack()">
+                        <i class="fas fa-arrow-left me-1"></i>Back
+                    </button>
+                    <button type="submit" class="btn brand-green-btn px-4"
+                        [disabled]="reviewFormRef.invalid || loading">
+                        <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
+                        <i *ngIf="!loading" class="fas fa-paper-plane me-2"></i>
+                        {{ loading ? 'Submitting...' : 'Submit Review' }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
