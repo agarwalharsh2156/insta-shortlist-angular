@@ -1,17 +1,37 @@
+/* Base Styles */
 .container-fluid {
     background: transparent !important;
     margin: 1rem;
 }
 
-.candidate-header-card {
+/* Card Base Styles */
+.candidate-header-card,
+.info-card,
+.progress-summary-card {
     background: rgb(253, 253, 253);
     border-radius: 20px;
-    padding: 2rem;
     box-shadow: 0 4px 20px rgba(60, 60, 60, 0.06), 0 1px 3px rgba(60, 60, 60, 0.04);
-    margin-bottom: 2rem;
     border: 1px solid rgba(202, 210, 255, 0.15);
+    transition: all 0.3s ease;
 }
 
+.candidate-header-card {
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.info-card {
+    padding: 1.5rem;
+    height: 100%;
+}
+
+.info-card:hover,
+.progress-summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(60, 60, 60, 0.12), 0 2px 6px rgba(60, 60, 60, 0.08);
+}
+
+/* Candidate Header */
 .candidate-avatar {
     width: 80px;
     height: 80px;
@@ -39,21 +59,102 @@
     font-weight: 500;
 }
 
-.info-card {
-    background: rgb(253, 253, 253);
-    border-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 20px rgba(60, 60, 60, 0.06), 0 1px 3px rgba(60, 60, 60, 0.04);
-    border: 1px solid rgba(202, 210, 255, 0.15);
+/* Score Circle Base */
+.score-circle,
+.progress-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 1rem;
+    font-weight: 700;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.score-green,
+.progress-high {
+    background: rgb(210, 245, 91);
+    color: #222;
+}
+
+.score-yellow,
+.progress-medium {
+    background: #ffeeba;
+    color: #b8860b;
+}
+
+.score-red,
+.progress-low {
+    background: #ff5a5a;
+    color: #fff;
+}
+
+/* Status Badges */
+.status-badge {
+    font-size: 0.98rem;
+    border-radius: 8px;
+    padding: 6px 18px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.status-badge i {
+    font-size: 0.6rem;
+}
+
+.brand-green-bg {
+    background: rgb(210, 245, 91) !important;
+    color: #222 !important;
+}
+
+.brand-purple-bg {
+    background: rgb(202, 210, 255) !important;
+    color: #222 !important;
+}
+
+.brand-red-bg {
+    background: #ff5a5a !important;
+    color: #fff !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: rgb(202, 210, 255);
+    border: 1px solid rgb(202, 210, 255);
+    color: #222;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(202, 210, 255, 0.3);
     transition: all 0.3s ease;
-    height: 100%;
 }
 
-.info-card:hover {
+.btn-primary:hover {
+    background-color: rgb(185, 195, 245);
+    border-color: rgb(185, 195, 245);
+    color: #222;
     transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(60, 60, 60, 0.12), 0 2px 6px rgba(60, 60, 60, 0.08);
+    box-shadow: 0 6px 20px rgba(202, 210, 255, 0.4);
 }
 
+.btn-outline-primary {
+    border: 2px solid rgb(202, 210, 255);
+    color: rgb(202, 210, 255);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: rgb(202, 210, 255);
+    border-color: rgb(202, 210, 255);
+    color: #222;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(202, 210, 255, 0.3);
+}
+
+/* Info Cards */
 .info-header {
     display: flex;
     align-items: center;
@@ -100,104 +201,7 @@
     align-items: center;
 }
 
-.score-display {
-    display: flex;
-    align-items: center;
-}
-
-.score-circle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    font-size: 1rem;
-    font-weight: 700;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-}
-
-.score-green {
-    background: rgb(210, 245, 91);
-    color: #222;
-}
-
-.score-yellow {
-    background: #ffeeba;
-    color: #b8860b;
-}
-
-.score-red {
-    background: #ff5a5a;
-    color: #fff;
-}
-
-.status-badge {
-    font-size: 0.98rem;
-    border-radius: 8px;
-    padding: 6px 18px;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.status-badge i {
-    font-size: 0.6rem;
-}
-
-.brand-green-bg {
-    background: rgb(210, 245, 91) !important;
-    color: #222 !important;
-}
-
-.brand-purple-bg {
-    background: rgb(202, 210, 255) !important;
-    color: #222 !important;
-}
-
-.brand-red-bg {
-    background: #ff5a5a !important;
-    color: #fff !important;
-}
-
-.bg-info {
-    background-color: #17a2b8 !important;
-}
-
-.btn-primary {
-    background-color: rgb(202, 210, 255);
-    border: 1px solid rgb(202, 210, 255);
-    color: #222;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(202, 210, 255, 0.3);
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    background-color: rgb(185, 195, 245);
-    border-color: rgb(185, 195, 245);
-    color: #222;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(202, 210, 255, 0.4);
-}
-
-.btn-outline-primary {
-    border: 2px solid rgb(202, 210, 255);
-    color: rgb(202, 210, 255);
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.btn-outline-primary:hover {
-    background: rgb(202, 210, 255);
-    border-color: rgb(202, 210, 255);
-    color: #222;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(202, 210, 255, 0.3);
-}
-
-/* Assessment Steps Styles */
+/* Progress Styles */
 .progress-summary {
     background: #ffffff;
     border: 1px solid #e9ecef;
@@ -235,21 +239,9 @@
     transition: width 0.3s ease;
 }
 
-.progress-summary .text-muted {
-    color: #6c757d !important;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
 .progress-summary .score-circle {
     width: 60px;
     height: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    font-weight: 700;
     border: 3px solid #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -269,6 +261,7 @@
     color: #ffffff;
 }
 
+/* Current Step Highlight */
 .current-step-highlight {
     background: rgba(23, 162, 184, 0.1);
     border-radius: 12px;
@@ -276,6 +269,7 @@
     border-left: 4px solid #17a2b8;
 }
 
+/* Steps */
 .steps-list h6 {
     color: #6c757d;
     font-size: 0.9rem;
@@ -386,6 +380,7 @@
     color: rgb(202, 210, 255);
 }
 
+/* Alerts */
 .alert-warning {
     background: rgba(255, 193, 7, 0.1);
     border: 1px solid rgba(255, 193, 7, 0.3);
@@ -400,70 +395,15 @@
     color: #0c5460;
 }
 
+/* Spinner */
 .spinner-border {
     color: rgb(202, 210, 255) !important;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .candidate-header-card {
-        padding: 1.5rem;
-    }
-
-    .candidate-name {
-        font-size: 1.8rem;
-    }
-
-    .candidate-avatar {
-        width: 60px;
-        height: 60px;
-        font-size: 2rem;
-    }
-
-    .score-circle {
-        width: 40px;
-        height: 40px;
-        font-size: 0.9rem;
-    }
-
-    .info-card {
-        padding: 1rem;
-    }
-
-    .info-header {
-        margin-bottom: 1rem;
-        padding-bottom: 0.75rem;
-    }
-
-    .step-card-content {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-
-    .step-header {
-        width: 100%;
-    }
-
-    .step-status {
-        align-self: flex-end;
-    }
-}
-
-/* Progress Summary Styles */
+/* Progress Summary Card (Advanced) */
 .progress-summary-card {
-    background: rgb(253, 253, 253);
-    border-radius: 20px;
     padding: 2rem;
-    box-shadow: 0 4px 20px rgba(60, 60, 60, 0.06), 0 1px 3px rgba(60, 60, 60, 0.04);
     margin-bottom: 2rem;
-    border: 1px solid rgba(202, 210, 255, 0.15);
-    transition: all 0.3s ease;
-}
-
-.progress-summary-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(60, 60, 60, 0.12), 0 2px 6px rgba(60, 60, 60, 0.08);
 }
 
 .progress-content {
@@ -520,13 +460,8 @@
 }
 
 @keyframes shimmer {
-    0% {
-        transform: translateX(-100%);
-    }
-
-    100% {
-        transform: translateX(100%);
-    }
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 }
 
 .progress-stats {
@@ -548,10 +483,6 @@
 .progress-circle {
     width: 80px;
     height: 80px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     position: relative;
     transition: all 0.3s ease;
 }
@@ -590,49 +521,26 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .progress-summary-card {
-        padding: 1.5rem;
-    }
-
-    .progress-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 1.5rem;
-    }
-
-    .progress-title {
-        font-size: 1.2rem;
-    }
-
-    .progress-circle {
-        width: 70px;
-        height: 70px;
-    }
-
-    .progress-inner {
-        width: 55px;
-        height: 55px;
-    }
-
-    .progress-percentage {
-        font-size: 0.9rem;
-    }
+    .candidate-header-card { padding: 1.5rem; }
+    .candidate-name { font-size: 1.8rem; }
+    .candidate-avatar { width: 60px; height: 60px; font-size: 2rem; }
+    .score-circle { width: 40px; height: 40px; font-size: 0.9rem; }
+    .info-card { padding: 1rem; }
+    .info-header { margin-bottom: 1rem; padding-bottom: 0.75rem; }
+    .step-card-content { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    .step-header { width: 100%; }
+    .step-status { align-self: flex-end; }
+    .progress-summary-card { padding: 1.5rem; }
+    .progress-content { flex-direction: column; text-align: center; gap: 1.5rem; }
+    .progress-title { font-size: 1.2rem; }
+    .progress-circle { width: 70px; height: 70px; }
+    .progress-inner { width: 55px; height: 55px; }
+    .progress-percentage { font-size: 0.9rem; }
 }
 
 @media (max-width: 480px) {
-    .progress-summary-card {
-        padding: 1rem;
-    }
-
-    .progress-content {
-        gap: 1rem;
-    }
-
-    .progress-title {
-        font-size: 1.1rem;
-    }
-
-    .progress-subtitle {
-        font-size: 0.9rem;
-    }
+    .progress-summary-card { padding: 1rem; }
+    .progress-content { gap: 1rem; }
+    .progress-title { font-size: 1.1rem; }
+    .progress-subtitle { font-size: 0.9rem; }
 }
