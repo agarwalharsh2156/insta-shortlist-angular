@@ -164,7 +164,7 @@ export interface CreateReviewRequest {
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = "https://838beaa5e3ba.ngrok-free.app";
+  private baseUrl = "https://6b8bd5247b2e.ngrok-free.app";
 
   private apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaGFza2FyIiwiaWF0IjoxNzQ5ODAzMzg4LCJleHAiOjE3NDk4MzkzODh9.vs518QlQXCvHB-YUhauw9Pzbi_cg14F8z5j9SIsSINc';
 
