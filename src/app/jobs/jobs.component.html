@@ -6,7 +6,10 @@
         <input class="form-control" style="max-width:320px;" placeholder="Search position, department, etc" />
         <button class="btn btn-outline-secondary"><i class="fas fa-filter"></i> Filter</button>
       </div>
-      <a [routerLink]="['/jobs/create-job']" class="btn brand-green-btn ms-auto">Post a Job</a>
+      <div class="d-flex gap-2 ms-auto">
+        <button class="btn brand-green-btn">Import a Job</button>
+        <a [routerLink]="['/jobs/create-job']" class="btn brand-green-btn">Post Jobs</a>
+      </div>
     </div>
 
     <!-- Helper Nav Bar -->
@@ -89,7 +92,6 @@
         <div class="fs-3 mb-4 pb-4 pt-4 border-bottom"
           style="border-bottom-width:2px; border-bottom-style:solid; border-bottom-color:#3d3d3d;">${{job.salaryMin}}-${{job.salaryMax}}
         </div>
-        <div class="text-muted small mb-3"><i class="fas fa-users me-1"></i>{{job.applicants}} Applicants</div>
         
         <!-- Action Buttons -->
         <div class="d-flex gap-2 mt-3">
@@ -117,7 +119,6 @@
           <th>Status</th>
           <th>Level</th>
           <th>Type</th>
-          <th>Applicants</th>
           <th>Salary</th>
           <th>Actions</th>
         </tr>
@@ -140,7 +141,6 @@
           </td>
           <td>{{ job.level }}</td>
           <td>{{ job.type }}</td>
-          <td>{{ job.applicants }}</td>
           <td>${{ job.salaryMin }}-{{ job.salaryMax }}</td>
           <td>
             <div class="d-flex gap-1">

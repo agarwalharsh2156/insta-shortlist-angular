@@ -28,12 +28,10 @@ export interface Job {
   location: string;
   description: string;
   isActive: boolean;
-  applicants: number;
   salaryMin: number;
   salaryMax: number;
   type: string;
   level: string;
-  assessmentTemplateIds: number[];
 }
 
 export interface CreateJobRequest {
@@ -46,8 +44,6 @@ export interface CreateJobRequest {
   type: string;
   level: string;
   isActive: boolean;
-  applicants: number;
-  assessmentTemplateIds: number[];
 }
 
 export interface AssessmentTemplate {
@@ -141,6 +137,15 @@ export interface CandidateAssessment {
   steps: CandidateStep[];
 }
 
+export interface Assessment {
+  id: number;
+  jobId: number;
+  stepOrder: number;
+  stepName: string;
+  mode: string;
+  passingCriteria: string;
+}
+
 export interface ApiError {
   error: string;
 }
@@ -160,11 +165,19 @@ export interface CreateReviewRequest {
   score: number;
 }
 
+export interface AssessmentStepPayload {
+  jobId: number;
+  stepOrder: number;
+  stepName: string;
+  mode: string;
+  passingCriteria: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = "https://6b8bd5247b2e.ngrok-free.app";
+  private baseUrl = "http://10.232.187.158:8080";
 
   private apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaGFza2FyIiwiaWF0IjoxNzQ5ODAzMzg4LCJleHAiOjE3NDk4MzkzODh9.vs518QlQXCvHB-YUhauw9Pzbi_cg14F8z5j9SIsSINc';
 
@@ -359,6 +372,19 @@ export class ApiService {
     );
   }
 
+  createAssessment(steps: AssessmentStepPayload[]): Observable<any> {
+    const headers = this.getAuthHeaders();
+    // Use /bulk endpoint for array payload
+    return this.http.post<any>(`${this.baseUrl}/api/assessments/bulk`, steps, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  getAssessments(): Observable<Assessment[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<Assessment[]>(`${this.baseUrl}/api/assessments`, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
   // Review methods
 createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review> {
   const headers = this.getAuthHeaders();
@@ -417,30 +443,26 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
       {
         id: 1,
         title: 'Software Engineer',
-        role: 'Tech Corp',
-        location: 'Bangalore, India',
-        description: 'Develop and maintain web applications using Angular and Spring Boot.',
+        role: 'Backend Developer',
+        location: 'Bangalore',
+        description: 'Build scalable APIs.',
         isActive: true,
-        applicants: 120,
-        salaryMin: 12000,
-        salaryMax: 30000,
+        salaryMin: 1000000,
+        salaryMax: 2000000,
         type: 'Full-time',
-        level: 'Mid-level',
-        assessmentTemplateIds: [1, 2]
+        level: 'Mid'
       },
       {
         id: 2,
         title: 'Frontend Developer',
-        role: 'Web Solutions',
-        location: 'Mumbai, India',
-        description: 'Create responsive user interfaces using modern web technologies.',
+        role: 'Frontend Developer',
+        location: 'Mumbai',
+        description: 'Create responsive user interfaces.',
         isActive: true,
-        applicants: 85,
-        salaryMin: 8000,
-        salaryMax: 25000,
+        salaryMin: 800000,
+        salaryMax: 1500000,
         type: 'Full-time',
-        level: 'Entry-level',
-        assessmentTemplateIds: [1]
+        level: 'Entry-level'
       }
     ];
   }
@@ -541,5 +563,82 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
       status: template.status,
       completed: template.completed
     }));
+  }
+
+  static getFallbackAssessments(): Assessment[] {
+    return [
+      {
+        id: 1,
+        jobId: 1,
+        stepOrder: 1,
+        stepName: 'Technical Round',
+        mode: 'Video Conferencing',
+        passingCriteria: 'Pass'
+      },
+      {
+        id: 2,
+        jobId: 1,
+        stepOrder: 2,
+        stepName: 'Managerial Round',
+        mode: 'In-Person',
+        passingCriteria: 'Pass'
+      },
+      {
+        id: 3,
+        jobId: 2,
+        stepOrder: 1,
+        stepName: 'HR Round',
+        mode: 'Phone',
+        passingCriteria: 'Qualified'
+      },
+      {
+        id: 4,
+        jobId: 3,
+        stepOrder: 1,
+        stepName: 'Technical Round',
+        mode: 'Video Conferencing',
+        passingCriteria: 'Pass'
+      },
+      {
+        id:5,
+        jobId: 3,
+        stepOrder: 2,
+        stepName: 'Managerial Round',
+        mode: 'In-Person',
+        passingCriteria: 'Pass'
+      },
+      {
+        id: 6,
+        jobId: 3,
+        stepOrder: 3,
+        stepName: 'HR Round',
+        mode: 'Phone',
+        passingCriteria: 'Qualified'
+      }, 
+      {
+        id: 7,
+        jobId: 4,
+        stepOrder: 1,
+        stepName: 'Technical Round',
+        mode: 'Video Conferencing',
+        passingCriteria: 'Pass'
+      },
+      {
+        id: 8,
+        jobId: 4,
+        stepOrder: 2,
+        stepName: 'Managerial Round',
+        mode: 'In-Person',
+        passingCriteria: 'Pass'
+      },
+      {
+        id:9,
+        jobId: 4,
+        stepOrder: 1,
+        stepName: 'HR Round',
+        mode: 'Phone',
+        passingCriteria: 'Qualified'
+      }
+    ];
   }
 }

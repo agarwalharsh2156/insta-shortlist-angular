@@ -4,15 +4,15 @@
       <div class="brand-icon mb-2">
         <i class="fas fa-briefcase"></i>
       </div>
-      <h2 class="brand-heading mb-1">Create a New Job</h2>
+      <h2 class="brand-heading mb-1">Post a New Job</h2>
       <div class="brand-subheading mb-3">Fill in the details below to post a new job opening</div>
     </div>
     <div *ngIf="loading" class="alert alert-info">
-      <i class="fas fa-spinner fa-spin me-2"></i>Creating job...
+      <i class="fas fa-spinner fa-spin me-2"></i>Posting job...
     </div>
 
     <div *ngIf="success" class="alert alert-success">
-      <i class="fas fa-check-circle me-2"></i>Job created successfully! Redirecting...
+      <i class="fas fa-check-circle me-2"></i>Job posted successfully! Redirecting...
     </div>
 
     <div *ngIf="error" class="alert alert-danger">
@@ -29,7 +29,7 @@
         </div>
         <div class="col-md-6">
           <label for="role" class="form-label">Job Role</label>
-          <input type="text" class="form-control" id="role" name="role" [(ngModel)]="job.role" (input)="onRoleChange()"
+          <input type="text" class="form-control" id="role" name="role" [(ngModel)]="job.role"
             placeholder="@eg-Product Manager" required>
         </div>
         <div class="col-md-6">
@@ -50,38 +50,47 @@
           <label for="level" class="form-label">Seniority Level</label>
           <select class="form-select" id="level" name="level" [(ngModel)]="job.level">
             <option>Entry-level</option>
-            <option>Mid-level</option>
+            <option>Mid</option>
             <option>Senior-level</option>
           </select>
         </div>
         <div class="col-md-3">
           <label for="salaryMin" class="form-label">Min Salary</label>
           <input type="number" class="form-control" id="salaryMin" name="salaryMin" [(ngModel)]="job.salaryMin"
-            placeholder="@eg-1000" required>
+            placeholder="@eg-1000000" required>
         </div>
         <div class="col-md-3">
           <label for="salaryMax" class="form-label">Max Salary</label>
           <input type="number" class="form-control" id="salaryMax" name="salaryMax" [(ngModel)]="job.salaryMax"
-            placeholder="@eg-10000" required>
+            placeholder="@eg-2000000" required>
         </div>
-        <div class="col-12">
-          <label for="assessmentTemplates" class="form-label">Assessment Templates</label>
-          <select class="form-select" id="assessmentTemplates" name="assessmentTemplates"
-            [(ngModel)]="job.assessmentTemplateIds" multiple [disabled]="availableStepNames.length === 0">
-            <option *ngFor="let stepName of availableStepNames; let i = index" [value]="i + 1">
-              {{ stepName }}
-            </option>
-          </select>
-          <div class="form-text">
-            <span *ngIf="availableStepNames.length === 0 && job.role">
-              No assessment templates found for "{{ job.role }}"
-            </span>
-            <span *ngIf="availableStepNames.length === 0 && !job.role">
-              Enter a job role to see available assessment templates
-            </span>
-            <span *ngIf="availableStepNames.length > 0">
-              Hold Ctrl/Cmd to select multiple templates ({{ availableStepNames.length }} available)
-            </span>
+        <div class="col-md-6">
+          <label for="isActive" class="form-label">Active</label>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="isActive" name="isActive" [(ngModel)]="job.isActive">
+            <label class="form-check-label" for="isActive">
+              <span class="badge" [ngClass]="job.isActive ? 'bg-success' : 'bg-secondary'">
+                {{ job.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </label>
+          </div>
+        </div>
+        <!-- Hiring Platforms (static, not bound to Angular) -->
+        <div class="col-md-6">
+          <label class="form-label">Hiring Platforms</label>
+          <div class="hiring-platforms-checkbox-group">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="platformLinkedIn">
+              <label class="form-check-label" for="platformLinkedIn">LinkedIn</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="platformNaukri">
+              <label class="form-check-label" for="platformNaukri">Naukri</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="platformOthers">
+              <label class="form-check-label" for="platformOthers">Others</label>
+            </div>
           </div>
         </div>
         <div class="col-12">
@@ -91,7 +100,7 @@
         </div>
         <div class="col-12 d-flex justify-content-between align-items-center mt-4">
           <a routerLink="/jobs" class="btn brand-outline-btn">Back to Jobs</a>
-          <button type="submit" class="btn brand-green-btn px-4" [disabled]="!createJobForm.valid">Create Job</button>
+          <button type="submit" class="btn brand-green-btn px-4" [disabled]="!createJobForm.valid">Post Job</button>
         </div>
       </div>
     </form>

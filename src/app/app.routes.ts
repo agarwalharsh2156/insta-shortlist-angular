@@ -22,4 +22,6 @@ export const routes: Routes = [
   { path: 'jobs/view-job/:id', loadComponent: () => import('./jobs/view-job/view-job.component').then(m => m.ViewJobComponent), canActivate: [AuthGuard] },
   { path: 'candidates/view-candidate/:id', loadComponent: () => import('./candidates/view-candidate/view-candidate.component').then(m => m.ViewCandidateComponent), canActivate: [AuthGuard] },
   { path: 'candidates/view-candidate/:id/review/:stepId', loadComponent: () => import('./candidates/review-form/review-form.component').then(m => m.ReviewFormComponent), canActivate: [AuthGuard] },
+  { path: 'assessments', loadComponent: () => import('./assessments/assessments.component').then(m => m.AssessmentsComponent), canActivate: [AuthGuard] },
+  { path: 'assessments/create-assessment', loadComponent: () => import('./assessments/create-assessment/create-assessment.component').then(m => m.CreateAssessmentComponent), canActivate: [AuthGuard] },
 ];

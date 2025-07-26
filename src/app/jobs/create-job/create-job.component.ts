@@ -4,18 +4,16 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ApiService, CreateJobRequest, AssessmentTemplate } from '../../api.service';
 interface Job {
-  id: number;
+  id?: number;
   title: string;
   role: string;
   location: string;
   description: string;
-  status: string;
-  applicants: number;
+  isActive: boolean;
   salaryMin: number;
   salaryMax: number;
   type: string;
   level: string;
-  assessmentTemplateIds: number[];
 }
 
 @Component({
@@ -32,14 +30,11 @@ export class CreateJobComponent implements OnInit {
       role: '',
       location: '',
       description: '',
-      status: 'Active',
-      applicants: 0,
+      isActive: true,
       salaryMin: 0,
       salaryMax: 0,
       type: 'Full-time',
-      level: 'Entry-level',
-      assessmentTemplateIds: []
-
+      level: 'Entry-level'
     };
   assessmentTemplates: AssessmentTemplate[] = [];
   filteredAssessmentTemplates: AssessmentTemplate[] = [];
@@ -61,7 +56,7 @@ export class CreateJobComponent implements OnInit {
       this.error = null;
       this.success = false;
 
-      const jobData: CreateJobRequest = {
+      const jobData = {
         title: this.job.title,
         role: this.job.role,
         location: this.job.location,
@@ -70,9 +65,7 @@ export class CreateJobComponent implements OnInit {
         salaryMax: Number(this.job.salaryMax),
         type: this.job.type,
         level: this.job.level,
-        isActive: true,
-        applicants: 0,
-        assessmentTemplateIds: this.job.assessmentTemplateIds
+        isActive: this.job.isActive
       };
 
       this.apiService.createJob(jobData).subscribe({
@@ -107,8 +100,7 @@ export class CreateJobComponent implements OnInit {
       const newJob: Job = {
         ...this.job,
         id: Date.now(),
-        applicants: 0,
-        status: 'Active',
+        isActive: true,
         salaryMin: Number(this.job.salaryMin),
         salaryMax: Number(this.job.salaryMax)
       };

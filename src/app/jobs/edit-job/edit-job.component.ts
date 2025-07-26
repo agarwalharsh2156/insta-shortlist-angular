@@ -19,12 +19,10 @@ export class EditJobComponent implements OnInit {
     location: '',
     description: '',
     isActive: true,
-    applicants: 0,
     salaryMin: 0,
     salaryMax: 0,
     type: 'Full-time',
     level: 'Entry-level',
-    assessmentTemplateIds: []
   };
 
   loading = false;
@@ -82,12 +80,11 @@ export class EditJobComponent implements OnInit {
         location: 'Bangalore, India',
         description: 'Develop and maintain web applications using Angular and Spring Boot.',
         isActive: true,
-        applicants: 120,
         salaryMin: 12000,
         salaryMax: 30000,
         type: 'Full-time',
         level: 'Mid-level',
-        assessmentTemplateIds: [1, 2]
+
       },
       {
         id: 2,
@@ -96,12 +93,12 @@ export class EditJobComponent implements OnInit {
         location: 'Mumbai, India',
         description: 'Create responsive user interfaces using modern web technologies.',
         isActive: true,
-        applicants: 85,
+
         salaryMin: 8000,
         salaryMax: 25000,
         type: 'Full-time',
         level: 'Entry-level',
-        assessmentTemplateIds: [1]
+
       }
     ];
 
@@ -130,8 +127,6 @@ export class EditJobComponent implements OnInit {
         type: this.job.type,
         level: this.job.level,
         isActive: this.job.isActive,
-        applicants: this.job.applicants,
-        assessmentTemplateIds: this.job.assessmentTemplateIds || []
       };
       this.apiService.updateJob(this.jobId, jobData).subscribe({
         next: (updatedJob) => {

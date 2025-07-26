@@ -1,4 +1,4 @@
-.create-job-bg {
+.create-assessment-bg {
   background: linear-gradient(120deg, #f3f7fa 0%, #e9f7ef 100%);
   min-height: 90vh;
   width: 100%;
@@ -8,12 +8,12 @@
   justify-content: center;
 }
 
-.create-job-card {
+.create-assessment-card {
   background: rgb(253, 253, 253);
   border-radius: 28px;
   box-shadow: 0 12px 40px rgba(60,60,60,0.13), 0 2px 8px rgba(60,60,60,0.09);
   width: 100%;
-  max-width: 1100px;
+  max-width: 900px;
   padding: 3rem 2.5rem;
   animation: fadeInUp 0.7s cubic-bezier(.39,.575,.565,1) both;
 }
@@ -93,87 +93,42 @@
   box-shadow: 0 0 0 2px rgba(210,245,91,0.15);
 }
 
-/* Hiring Platforms custom styles */
-#hiringPlatforms {
+.step-card {
+  background: #f8fafd;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(60,60,60,0.06);
+  margin-bottom: 8px;
+}
+
+.btn-outline-primary {
+  border: 2px solid rgb(202, 210, 255);
+  color: rgb(202, 210, 255);
+  background: transparent;
   border-radius: 8px;
-  border: 1.5px solid #c6e48b;
-  background: #f8fff0;
-  color: #222;
-  min-height: 48px;
-  font-size: 1rem;
-  padding: 10px 12px;
-  box-shadow: 0 1px 4px rgba(210,245,91,0.08);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-#hiringPlatforms:focus {
-  border-color: #d2f55b;
-  outline: none;
-  box-shadow: 0 0 0 2px #d2f55b33;
-}
-#hiringPlatforms option {
-  padding: 8px 12px;
-  border-radius: 6px;
-}
-
-label[for="hiringPlatforms"] {
   font-weight: 600;
-  color: #3d3d3d;
-  margin-bottom: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+.btn-outline-primary:hover {
+  background: rgb(202, 210, 255);
+  color: #222;
 }
 
-.form-text {
-  color: #7a7a7a;
-  font-size: 0.95rem;
-  margin-top: 2px;
+.btn-outline-danger {
+  border: 2px solid #ff5a5a;
+  color: #ff5a5a;
+  background: transparent;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
 }
-
-.col-md-6 > #hiringPlatforms {
-  margin-top: 2px;
-  margin-bottom: 8px;
-}
-
-.hiring-platforms-checkbox-group {
-  display: flex;
-  flex-direction: row;
-  gap: 24px;
-  margin-top: 6px;
-  margin-bottom: 8px;
-}
-.hiring-platforms-checkbox-group .form-check {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 0;
-}
-.hiring-platforms-checkbox-group .form-check-input {
-  width: 1.2em;
-  height: 1.2em;
-  border-radius: 6px;
-  border: 1.5px solid #c6e48b;
-  background: #f8fff0;
-  margin-right: 6px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.hiring-platforms-checkbox-group .form-check-input:checked {
-  background-color: #d2f55b;
-  border-color: #d2f55b;
-  box-shadow: 0 0 0 2px #d2f55b33;
-}
-.hiring-platforms-checkbox-group .form-check-label {
-  font-weight: 500;
-  color: #3d3d3d;
-  font-size: 1rem;
-  cursor: pointer;
+.btn-outline-danger:hover {
+  background: #ff5a5a;
+  color: #fff;
 }
 
 @media (max-width: 900px) {
-  .create-job-card {
+  .create-assessment-card {
     max-width: 98vw;
     padding: 2rem 0.5rem;
   }
-}
-
-/* In create-job.component.css */
-textarea#description {
-  resize: none;
 }
