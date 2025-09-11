@@ -2,278 +2,408 @@
   <!-- Loading State -->
   <div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="min-height: 400px;">
     <div class="text-center">
-      <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+      <div class="spinner-border text-primary mb-3 custom-spinner" style="width: 3rem; height: 3rem;" role="status">
+      </div>
       <p class="text-muted fs-5">Loading candidate details...</p>
     </div>
   </div>
 
   <!-- Error State -->
-  <div *ngIf="error && !loading" class="alert alert-warning border-0 shadow-sm rounded-3 mx-auto mb-4"
+  <div *ngIf="error && !loading" class="alert alert-warning border-0 shadow-sm rounded-4 mx-auto mb-4 custom-alert"
     style="max-width: 800px;">
-    <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
-    <button type="button" class="btn btn-sm btn-outline-warning ms-2" (click)="refreshAll()">
-      <i class="fas fa-refresh me-1"></i>Retry
-    </button>
+    <div class="d-flex align-items-center">
+      <i class="fas fa-exclamation-triangle me-3 fs-4"></i>
+      <div class="flex-grow-1">{{ error }}</div>
+      <button type="button" class="btn btn-sm btn-outline-warning ms-2 rounded-3" (click)="refreshAll()">
+        <i class="fas fa-refresh me-1"></i>Retry
+      </button>
+    </div>
   </div>
 
   <!-- Candidate Details -->
   <div *ngIf="candidate && !loading">
-    <!-- Header Card -->
-    <div class="candidate-header-card">
-      <div class="row align-items-center">
-        <div class="col-auto">
-          <div class="candidate-avatar">
-            <i class="fas fa-user"></i>
-          </div>
-        </div>
-        <div class="col">
-          <h1 class="candidate-name mb-2">{{ candidate.name }}</h1>
-          <p class="candidate-role mb-3">{{ candidate.appliedRole }}</p>
-          <div class="d-flex align-items-center gap-3 flex-wrap">
-            <span class="badge status-badge" [ngClass]="{
-              'brand-green-bg': candidate.status === 'Hired' || candidate.status === 'Interview',
-              'brand-purple-bg': candidate.status === 'In-Review',
-              'brand-red-bg': candidate.status === 'Rejected',
-              'bg-info text-white': candidate.status === 'Shortlisted'
-            }">
-              <i class="fas fa-circle me-1" style="font-size: 0.6rem;"></i>{{ candidate.status }}
-            </span>
-            <div class="score-display">
-              <span class="score-circle" [ngClass]="{
-                'score-green': candidate.score >= 70,
-                'score-yellow': candidate.score >= 40 && candidate.score < 70,
-                'score-red': candidate.score < 40
-              }">
-                {{ candidate.score }}%
-              </span>
+    <!-- Redesigned Header Card -->
+    <div class="card shadow-sm mb-4 candidate-header-new border-0 overflow-hidden">
+      <!-- Top gradient bar -->
+      <div class="header-gradient-bar"></div>
+
+      <div class="card-body p-0">
+        <!-- Main header content -->
+        <div class="header-main-content p-4 pb-3">
+          <div class="row align-items-center g-4">
+            <div class="col-auto">
+              <div class="position-relative candidate-avatar-new d-flex align-items-center justify-content-center">
+                <div
+                  class="candidate-avatar-new bg-white d-flex align-items-center justify-content-center rounded-circle shadow-sm border border-3">
+                  <i class="fas fa-user text-primary fs-1"></i>
+                </div>
+                <!-- Status indicator section replaced -->
+                <div class="status-indicator-new position-absolute shadow-sm" [ngClass]="{
+                                  'bg-success': (candidate.status || '').toLowerCase() === 'hired' || (candidate.status || '').toLowerCase() === 'interview',
+                                  'bg-warning': (candidate.status || '').toLowerCase() === 'in-review' || (candidate.status || '').toLowerCase() === 'shortlisted',
+                                  'bg-danger': (candidate.status || '').toLowerCase() === 'rejected'
+                                }">
+                  <i class="fas fa-check text-white" style="font-size: 0.7rem;"
+                    *ngIf="(candidate.status || '').toLowerCase() === 'hired'"></i>
+                  <i class="fas fa-clock text-white" style="font-size: 0.7rem;"
+                    *ngIf="(candidate.status || '').toLowerCase() === 'in-review' || (candidate.status || '').toLowerCase() === 'interview'"></i>
+                  <i class="fas fa-times text-white" style="font-size: 0.7rem;"
+                    *ngIf="(candidate.status || '').toLowerCase() === 'rejected'"></i>
+                  <i class="fas fa-star text-white" style="font-size: 0.7rem;"
+                    *ngIf="(candidate.status || '').toLowerCase() === 'shortlisted'"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="candidate-info">
+                <h1 class="candidate-name h1 fw-bold mb-2 text-dark">{{ candidate.name }}</h1>
+                <div class="candidate-role d-flex align-items-center mb-3">
+                  <div class="role-icon me-3">
+                    <i class="fas fa-briefcase"></i>
+                  </div>
+                  <span class="fs-4 text-muted fw-medium">{{ candidate.appliedRole }}</span>
+                </div>
+
+                <!-- Quick stats row -->
+                <div class="quick-stats-row d-flex flex-wrap gap-4 align-items-center">
+                  <div class="stat-item d-flex align-items-center">
+                    <div class="stat-icon me-2">
+                      <i class="fas fa-calendar-alt text-primary"></i>
+                    </div>
+                    <div>
+                      <small class="text-muted d-block">Applied</small>
+                      <span class="fw-semibold">{{ candidate.appliedDate | date:'MMM d, y' }}</span>
+                    </div>
+                  </div>
+
+                  <div class="stat-divider"></div>
+
+                  <div class="stat-item d-flex align-items-center">
+                    <div class="stat-icon me-2">
+                      <i class="fas fa-building text-info"></i>
+                    </div>
+                    <div>
+                      <small class="text-muted d-block">Department</small>
+                      <span class="fw-semibold">{{ candidate.department }}</span>
+                    </div>
+                  </div>
+                  <div class="stat-divider"></div>
+
+                  <div class="stat-item d-flex align-items-center">
+                    <div class="stat-icon me-2">
+                      <i class="fas fa-clock text-success"></i>
+                    </div>
+                    <div>
+                      <small class="text-muted d-block">Work Type</small>
+                      <span class="fw-semibold">{{ candidate.workType }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-auto">
+              <div class="header-actions d-flex flex-column gap-3 align-items-end">
+                <!-- Score display -->
+
+
+                <!-- Action buttons -->
+                <div class="action-buttons d-flex gap-2">
+                  <button [routerLink]="['/candidates/edit-candidate', candidate.id]"
+                    class="btn btn-primary px-4 py-2 rounded-pill shadow-sm custom-edit-btn">
+                    <i class="fas fa-edit me-2"></i>
+                  </button>
+                  <button class="btn btn-outline-primary rounded-pill shadow-sm px-3" (click)="refreshAll()">
+                    <i class="fas fa-sync-alt"></i>
+                  </button>
+                </div>
+                <div class="score-display-new text-center">
+                  <div
+                    class="score-circle-new d-inline-flex align-items-center justify-content-center rounded-circle fw-bold shadow-sm"
+                    [ngClass]="{
+                                                                    'bg-success text-white': candidate.score >= 70,
+                                                                    'bg-warning text-white': candidate.score >= 40 && candidate.score < 70,
+                                                                    'bg-danger text-white': candidate.score < 40
+                                                                  }">
+                    {{ candidate.score }}%
+                  </div>
+                  <small class="text-muted d-block mt-2 fw-semibold">Overall Score</small>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-auto">
-          <button [routerLink]="['/candidates/edit-candidate', candidate.id]"
-            class="btn btn-primary btn-lg rounded-pill px-4">
-            <i class="fas fa-edit me-2"></i>Edit Profile
-          </button>
+        <!-- Status bar at bottom -->
+        <div class="status-bar-bottom p-3 d-flex align-items-center justify-content-between">
+          <div class="d-flex align-items-center">
+            <span class="status-badge badge px-4 py-2 rounded-pill fs-6 fw-semibold" [ngClass]="{
+                  'bg-success': (candidate.status || '').toLowerCase() === 'hired' || (candidate.status || '').toLowerCase() === 'interview',
+                  'bg-warning text-dark': (candidate.status || '').toLowerCase() === 'in-review',
+                  'bg-danger': (candidate.status || '').toLowerCase() === 'rejected',
+                  'bg-info': (candidate.status || '').toLowerCase() === 'shortlisted'
+                }">
+              <i class="fas fa-circle me-2" style="font-size: 0.6rem;"></i>
+              {{ candidate.status }}
+            </span>
+            <span class="ms-3 text-muted">
+              <i class="fas fa-user-tie me-1"></i>
+              Candidate ID: #{{ candidate.id }}
+            </span>
+          </div>
+
         </div>
       </div>
     </div>
-
-    <!-- Assessment Progress Section -->
+    <!-- Enhanced Assessment Progress Section -->
     <div class="row g-4 mb-4">
       <div class="col-12">
-        <div class="info-card">
-          <div class="info-header">
-            <i class="fas fa-chart-line text-success me-2"></i>
-            <h5 class="mb-0">Assessment Progress</h5>
+        <div class="card shadow-lg border-0 assessment-card">
+          <div class="card-header bg-gradient-subtle border-0 py-4">
+            <div class="d-flex align-items-center">
+              <div class="icon-wrapper me-3">
+                <i class="fas fa-chart-line text-success fs-4"></i>
+              </div>
+              <h5 class="mb-0 fw-bold fs-4">Assessment Progress</h5>
+            </div>
           </div>
+          <div class="card-body p-4">
 
-          <!-- Loading Steps -->
-          <div *ngIf="loadingSteps" class="text-center py-4">
-            <div class="spinner-border text-primary me-2" style="width: 1.5rem; height: 1.5rem;" role="status"></div>
-            <span class="text-muted">Loading assessment steps...</span>
-          </div>
+            <!-- Loading Steps -->
+            <div *ngIf="loadingSteps" class="text-center py-5">
+              <div class="spinner-border text-primary me-2 custom-spinner" style="width: 1.5rem; height: 1.5rem;"
+                role="status">
+              </div>
+              <span class="text-muted fs-6">Loading assessment steps...</span>
+            </div>
+            <!-- Steps Error -->
+            <div *ngIf="stepsError && !loadingSteps" class="alert alert-info border-0 rounded-3 shadow-sm mb-4">
+              <div class="d-flex align-items-center">
+                <i class="fas fa-info-circle me-3 fs-5"></i>
+                <span>{{ stepsError }}</span>
+              </div>
+            </div>
+            <!-- Assessment Content -->
+            <div *ngIf="!loadingSteps && candidateSteps.length > 0">
+              <!-- Enhanced Progress Summary -->
+              <div class="progress-summary-card rounded-4 p-4 mb-5 shadow-sm">
+                <div class="row align-items-center g-4">
+                  <div class="col-lg-8">
+                    <h6 class="fw-bold mb-3 fs-5 text-dark">Overall Progress</h6>
+                    <div class="progress mb-3 rounded-pill shadow-sm" style="height: 20px;">
+                      <div class="progress-bar bg-success rounded-pill" [style.width.%]="getProgressPercentage()"
+                        role="progressbar" [attr.aria-valuenow]="getProgressPercentage()" aria-valuemin="0"
+                        aria-valuemax="100">
+                      </div>
+                    </div>
 
-          <!-- Steps Error -->
-          <div *ngIf="stepsError && !loadingSteps" class="alert alert-info border-0 rounded-3 mb-3">
-            <i class="fas fa-info-circle me-2"></i>{{ stepsError }}
-          </div>
-
-          <!-- Assessment Content -->
-          <div *ngIf="!loadingSteps && candidateSteps.length > 0">
-            <!-- Progress Summary -->
-            <div class="progress-summary mb-4">
-              <div class="row align-items-center">
-                <div class="col-md-8">
-                  <div class="progress-stats d-flex flex-column align-items-start">
-                    <h6>Overall Progress</h6>
-                    <div class="progress-bar-container w-100 mb-2">
-                      <div class="progress" style="height: 10px;">
-                        <div class="progress-bar" [style.width.%]="getProgressPercentage()" role="progressbar"
-                          [attr.aria-valuenow]="getProgressPercentage()" aria-valuemin="0" aria-valuemax="100">
+                    <div class="fw-semibold fs-6">
+                      <i class="fas fa-check-circle text-success me-2"></i>
+                      {{ getCompletedStepsCount() }} of {{ getTotalStepsCount() }} steps completed
+                    </div>
+                  </div>
+                  <div class="col-lg-4 text-center">
+                    <div class="circular-progress-wrapper d-inline-block">
+                      <div class="circular-progress"
+                        [style.background]="
+                                                                            'conic-gradient(' + getProgressColor() + ' ' + getProgressPercentage() * 3.6 + 'deg, #e6e6e6 0deg)'">
+                        <div class="circular-progress-inner d-flex align-items-center justify-content-center">
+                          <span class="fw-bold">{{ getProgressPercentage() }}%</span>
                         </div>
                       </div>
                     </div>
-                    <span class="fw-semibold fs-6 mb-2">
-                      {{ getCompletedStepsCount() }} of {{ getTotalStepsCount() }} steps completed
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Enhanced Current Step Highlight -->
+              <div *ngIf="getCurrentStep()" class="current-step-card alert border-0 mb-5 rounded-4 shadow-sm">
+                <div class="row align-items-center g-3">
+                  <div class="col-auto">
+                    <div class="current-step-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="fas fa-arrow-right fs-4"></i>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <h6 class="mb-2 fw-bold text-dark">Current Step</h6>
+                    <p class="mb-0 fw-bold fs-5 text-primary">{{ getCurrentStep()?.stepName }}</p>
+                  </div>
+                  <div class="col-auto">
+                    <span class="badge bg-primary px-4 py-3 rounded-pill fs-6 shadow-sm">
+                      <i class="fas fa-flag me-2"></i>Step {{ getCurrentStep()?.stepOrder }}
                     </span>
                   </div>
                 </div>
-                <div class="col-md-4">
-                  <div class="text-center">
-                    <div class="score-circle" [ngClass]="{
-                      'score-green': getProgressPercentage() >= 70,
-                      'score-yellow': getProgressPercentage() >= 40 && getProgressPercentage() < 70,
-                      'score-red': getProgressPercentage() < 40
-                    }">
-                      {{ getProgressPercentage() }}%
-                    </div>
-                  </div>
-                </div>
               </div>
-            </div>
-
-            <!-- Current Step Highlight -->
-            <div *ngIf="getCurrentStep()" class="current-step-highlight mb-4">
-              <div class="row align-items-center">
-                <div class="col-auto">
-                  <i class="fas fa-arrow-right text-info"></i>
-                </div>
-                <div class="col">
-                  <h6 class="mb-1 text-info">Current Step</h6>
-                  <p class="mb-0 fw-bold">{{ getCurrentStep()?.stepName }}</p>
-                </div>
-                <div class="col-auto">
-                  <span class="badge bg-info text-white">Step {{ getCurrentStep()?.stepOrder }}</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- All Steps -->
-            <div class="steps-list">
-              <h6>Assessment Steps</h6>
-              <div class="row g-3">
-                <div class="col-md-6 col-lg-4" *ngFor="let step of candidateSteps">
-                  <div class="step-card" [ngClass]="getStepStatusClass(step)" (click)="navigateToReview(step)"
-                    style="cursor: pointer;">
-                    <div class="step-card-content">
-                      <div class="step-header">
-                        <div class="step-icon">
+              <!-- Enhanced Assessment Steps Table -->
+              <div class="table-responsive rounded-4 shadow-sm border">
+                <table class="table table-hover align-middle mb-0 steps-table">
+                  <thead class="table-header">
+                    <tr>
+                      <th class="text-center py-4" style="width: 10%;">
+                        <i class="fas fa-list-ol me-2"></i>Step
+                      </th>
+                      <th class="py-4" style="width: 35%;">
+                        <i class="fas fa-tasks me-2"></i>Step Name
+                      </th>
+                      <th class="text-center py-4" style="width: 15%;">
+                        <i class="fas fa-flag me-2"></i>Status
+                      </th>
+                      <th class="text-center py-4" style="width: 12%;">
+                        <i class="fas fa-star me-2"></i>Score
+                      </th>
+                      <th class="text-center py-4" style="width: 15%;">
+                        <i class="fas fa-chart-pie me-2"></i>Progress
+                      </th>
+                      <th class="text-center py-4" style="width: 13%;">
+                        <i class="fas fa-cog me-2"></i>Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let step of getSortedSteps()" class="step-row">
+                      <td class="text-center py-4">
+                        <span class="step-number badge rounded-pill px-3 py-2 fs-6">{{ step.stepOrder }}</span>
+                      </td>
+                      <td class="py-4">
+                        <div class="fw-semibold fs-6 text-dark">{{ step.stepName }}</div>
+                      </td>
+                      <td class="text-center py-4">
+                        <div
+                          class="step-status-icon-large d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm"
+                          [ngClass]="{
+                                                      'bg-success text-white': step.completed,
+                                                      'bg-secondary text-white': step.status === 'PENDING',
+                                                      'bg-warning text-dark': step.status === 'IN_PROGRESS',
+                                                      'bg-primary text-white': step.status !== 'PENDING' && step.status !== 'IN_PROGRESS' && !step.completed
+                                                    }">
                           <i [class]="getStepStatusIcon(step)"></i>
                         </div>
-                        <div class="step-info">
-                          <h6 class="step-title">{{ step.stepName }}</h6>
-                          <small class="step-order">Step {{ step.stepOrder }}</small>
-                        </div>
-                      </div>
-                      <div class="step-status">
-                        <span class="badge" [ngClass]="{
-                          'badge-completed': step.completed,
-                          'badge-pending': step.status === 'PENDING',
-                          'badge-in-progress': step.status === 'IN_PROGRESS',
-                          'badge-default': step.status !== 'PENDING' && step.status !== 'IN_PROGRESS' && !step.completed
-                        }">
+                      </td>
+                      <td class="text-center py-4">
+                        <span *ngIf="step.score !== null && step.score !== undefined; else noScore"
+                          class="fw-bold fs-5">{{ step.score
+                          }}</span>
+                        <ng-template #noScore><span class="text-muted">-</span></ng-template>
+                      </td>
+                      <td class="text-center py-4">
+                        <span class="badge px-3 py-2 rounded-pill fs-6" [ngClass]="{
+                                                                                            'bg-success': step.completed,
+                                                                                            'bg-secondary': step.status === 'PENDING',
+                                                                                            'bg-warning text-dark': step.status === 'IN_PROGRESS',
+                                                                                            'bg-primary': step.status !== 'PENDING' && step.status !== 'IN_PROGRESS' && !step.completed
+                                                                                          }">
+                          <i class="fas fa-circle me-2" style="font-size: 0.6rem;"></i>
                           {{ step.completed ? 'Completed' : step.status }}
                         </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- No Steps Available -->
-          <div *ngIf="!loadingSteps && candidateSteps.length === 0" class="text-center py-4">
-            <i class="fas fa-clipboard-list text-muted mb-3" style="font-size: 3rem;"></i>
-            <p class="text-muted">No assessment steps available for this candidate.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Information Cards Grid -->
-    <div class="row g-4">
-      <!-- Personal Information -->
-      <div class="col-lg-6">
-        <div class="info-card">
-          <div class="info-header">
-            <i class="fas fa-user-circle text-primary me-2"></i>
-            <h5 class="mb-0">Personal Information</h5>
-          </div>
-          <div class="info-content">
-            <div class="info-item">
-              <span class="info-label">Email</span>
-              <span class="info-value">
-                <i class="fas fa-envelope me-2 text-muted"></i>{{ candidate.email }}
-              </span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Phone</span>
-              <span class="info-value">
-                <i class="fas fa-phone me-2 text-muted"></i>{{ candidate.phone }}
-              </span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Experience</span>
-              <span class="info-value">
-                <i class="fas fa-briefcase me-2 text-muted"></i>{{ candidate.experience }} years
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Job Details -->
-      <div class="col-lg-6">
-        <div class="info-card">
-          <div class="info-header">
-            <i class="fas fa-briefcase text-success me-2"></i>
-            <h5 class="mb-0">Job Application</h5>
-          </div>
-          <div class="info-content">
-            <div class="info-item">
-              <span class="info-label">Department</span>
-              <span class="info-value">{{ candidate.department }}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Applied Date</span>
-              <span class="info-value">
-                <i class="fas fa-calendar me-2 text-muted"></i>{{ candidate.appliedDate | date:'mediumDate' }}
-              </span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Current Role</span>
-              <span class="info-value">{{ candidate.role }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Employment Details -->
-      <div class="col-lg-6">
-        <div class="info-card">
-          <div class="info-header">
-            <i class="fas fa-building text-warning me-2"></i>
-            <h5 class="mb-0">Employment Details</h5>
-          </div>
-          <div class="info-content">
-            <div class="info-item">
-              <span class="info-label">Employment Type</span>
-              <span class="badge bg-light text-dark border">{{ candidate.employmentType }}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Work Type</span>
-              <span class="badge bg-light text-dark border">{{ candidate.workType }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Documents & Attachments -->
-      <div class="col-lg-6">
-        <div class="info-card">
-          <div class="info-header">
-            <i class="fas fa-paperclip text-info me-2"></i>
-            <h5 class="mb-0">Documents</h5>
-          </div>
-          <div class="info-content">
-            <div class="info-item">
-              <span class="info-label">Attachments</span>
-              <div class="attachment-list">
-                <span class="badge bg-primary me-1 mb-1" *ngFor="let attachment of candidate.attachments.split(',')">
-                  <i class="fas fa-file me-1"></i>{{ attachment.trim() }}
-                </span>
+                      </td>
+                      <td class="text-center py-4">
+                        <button class="btn btn-primary btn-sm px-3 py-2 rounded-3 shadow-sm review-btn"
+                          (click)="navigateToReview(step)">
+                          <i class="fas fa-eye me-2"></i>
+                          Review
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <!-- Enhanced Documents Row -->
+    <div class="row g-4 mb-5">
+      <div class="col-12">
+        <div class="card shadow-lg border-0 documents-card">
+          <div class="card-header bg-gradient-subtle border-0 py-4">
+            <div class="d-flex align-items-center">
+              <div class="icon-wrapper me-3">
+                <i class="fas fa-paperclip text-info fs-4"></i>
+              </div>
+              <h5 class="mb-0 fw-bold fs-4">Documents & Attachments</h5>
+            </div>
+          </div>
+          <div class="card-body p-4">
+            <small class="text-uppercase text-muted fw-bold d-block mb-3">ATTACHMENTS</small>
+            <div class="d-flex flex-wrap gap-3 mt-3">
+              <span class="document-badge badge px-4 py-3 rounded-pill fs-6 shadow-sm"
+                *ngFor="let attachment of candidate.attachments.split(',')">
+                <i class="fas fa-file me-2"></i>{{ attachment.trim() }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <!-- Back Button -->
-    <div class="text-center mt-5">
-      <button routerLink="/candidates" class="btn btn-outline-secondary btn-lg rounded-pill px-5">
-        <i class="fas fa-arrow-left me-2"></i>Back to Candidates
+    <!-- PDF Attachment Section - ADD THIS BLOCK WHERE YOU WANT IT -->
+<!-- PDF Attachment Section - Enhanced with Custom Styling -->
+<div *ngIf="candidate?.attachment?.base64" class="row mt-4">
+  <div class="col-12">
+    <div class="card documents-card pdf-attachment-card">
+      <!-- Gradient header bar like your main card -->
+      <div class="pdf-gradient-bar"></div>
+
+      <div class="card-header pdf-header d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <div class="pdf-icon-wrapper me-3">
+            <i class="fas fa-file-pdf"></i>
+          </div>
+          <div>
+            <h5 class="mb-0 pdf-title">{{ candidate.attachment?.fileName || 'Resume Document' }}</h5>
+            <small class="pdf-subtitle">{{ candidate.attachment?.fileType || 'PDF Document' }}</small>
+          </div>
+        </div>
+        <div class="pdf-actions d-flex gap-2">
+          <button class="btn pdf-download-btn btn-sm" (click)="downloadPDF()">
+            <i class="fas fa-download me-1"></i>Download
+          </button>
+          <button class="btn pdf-view-btn btn-sm" (click)="togglePDFViewer()">
+            <i class="fas fa-eye me-1"></i>{{ showPDFViewer ? 'Hide' : 'View' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- PDF Viewer with smooth animation -->
+      <div class="card-body pdf-viewer-body" *ngIf="showPDFViewer" [@slideDown]>
+        <div class="pdf-viewer-container">
+          <div class="pdf-loading-overlay" *ngIf="!pdfDataUrl">
+            <div class="pdf-loading-content">
+              <div class="custom-spinner spinner-border" role="status"></div>
+              <p class="mt-2 mb-0">Loading PDF Document...</p>
+            </div>
+          </div>
+          <iframe [src]="pdfDataUrl" class="pdf-iframe" *ngIf="pdfDataUrl">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- No Attachment Message - Enhanced -->
+<div *ngIf="!candidate?.attachment?.base64" class="row mt-4">
+  <div class="col-12">
+    <div class="alert no-attachment-alert">
+      <div class="d-flex align-items-center">
+        <div class="no-attachment-icon me-3">
+          <i class="fas fa-file-excel"></i>
+        </div>
+        <div>
+          <h6 class="mb-1">No Resume Attachment</h6>
+          <small class="text-muted">No document has been uploaded for this candidate.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <!-- Enhanced Back Button -->
+    <div class="text-center mt-5 mb-4">
+      <button routerLink="/candidates"
+        class="btn btn-outline-secondary btn-lg rounded-pill px-5 py-3 shadow-sm back-button">
+        <i class="fas fa-arrow-left me-3"></i>Back to Candidates
       </button>
     </div>
   </div>

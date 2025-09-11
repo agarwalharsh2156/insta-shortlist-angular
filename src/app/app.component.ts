@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { AuthService } from './auth.service';
 import { CommonModule } from '@angular/common';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -10,13 +11,24 @@ import { CommonModule } from '@angular/common';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'instaShortlist';
+  showSidebar = true;
 
   constructor(public authService: AuthService, public router: Router) {}
 
-  isLoginOrRegisterPage(): boolean {
-    return this.router.url === '/login' || this.router.url === '/register';
+  ngOnInit() {
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        const isAuthRoute = event.url === '/login' || event.url === '/register';
+        this.showSidebar = !isAuthRoute;
+      });
+  }
+
+  // NEW: Method to detect public routes that need completely different layout
+  isPublicRoute(): boolean {
+    return this.router.url.startsWith('/apply/');
   }
 
   logout() {

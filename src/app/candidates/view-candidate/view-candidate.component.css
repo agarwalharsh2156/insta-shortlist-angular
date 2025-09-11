@@ -1,546 +1,773 @@
-/* Base Styles */
-.container-fluid {
-    background: transparent !important;
-    margin: 1rem;
+/* Business Colors Variables */
+:root {
+  --primary-color: rgb(202, 210, 255);
+  --secondary-color: rgb(210, 245, 93);
+  --primary-dark: rgb(185, 195, 245);
+  --secondary-dark: rgb(195, 225, 85);
 }
 
-/* Card Base Styles */
-.candidate-header-card,
-.info-card,
-.progress-summary-card {
-    background: rgb(253, 253, 253);
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(60, 60, 60, 0.06), 0 1px 3px rgba(60, 60, 60, 0.04);
-    border: 1px solid rgba(202, 210, 255, 0.15);
-    transition: all 0.3s ease;
+/* New Header Card Design */
+.candidate-header-new {
+  border-radius: 24px;
+  background: linear-gradient(to right, #fcfcfa 0%, #fcfcfa 100%);
+  position: relative;
+  overflow: hidden;
 }
 
-.candidate-header-card {
-    padding: 2rem;
-    margin-bottom: 2rem;
+.header-gradient-bar {
+  height: 6px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
 }
 
-.info-card {
-    padding: 1.5rem;
-    height: 100%;
+.candidate-avatar-new {
+  width: 110px;
+  height: 110px;
+  border-color: rgba(202, 210, 255, 0.3) !important;
+  background: white !important;
+  position: relative;
 }
 
-.info-card:hover,
-.progress-summary-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(60, 60, 60, 0.12), 0 2px 6px rgba(60, 60, 60, 0.08);
+.status-indicator-new {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  bottom: 8px;
+  right: 8px;
+  border: 3px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Candidate Header */
-.candidate-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: rgb(202, 210, 255);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
-    color: #222;
-    border: 3px solid rgba(202, 210, 255, 0.3);
-}
+
 
 .candidate-name {
-    font-size: 2.2rem;
-    font-weight: 700;
-    margin: 0;
-    color: #222;
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #333, #555);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .candidate-role {
-    font-size: 1.1rem;
-    color: #6c757d;
-    margin: 0;
-    font-weight: 500;
+  margin-bottom: 1.5rem;
 }
 
-/* Score Circle Base */
-.score-circle,
-.progress-circle {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    font-size: 1rem;
-    font-weight: 700;
-    border: 2px solid rgba(255, 255, 255, 0.8);
+.role-icon {
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(135deg, rgba(202, 210, 255, 0.2), rgba(210, 245, 93, 0.1));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
 }
 
-.score-green,
-.progress-high {
-    background: rgb(210, 245, 91);
-    color: #222;
+.quick-stats-row {
+  padding: 1rem 0;
 }
 
-.score-yellow,
-.progress-medium {
-    background: #ffeeba;
-    color: #b8860b;
+.stat-item {
+  min-width: 120px;
 }
 
-.score-red,
-.progress-low {
-    background: #ff5a5a;
-    color: #fff;
+.stat-icon {
+  width: 35px;
+  height: 35px;
+  background: rgba(202, 210, 255, 0.15);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
 }
 
-/* Status Badges */
+.stat-divider {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, transparent, rgba(202, 210, 255, 0.3), transparent);
+}
+
+.score-circle-new {
+  width: 85px;
+  height: 85px;
+  font-size: 1.5rem;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.header-actions {
+  min-width: 200px;
+}
+
+.status-bar-bottom {
+  background: linear-gradient(to right, #fcfcfa 0%, #fcfcfa 100%);
+  border-top: 1px solid rgba(202, 210, 255, 0.7);
+}
+
 .status-badge {
-    font-size: 0.98rem;
-    border-radius: 8px;
-    padding: 6px 18px;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
-.status-badge i {
-    font-size: 0.6rem;
+.header-meta {
+  font-size: 0.85rem;
 }
 
-.brand-green-bg {
-    background: rgb(210, 245, 91) !important;
-    color: #222 !important;
-}
-
-.brand-purple-bg {
-    background: rgb(202, 210, 255) !important;
-    color: #222 !important;
-}
-
-.brand-red-bg {
-    background: #ff5a5a !important;
-    color: #fff !important;
-}
-
-/* Buttons */
-.btn-primary {
-    background-color: rgb(202, 210, 255);
-    border: 1px solid rgb(202, 210, 255);
-    color: #222;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(202, 210, 255, 0.3);
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    background-color: rgb(185, 195, 245);
-    border-color: rgb(185, 195, 245);
-    color: #222;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(202, 210, 255, 0.4);
-}
-
-.btn-outline-primary {
-    border: 2px solid rgb(202, 210, 255);
-    color: rgb(202, 210, 255);
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.btn-outline-primary:hover {
-    background: rgb(202, 210, 255);
-    border-color: rgb(202, 210, 255);
-    color: #222;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(202, 210, 255, 0.3);
-}
-
-/* Info Cards */
-.info-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid rgba(202, 210, 255, 0.2);
-}
-
-.info-header h5 {
-    font-weight: 600;
-    color: #222;
-    margin: 0;
-}
-
-.info-header i {
-    font-size: 1.2rem;
-}
-
-.info-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-}
-
-.info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.info-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #6c757d;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.info-value {
-    font-size: 1rem;
-    color: #222;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-}
-
-/* Progress Styles */
-.progress-summary {
-    background: #ffffff;
-    border: 1px solid #e9ecef;
-    border-radius: 12px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-.progress-stats h6 {
-    color: #495057;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    text-transform: none;
-    letter-spacing: normal;
-}
-
-.progress-bar-container {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 2px;
-    margin-bottom: 0.75rem;
-}
-
+/* Fixed Progress Bar */
 .progress {
-    background: #f8f9fa;
-    border-radius: 6px;
-    height: 8px;
+  background-color: rgba(202, 210, 255, 0.15) !important;
+  overflow: visible;
 }
 
-.progress-bar {
-    background: linear-gradient(90deg, #007bff, #0056b3) !important;
-    border-radius: 6px;
-    transition: width 0.3s ease;
-}
-
-.progress-summary .score-circle {
-    width: 60px;
-    height: 60px;
-    border: 3px solid #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.progress-summary .score-green {
-    background: #28a745;
-    color: #ffffff;
-}
-
-.progress-summary .score-yellow {
-    background: #ffc107;
-    color: #212529;
-}
-
-.progress-summary .score-red {
-    background: #dc3545;
-    color: #ffffff;
-}
-
-/* Current Step Highlight */
-.current-step-highlight {
-    background: rgba(23, 162, 184, 0.1);
-    border-radius: 12px;
-    padding: 1rem;
-    border-left: 4px solid #17a2b8;
-}
-
-/* Steps */
-.steps-list h6 {
-    color: #6c757d;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 1rem;
-}
-
-.step-card {
-    background: rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(202, 210, 255, 0.2);
-    border-radius: 12px;
-    padding: 1rem;
-    transition: all 0.3s ease;
-    height: 100%;
-}
-
-.step-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(202, 210, 255, 0.15);
-}
-
-.step-card-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.step-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.step-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-}
-
-.step-completed .step-icon {
-    background: rgb(210, 245, 91);
-    color: #222;
-}
-
-.step-pending .step-icon {
-    background: rgba(108, 117, 125, 0.2);
-    color: #6c757d;
-}
-
-.step-in-progress .step-icon {
-    background: rgba(255, 193, 7, 0.2);
-    color: #856404;
-}
-
-.step-default .step-icon {
-    background: rgba(202, 210, 255, 0.2);
-    color: rgb(202, 210, 255);
-}
-
-.step-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.step-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #222;
-    margin: 0;
-}
-
-.step-order {
-    font-size: 0.8rem;
-    color: #6c757d;
-    font-weight: 500;
-}
-
-.step-status .badge {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 6px;
-    font-weight: 500;
-}
-
-.badge-completed {
-    background: rgb(210, 245, 91);
-    color: #222;
-}
-
-.badge-pending {
-    background: rgba(108, 117, 125, 0.2);
-    color: #6c757d;
-}
-
-.badge-in-progress {
-    background: rgba(255, 193, 7, 0.2);
-    color: #856404;
-}
-
-.badge-default {
-    background: rgba(202, 210, 255, 0.2);
-    color: rgb(202, 210, 255);
-}
-
-/* Alerts */
-.alert-warning {
-    background: rgba(255, 193, 7, 0.1);
-    border: 1px solid rgba(255, 193, 7, 0.3);
-    border-radius: 12px;
-    color: #856404;
-}
-
-.alert-info {
-    background: rgba(23, 162, 184, 0.1);
-    border: 1px solid rgba(23, 162, 184, 0.3);
-    border-radius: 12px;
-    color: #0c5460;
-}
-
-/* Spinner */
-.spinner-border {
-    color: rgb(202, 210, 255) !important;
-}
-
-/* Progress Summary Card (Advanced) */
-.progress-summary-card {
-    padding: 2rem;
-    margin-bottom: 2rem;
-}
-
-.progress-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-}
-
-.progress-info {
-    flex: 1;
-}
-
-.progress-title {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #222;
-    margin: 0 0 0.5rem 0;
-}
-
-.progress-subtitle {
-    font-size: 1rem;
-    color: #6c757d;
-    margin: 0 0 1.5rem 0;
-    font-weight: 500;
-}
-
-.progress-track {
-    background: rgba(202, 210, 255, 0.2);
-    border-radius: 12px;
-    height: 12px;
-    overflow: hidden;
-    margin-bottom: 1rem;
-    position: relative;
-}
-
-.progress-fill {
-    background: linear-gradient(90deg, rgb(202, 210, 255), rgb(210, 245, 91));
-    height: 100%;
-    border-radius: 12px;
-    transition: width 0.6s ease;
-    position: relative;
-}
-
-.progress-fill::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-.progress-stats {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+.progress-bar-custom {
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)) !important;
+  transition: width 0.8s ease-in-out;
+  border-radius: 10px;
+  top: 0;
+  left: 0;
 }
 
 .progress-text {
-    font-size: 0.95rem;
-    color: #222;
-    font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  font-weight: 600;
 }
 
-.progress-visual {
-    flex-shrink: 0;
+/* Enhanced Metric Cards */
+.metric-card {
+  transition: all 0.3s ease;
+  border: 1px solid rgba(202, 210, 255, 0.2) !important;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(202, 210, 255, 0.2);
+}
+
+/* Enhanced Score Circles */
+.score-circle {
+  width: 55px;
+  height: 55px;
+}
+
+.score-circle-large {
+  width: 70px;
+  height: 70px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .progress-circle {
-    width: 80px;
-    height: 80px;
-    position: relative;
-    transition: all 0.3s ease;
+  width: 70px;
+  height: 70px;
+  font-size: 1.2rem;
 }
 
-.progress-high {
-    background: linear-gradient(135deg, rgb(210, 245, 91), rgb(186, 230, 55));
-    box-shadow: 0 4px 20px rgba(210, 245, 91, 0.3);
+.progress-circle-xlarge {
+  width: 90px;
+  height: 90px;
+  font-size: 1.4rem;
 }
 
-.progress-medium {
-    background: linear-gradient(135deg, #ffc107, #ffb300);
-    box-shadow: 0 4px 20px rgba(255, 193, 7, 0.3);
+/* Enhanced Info Chips */
+.info-chip {
+  transition: all 0.3s ease;
+  font-weight: 500;
+  border-color: rgba(202, 210, 255, 0.3) !important;
 }
 
-.progress-low {
-    background: linear-gradient(135deg, #ff5a5a, #ff3030);
-    box-shadow: 0 4px 20px rgba(255, 90, 90, 0.3);
+.info-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(202, 210, 255, 0.2);
+  border-color: var(--primary-color) !important;
 }
 
-.progress-inner {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 50%;
-    width: 65px;
-    height: 65px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+/* Assessment Card Enhancements */
+.assessment-card {
+  border-radius: 20px;
 }
 
-.progress-percentage {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #222;
+.bg-gradient-subtle {
+  background: linear-gradient(135deg, rgba(202, 210, 255, 0.1) 0%, rgba(210, 245, 93, 0.05) 100%);
 }
 
-/* Responsive Design */
+.icon-wrapper {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(202, 210, 255, 0.2), rgba(210, 245, 93, 0.1));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Progress Summary Card */
+.circular-progress {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circular-progress-inner {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #fff;
+  text-align: center;
+}
+
+.progress-summary-card {
+  background: linear-gradient(135deg, rgba(202, 210, 255, 0.1) 0%, rgba(210, 245, 93, 0.05) 100%);
+  border: 2px solid rgba(202, 210, 255, 0.15);
+}
+
+/* Current Step Card */
+.current-step-card {
+  background: linear-gradient(135deg, rgba(210, 245, 93, 0.15) 0%, rgba(202, 210, 255, 0.1) 100%);
+  border: 2px solid rgba(210, 245, 93, 0.2) !important;
+}
+
+.current-step-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));
+  color: #333;
+}
+
+/* Enhanced Table Styles */
+.steps-table {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.table-header {
+  background: linear-gradient(135deg, var(--primary-color), rgba(210, 245, 93, 0.3));
+  color: #333;
+  font-weight: 600;
+}
+
+.step-row {
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(202, 210, 255, 0.1);
+}
+
+.step-row:hover {
+  background: linear-gradient(135deg, rgba(202, 210, 255, 0.05) 0%, rgba(210, 245, 93, 0.02) 100%);
+  transform: translateX(5px);
+}
+
+.step-number {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  color: #333;
+}
+
+/* Step Status Icon */
+.step-status-icon {
+  width: 35px;
+  height: 35px;
+}
+
+.step-status-icon-large {
+  width: 40px;
+  height: 40px;
+}
+
+/* Documents Card */
+.documents-card {
+  border-radius: 20px;
+}
+
+.document-badge {
+  background: rgb(202, 210, 255);
+  color: #000000;
+  transition: all 0.3s ease;
+}
+
+.document-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(202, 210, 255, 0.3);
+}
+
+/* Card Enhancements */
+.card {
+  border-radius: 20px;
+  border: 1px solid rgba(202, 210, 255, 0.15);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(202, 210, 255, 0.15) !important;
+}
+
+/* Custom Button Styles */
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  border: none;
+  color: #333;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+  color: #222;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(202, 210, 255, 0.3);
+}
+
+.btn-outline-secondary {
+  border: 2px solid rgba(202, 210, 255, 0.5);
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #333;
+  transform: translateY(-2px);
+}
+
+.back-button:hover {
+  background: linear-gradient(135deg, rgba(202, 210, 255, 0.1), rgba(210, 245, 93, 0.05));
+  border-color: var(--primary-color);
+  color: #333;
+}
+
+/* Progress Bar Customization - Fixed */
+.progress {
+  background-color: rgba(202, 210, 255, 0.15) !important;
+  overflow: visible;
+}
+
+.progress-bar-custom {
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)) !important;
+  transition: width 0.8s ease-in-out;
+  border-radius: 10px;
+  top: 0;
+  left: 0;
+}
+
+.progress-text {
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  font-weight: 600;
+}
+
+/* Custom Spinner */
+.custom-spinner {
+  color: var(--primary-color) !important;
+}
+
+/* Alert Customization */
+.custom-alert {
+  border-left: 4px solid var(--secondary-color);
+}
+
+/* ---------- Softer colors for Assessment Steps ONLY ---------- */
+
+/* Status icon (the round circle) */
+.steps-table .step-status-icon-large {
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Completed */
+.steps-table .step-status-icon-large.bg-success,
+.steps-table .badge.bg-success {
+  background-color: #caf3d5 !important;  /* soft green */
+  color: #1b9b46 !important;             /* readable green text/icon */
+  border-color: #CDE6D3 !important;
+}
+
+/* Pending */
+.steps-table .step-status-icon-large.bg-secondary,
+.steps-table .badge.bg-secondary {
+  background-color: #F1F3F4 !important;  /* soft gray */
+  color: #5F6368 !important;
+  border-color: #E0E3E7 !important;
+}
+
+/* In Progress */
+.steps-table .step-status-icon-large.bg-warning,
+.steps-table .badge.bg-warning {
+  background-color: #FFF4CC !important;  /* soft amber */
+  color: #6C5E00 !important;             /* ignore text-dark from HTML */
+  border-color: #FFE08A !important;
+}
+
+/* Other (primary) */
+.steps-table .step-status-icon-large.bg-primary,
+.steps-table .badge.bg-primary {
+  background-color: #E8F0FE !important;  /* soft blue */
+  color: #0B57D0 !important;
+  border-color: #D2E3FC !important;
+}
+
+/* Make all step badges look like subtle chips */
+.steps-table .badge {
+  font-weight: 600;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+}
+
+.review-btn{
+    background-color: rgb(202, 210, 255);
+}
+
+/* Animation Enhancements */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Custom Edit Button */
+.custom-edit-btn {
+  background: rgb(180, 191, 255);
+  border: none;
+  color: #020202;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(79,140,255,0.15);
+  transition: background 0.2s;
+}
+
+/* Responsive Adjustments */
 @media (max-width: 768px) {
-    .candidate-header-card { padding: 1.5rem; }
-    .candidate-name { font-size: 1.8rem; }
-    .candidate-avatar { width: 60px; height: 60px; font-size: 2rem; }
-    .score-circle { width: 40px; height: 40px; font-size: 0.9rem; }
-    .info-card { padding: 1rem; }
-    .info-header { margin-bottom: 1rem; padding-bottom: 0.75rem; }
-    .step-card-content { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-    .step-header { width: 100%; }
-    .step-status { align-self: flex-end; }
-    .progress-summary-card { padding: 1.5rem; }
-    .progress-content { flex-direction: column; text-align: center; gap: 1.5rem; }
-    .progress-title { font-size: 1.2rem; }
-    .progress-circle { width: 70px; height: 70px; }
-    .progress-inner { width: 55px; height: 55px; }
-    .progress-percentage { font-size: 0.9rem; }
+  .candidate-avatar-new {
+    width: 85px;
+    height: 85px;
+  }
+  
+  .candidate-name {
+    font-size: 2rem;
+  }
+  
+  .score-circle-new {
+    width: 70px;
+    height: 70px;
+    font-size: 1.2rem;
+  }
+  
+  .score-circle {
+    width: 45px;
+    height: 45px;
+    font-size: 0.9rem;
+  }
+  
+  .score-circle-large {
+    width: 60px;
+    height: 60px;
+    font-size: 1rem;
+  }
+  
+  .progress-circle {
+    width: 60px;
+    height: 60px;
+    font-size: 1.1rem;
+  }
+  
+  .progress-circle-xlarge {
+    width: 75px;
+    height: 75px;
+    font-size: 1.2rem;
+  }
+  
+  .current-step-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .icon-wrapper {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .card-body {
+    padding: 1.5rem !important;
+  }
+  
+  .header-main-content {
+    padding: 1.5rem !important;
+  }
+  
+  .quick-stats-row {
+    flex-direction: column;
+    gap: 1rem !important;
+  }
+  
+  .stat-divider {
+    display: none;
+  }
+  
+  .header-actions {
+    min-width: auto;
+    align-items: center !important;
+  }
 }
 
-@media (max-width: 480px) {
-    .progress-summary-card { padding: 1rem; }
-    .progress-content { gap: 1rem; }
-    .progress-title { font-size: 1.1rem; }
-    .progress-subtitle { font-size: 0.9rem; }
+@media (max-width: 576px) {
+  .candidate-name {
+    font-size: 1.8rem;
+  }
+  
+  .info-chip {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem !important;
+  }
+  
+  .metric-card {
+    text-align: center;
+  }
+  
+  .step-row:hover {
+    transform: none;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .score-display-new {
+    margin-bottom: 1rem;
+  }
+}
+/* PDF Attachment Card Styling - Clean Background Version */
+.pdf-attachment-card {
+  border-radius: 24px;
+  background: #fcfcfc;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(202, 210, 255, 0.2) !important;
+  transition: all 0.3s ease;
+}
+
+.pdf-attachment-card:hover {
+  transform: translateY(3px);
+  box-shadow: 0 12px 32px rgba(202, 210, 255, 0.2) !important;
+}
+
+.pdf-gradient-bar {
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+}
+
+.pdf-header {
+  background: #fcfcfc;
+  border-bottom: 1px solid rgba(202, 210, 255, 0.15);
+  padding: 1.25rem 1.5rem;
+}
+
+.pdf-icon-wrapper {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(220, 53, 69, 0.15), rgba(220, 53, 69, 0.08));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #dc3545;
+  font-size: 1.2rem;
+}
+
+.pdf-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  background: linear-gradient(135deg, #333, #555);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pdf-subtitle {
+  color: #666;
+  font-weight: 500;
+}
+
+.pdf-actions {
+  min-width: 200px;
+}
+
+.pdf-download-btn {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  border: none;
+  color: #333;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+}
+
+.pdf-download-btn:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+  color: #222;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(202, 210, 255, 0.3);
+}
+
+.pdf-view-btn {
+  border: 2px solid rgba(202, 210, 255, 0.5);
+  background: transparent;
+  color: #666;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+}
+
+.pdf-view-btn:hover {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #333;
+  transform: translateY(-2px);
+}
+
+.pdf-viewer-body {
+  padding: 0;
+  background: #fcfcfc;
+}
+
+.pdf-viewer-container {
+  height: 600px;
+  border-radius: 0 0 20px 20px;
+  overflow: hidden;
+  position: relative;
+  background: #f8f9fa;
+  border: 2px solid rgba(202, 210, 255, 0.1);
+  margin: 1rem;
+}
+
+.pdf-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 0 0 18px 18px;
+}
+
+.pdf-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fcfcfc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 0 0 18px 18px;
+}
+
+.pdf-loading-content {
+  text-align: center;
+  color: #666;
+}
+
+.pdf-loading-content .custom-spinner {
+  color: var(--primary-color) !important;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+/* No Attachment Alert - Clean Background */
+.no-attachment-alert {
+  background: #fcfcfc;
+  border: 2px solid rgba(202, 210, 255, 0.15);
+  border-radius: 20px;
+  padding: 1.5rem;
+  border-left: 4px solid var(--secondary-color);
+}
+
+.no-attachment-icon {
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(135deg, rgba(40, 167, 69, 0.15), rgba(40, 167, 69, 0.08));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #28a745;
+  font-size: 1.1rem;
+}
+
+.no-attachment-alert h6 {
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+/* Smooth slide down animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+    max-height: 0;
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 600px;
+  }
+}
+
+.pdf-viewer-body {
+  animation: slideDown 0.4s ease-out;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .pdf-actions {
+    min-width: auto;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pdf-download-btn,
+  .pdf-view-btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+  }
+
+  .pdf-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 1rem;
+  }
+
+  .pdf-viewer-container {
+    height: 400px;
+    margin: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .pdf-icon-wrapper {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .pdf-title {
+    font-size: 1rem;
+  }
+
+  .pdf-header {
+    padding: 1rem;
+  }
 }

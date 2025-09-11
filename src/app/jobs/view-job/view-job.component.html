@@ -100,6 +100,30 @@
       </div>
     </div>
 
+    <div class="card mt-4" *ngIf="job">
+      <div class="card-header">
+        <div class="d-flex align-items-center">
+          <div class="section-icon me-3">
+            <i class="bi bi-share"></i>
+          </div>
+          <h5 class="mb-0">Share Application Link</h5>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="text-muted mb-3">Share this link with candidates to allow them to apply directly for this position:
+        </p>
+        <div class="input-group">
+          <input type="text" class="form-control" [value]="getPublicApplicationUrl()" readonly>
+            <button class="btn brand-green-btn" type="button" (click)="copyApplicationUrl()" style="border: 1px solid #0000005f;">
+            <i class="bi bi-clipboard"></i> Copy Link
+            </button>
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <br>
+
     <!-- Salary Section -->
     <div class="salary-section mb-4 p-4"
       style="background: linear-gradient(135deg, #f8f9ff 0%, #e8f5e8 100%); border-radius: 16px; border: 1px solid #e2e8f0;">
@@ -133,128 +157,71 @@
       </div>
     </div>
   </div>
-  <!-- Assessment Steps Section -->
+
+  <!-- Assessment Link Section OR Assessment Steps Section -->
   <div class="jobs-floating-container p-4 mb-4" *ngIf="!loading && job">
     <div class="d-flex align-items-center mb-3">
       <div class="section-icon me-2">
-        <i class="fas fa-clipboard-check"></i>
+        <i class="fas fa-link" *ngIf="!showAssessmentSteps"></i>
+        <i class="fas fa-list" *ngIf="showAssessmentSteps"></i>
       </div>
-      <h4 class="mb-0 fw-bold" style="color: #222;">Assessment Steps</h4>
+      <h4 class="mb-0 fw-bold" style="color: #222;">
+        {{ showAssessmentSteps ? 'Assessment Steps' : 'Link Job to Assessment' }}
+      </h4>
     </div>
 
-    <!-- Loading State for Steps -->
-    <div *ngIf="loadingSteps" class="text-center py-4">
-      <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;"></div>
-      <p class="mt-2 text-muted">Loading assessment steps...</p>
-    </div>
+    <!-- Show assessment titles to link -->
+    <ng-container *ngIf="!showAssessmentSteps">
+      <div *ngIf="loadingAssessments" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;"></div>
+        <p class="mt-2 text-muted">Loading assessments...</p>
+      </div>
 
-    <!-- Error State for Steps -->
-    <div *ngIf="stepsError" class="alert alert-warning" style="border-radius: 12px;">
-      <i class="fas fa-exclamation-triangle me-2"></i>{{ stepsError }}
-    </div>
+      <div *ngIf="assessmentsError" class="alert alert-warning" style="border-radius: 12px;">
+        <i class="fas fa-exclamation-triangle me-2"></i>{{ assessmentsError }}
+      </div>
 
-    <!-- Assessment Steps List -->
-    <div *ngIf="!loadingSteps && !stepsError && assessmentSteps.length > 0" class="steps-container">
-      <div class="row">
-        <div class="col-12" *ngFor="let step of assessmentSteps; let i = index">
-          <div class="assessment-step-card mb-3 p-4" style="background: linear-gradient(135deg, #f8f9ff 0%, #fff 100%); 
-                    border-radius: 16px; 
-                    border: 1px solid #e2e8f0;
-                    transition: all 0.3s ease;">
-            <div class="d-flex align-items-start">
-              <div class="step-number-badge me-3">
-                <span class="badge rounded-pill" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                           color: white; 
-                           width: 35px; 
-                           height: 35px; 
-                           display: flex; 
-                           align-items: center; 
-                           justify-content: center;
-                           font-weight: bold;">
-                  {{ step.stepOrder }}
-                </span>
-              </div>
-              <div class="flex-grow-1">
-                <h5 class="mb-2 fw-bold" style="color: #222;">{{ step.stepName }}</h5>
+      <div *ngIf="!loadingAssessments && assessmentTitles.length > 0">
+        <form>
+          <div class="mb-3" *ngFor="let title of assessmentTitles">
+            <label class="form-check-label d-flex align-items-center">
+              <input type="radio" class="form-check-input me-2" name="assessment" [value]="title"
+                [(ngModel)]="selectedAssessmentTitle" [disabled]="linking" ngDefaultControl>
+              <span class="fw-bold">{{ title }}</span>
+            </label>
+          </div>
+        </form>
+        <button class="btn brand-green-btn mt-3" (click)="linkAssessmentToJob()"
+          [disabled]="!selectedAssessmentTitle || linking">
+          <i class="fas fa-link me-1"></i>
+          {{ linking ? 'Linking...' : 'Link Selected Assessment' }}
+        </button>
+        <div *ngIf="linkError" class="alert alert-danger mt-3">{{ linkError }}</div>
+        <div *ngIf="linkSuccess" class="alert alert-success mt-3">{{ linkSuccess }}</div>
+      </div>
 
-                <!-- Question Section -->
-                <div *ngIf="step.question" class="question-section mb-3">
-                  <div class="question-label mb-2">
-                    <i class="fas fa-question-circle me-2" style="color: #667eea;"></i>
-                    <strong>Question:</strong>
-                  </div>
-                  <div class="question-text p-3" style="background: #f8f9fa; 
-                            border-radius: 8px; 
-                            border-left: 4px solid #667eea;">
-                    {{ step.question }}
-                  </div>
-                </div>
+      <div *ngIf="!loadingAssessments && assessmentTitles.length === 0" class="no-steps-message text-center py-4">
+        <div class="text-muted">
+          <i class="fas fa-info-circle me-2"></i>
+          No assessments found.
+        </div>
+      </div>
+    </ng-container>
 
-                <!-- Options Section -->
-                <div *ngIf="step.options" class="options-section mb-3">
-                  <div class="options-label mb-2">
-                    <i class="fas fa-list me-2" style="color: #28a745;"></i>
-                    <strong>Options:</strong>
-                  </div>
-                  <div class="options-list">
-                    <div *ngFor="let option of step.options.split(','); let optionIndex = index"
-                      class="option-item mb-2">
-                      <div class="d-flex align-items-center">
-                        <span class="option-letter me-2" style="background: #e9ecef; 
-                                   border-radius: 50%; 
-                                   width: 25px; 
-                                   height: 25px; 
-                                   display: flex; 
-                                   align-items: center; 
-                                   justify-content: center; 
-                                   font-size: 12px; 
-                                   font-weight: bold;">
-                          {{ getOptionLetter(optionIndex) }}
-                        </span>
-                        <span>{{ option.trim() }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Correct Answer Section -->
-                <div *ngIf="step.correctAnswer" class="correct-answer-section mb-3">
-                  <div class="answer-label mb-2">
-                    <i class="fas fa-check-circle me-2" style="color: #28a745;"></i>
-                    <strong>Correct Answer:</strong>
-                  </div>
-                  <div class="answer-text p-2" style="background: #d4edda; 
-                            border-radius: 8px; 
-                            border-left: 4px solid #28a745; 
-                            color: #155724;">
-                    {{ step.correctAnswer }}
-                  </div>
-                </div>
-
-                <!-- Type Badge -->
-                <div *ngIf="step.type" class="type-section">
-                  <span class="badge" style="background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%); 
-                             color: #2d3436; 
-                             border-radius: 20px; 
-                             padding: 8px 16px;">
-                    <i class="fas fa-tag me-1"></i>
-                    {{ step.type }}
-                  </span>
-                </div>
-              </div>
-            </div>
+    <!-- Show assessment steps after linking -->
+    <ng-container *ngIf="showAssessmentSteps">
+      <div *ngIf="assessmentSteps.length > 0">
+        <div class="list-group">
+          <div class="list-group-item" *ngFor="let step of assessmentSteps">
+            <div class="fw-bold">{{ step.stepName }}</div>
+            <div class="text-muted">Mode: {{ step.mode }} | Passing Criteria: {{ step.passingCriteria }}</div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- No Steps Message -->
-    <div *ngIf="!loadingSteps && !stepsError && assessmentSteps.length === 0" class="no-steps-message text-center py-4">
-      <div class="text-muted">
-        <i class="fas fa-info-circle me-2"></i>
-        No assessment steps found for this job role.
+      <div *ngIf="assessmentSteps.length === 0" class="text-muted">
+        No steps found for this assessment.
       </div>
-    </div>
+    </ng-container>
   </div>
 
   <!-- Quick Actions Footer -->

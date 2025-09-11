@@ -66,8 +66,8 @@ export interface BackendCandidate {
   department: string;
   employmentType: string;
   workType: string;
-  appliedDateStr: string; // Backend uses appliedDateStr
-  resumeUrl?: string; // Backend uses resumeUrl
+  appliedDate: string; // Updated to match your API response
+  resumeUrl?: string;
   attachment?: {
     base64: string;
     fileName: string;
@@ -80,6 +80,7 @@ export interface BackendCandidate {
   position: string;
   experience: number;
   jobId: number;
+  reason?: string; // Added based on your API response
 }
 
 // Frontend candidate structure (for forms and display)
@@ -91,8 +92,13 @@ export interface Candidate {
   department: string;
   employmentType: string;
   workType: string;
-  appliedDate: string; // Frontend uses appliedDate
+  appliedDate: string;
   attachments: string; // For display purposes
+  attachment?: {        // Added for PDF handling
+    base64: string;
+    fileName: string;
+    fileType: string;
+  };
   status: string;
   score: number;
   email: string;
@@ -100,6 +106,7 @@ export interface Candidate {
   position: string;
   experience: number;
   jobId?: number;
+  reason?: string; // Added based on your API response
 }
 
 // Request structure for creating/updating candidates (what API expects)
@@ -110,8 +117,8 @@ export interface CreateCandidateRequest {
   department: string;
   employmentType: string;
   workType: string;
-  appliedDateStr: string; // Backend expects appliedDateStr
-  resumeUrl?: string; // Backend expects resumeUrl
+  appliedDateStr: string;
+  resumeUrl?: string;
   status: string;
   score: number;
   email: string;
@@ -130,6 +137,7 @@ export interface CandidateStep {
   stepName: string;
   status: string;
   completed: boolean;
+  score: number;
 }
 
 export interface CandidateAssessment {
@@ -139,11 +147,21 @@ export interface CandidateAssessment {
 
 export interface Assessment {
   id: number;
-  jobId: number;
+  title: string;
   stepOrder: number;
   stepName: string;
   mode: string;
   passingCriteria: string;
+}
+
+export interface AssessmentStepPayload {
+  title: string;
+  stepOrder: number;
+  stepName: string;
+  mode: string;
+  passingCriteria: string;
+  interviewerName?: string;
+  sendFeedback?: boolean;
 }
 
 export interface ApiError {
@@ -165,20 +183,11 @@ export interface CreateReviewRequest {
   score: number;
 }
 
-export interface AssessmentStepPayload {
-  jobId: number;
-  stepOrder: number;
-  stepName: string;
-  mode: string;
-  passingCriteria: string;
-}
-
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = "http://10.232.187.158:8080";
-
+  private baseUrl = "https://465dddf85107.ngrok-free.app";
   private apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaGFza2FyIiwiaWF0IjoxNzQ5ODAzMzg4LCJleHAiOjE3NDk4MzkzODh9.vs518QlQXCvHB-YUhauw9Pzbi_cg14F8z5j9SIsSINc';
 
   private httpOptions = {
@@ -191,9 +200,37 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
+  // Helper method to extract and format applied date
+  private extractAppliedDate(backendCandidate: BackendCandidate): string {
+    console.log('Raw candidate data for date extraction:', {
+      id: backendCandidate.id,
+      name: backendCandidate.name,
+      appliedDate: backendCandidate.appliedDate,
+      fullObject: backendCandidate
+    });
+
+    // The new API format uses appliedDate directly
+    if (backendCandidate.appliedDate) {
+      console.log('Found date value:', backendCandidate.appliedDate);
+      const testDate = new Date(backendCandidate.appliedDate);
+      if (!isNaN(testDate.getTime())) {
+        console.log('Valid date found:', backendCandidate.appliedDate);
+        return backendCandidate.appliedDate;
+      }
+    }
+
+    // Fallback date if no valid date found
+    const fallbackDate = new Date().toISOString().split('T')[0];
+    console.warn('No valid applied date found for candidate', backendCandidate.name, 'using fallback:', fallbackDate);
+    return fallbackDate;
+  }
+
   // Transform backend candidate to frontend candidate
   private transformCandidate(backendCandidate: BackendCandidate): Candidate {
-    return {
+    console.log('Transforming candidate:', backendCandidate.name, backendCandidate);
+    const appliedDate = this.extractAppliedDate(backendCandidate);
+
+    const transformed: Candidate = {
       id: backendCandidate.id,
       name: backendCandidate.name,
       role: backendCandidate.role,
@@ -201,16 +238,32 @@ export class ApiService {
       department: backendCandidate.department,
       employmentType: backendCandidate.employmentType,
       workType: backendCandidate.workType,
-      appliedDate: backendCandidate.appliedDateStr, // Map appliedDateStr to appliedDate
-      attachments: backendCandidate.resumeUrl || backendCandidate.attachment?.fileName || 'No attachment',
+      appliedDate: appliedDate,
+      attachments: this.getAttachmentDisplay(backendCandidate),
+      attachment: backendCandidate.attachment, // Pass through the attachment object
       status: backendCandidate.status,
       score: backendCandidate.score,
       email: backendCandidate.email,
       phone: backendCandidate.phone,
       position: backendCandidate.position,
       experience: backendCandidate.experience,
-      jobId: backendCandidate.jobId
+      jobId: backendCandidate.jobId,
+      reason: backendCandidate.reason
     };
+
+    console.log('Transformed candidate with applied date:', transformed.name, transformed.appliedDate);
+    return transformed;
+  }
+
+  // Helper method to determine attachment display
+  private getAttachmentDisplay(backendCandidate: BackendCandidate): string {
+    if (backendCandidate.attachment?.fileName) {
+      return backendCandidate.attachment.fileName;
+    } else if (backendCandidate.resumeUrl) {
+      return 'Resume';
+    } else {
+      return 'No attachment';
+    }
   }
 
   // Transform frontend candidate to backend request format
@@ -222,7 +275,7 @@ export class ApiService {
       department: candidate.department,
       employmentType: candidate.employmentType,
       workType: candidate.workType,
-      appliedDateStr: candidate.appliedDate, // Map appliedDate to appliedDateStr
+      appliedDateStr: candidate.appliedDate,
       resumeUrl: candidate.attachments !== 'No attachment' ? candidate.attachments : undefined,
       status: candidate.status,
       score: Number(candidate.score),
@@ -233,6 +286,7 @@ export class ApiService {
       jobId: candidate.jobId || 1
     };
   }
+
   getAssessmentTemplates(): Observable<AssessmentTemplate[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<AssessmentTemplate[]>(`${this.baseUrl}/api/assessment-templates`, { headers })
@@ -240,10 +294,11 @@ export class ApiService {
   }
 
   getAssessmentTemplatesByRole(role: string): Observable<AssessmentTemplate[]> {
-  const headers = this.getAuthHeaders();
-  return this.http.get<AssessmentTemplate[]>(`${this.baseUrl}/api/assessment-templates/role/${role}`, { headers })
-    .pipe(catchError(this.handleError));
-}
+    const headers = this.getAuthHeaders();
+    return this.http.get<AssessmentTemplate[]>(`${this.baseUrl}/api/assessment-templates/role/${role}`, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
   // Auth methods
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.baseUrl}/api/auth/login`, credentials, this.httpOptions)
@@ -251,7 +306,7 @@ export class ApiService {
   }
 
   register(userData: RegisterRequest): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/api/users`, userData, this.httpOptions)
+    return this.http.post(`${this.baseUrl}/api/users`, userData, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 
@@ -286,14 +341,13 @@ export class ApiService {
       .pipe(catchError(this.handleError));
   }
 
-  // Candidate methods - Updated to handle both FormData and JSON
+  // Candidate methods
   createCandidate(candidateData: FormData | Candidate): Observable<Candidate> {
     if (candidateData instanceof FormData) {
       const headers = new HttpHeaders({
         'ngrok-skip-browser-warning': 'true',
         'Authorization': `Bearer ${this.apiKey}`
       });
-
       return this.http.post<BackendCandidate>(`${this.baseUrl}/api/candidates`, candidateData, { headers })
         .pipe(
           map(candidate => this.transformCandidate(candidate)),
@@ -313,7 +367,20 @@ export class ApiService {
     const headers = this.getAuthHeaders();
     return this.http.get<BackendCandidate[]>(`${this.baseUrl}/api/candidates`, { headers })
       .pipe(
-        map(candidates => candidates.map(candidate => this.transformCandidate(candidate))),
+        map(candidates => {
+          console.log('Raw candidates from API:', candidates);
+          if (!Array.isArray(candidates)) {
+            console.error('API did not return an array:', candidates);
+            return [];
+          }
+          const transformed = candidates.map(candidate => {
+            console.log('Processing candidate:', candidate.name || 'Unknown', candidate);
+            return this.transformCandidate(candidate);
+          });
+          console.log('All transformed candidates with dates:',
+            transformed.map(c => ({ name: c.name, appliedDate: c.appliedDate })));
+          return transformed;
+        }),
         catchError(this.handleError)
       );
   }
@@ -333,7 +400,6 @@ export class ApiService {
         'ngrok-skip-browser-warning': 'true',
         'Authorization': `Bearer ${this.apiKey}`
       });
-
       return this.http.put<BackendCandidate>(`${this.baseUrl}/api/candidates/${id}`, candidateData, { headers })
         .pipe(
           map(candidate => this.transformCandidate(candidate)),
@@ -356,11 +422,14 @@ export class ApiService {
       .pipe(catchError(this.handleError));
   }
 
-  // NEW: Assessment/Steps methods
+  // Assessment/Steps methods
   getCandidateSteps(candidateId: number): Observable<CandidateStep[]> {
     const headers = this.getAuthHeaders();
-    return this.http.get<CandidateStep[]>(`${this.baseUrl}/api/candidate-steps/by-candidate/${candidateId}`, { headers })
-      .pipe(catchError(this.handleError));
+    return this.http.get<{ steps: CandidateStep[] }>(`${this.baseUrl}/api/candidate-steps/by-candidate/${candidateId}`, { headers })
+      .pipe(
+        map(res => res.steps),
+        catchError(this.handleError)
+      );
   }
 
   getCandidateAssessment(candidateId: number): Observable<CandidateAssessment> {
@@ -372,10 +441,9 @@ export class ApiService {
     );
   }
 
-  createAssessment(steps: AssessmentStepPayload[]): Observable<any> {
+  createAssessment(steps: AssessmentStepPayload[]): Observable<Assessment[]> {
     const headers = this.getAuthHeaders();
-    // Use /bulk endpoint for array payload
-    return this.http.post<any>(`${this.baseUrl}/api/assessments/bulk`, steps, { headers })
+    return this.http.post<Assessment[]>(`${this.baseUrl}/api/assessments/bulk`, steps, { headers })
       .pipe(catchError(this.handleError));
   }
 
@@ -386,18 +454,33 @@ export class ApiService {
   }
 
   // Review methods
-createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review> {
-  const headers = this.getAuthHeaders();
-  return this.http.post<Review>(`${this.baseUrl}/reviews/step/${stepId}`, reviewData, { headers })
-    .pipe(catchError(this.handleError));
-}
+  createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review> {
+    const headers = this.getAuthHeaders();
+    return this.http.post<Review>(`${this.baseUrl}/reviews/step/${stepId}`, reviewData, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  // Link assessment to job
+  linkAssessmentToJob(assessmentId: number, jobId: number, payload: { stepOrder: number }): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.post(`${this.baseUrl}/api/assessments/link/${assessmentId}/job/${jobId}`, payload, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  linkAssessmentToJobByTitle(assessmentTitle: string, jobId: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.post(
+      `${this.baseUrl}/api/assessments/link/title/${encodeURIComponent(assessmentTitle)}/job/${jobId}`,
+      null,
+      { headers }
+    ).pipe(catchError(this.handleError));
+  }
 
   // Helper method to get step status summary
   getStepStatusSummary(steps: CandidateStep[]): { completed: number; total: number; currentStep: string | null } {
     const completedSteps = steps.filter(step => step.completed).length;
     const totalSteps = steps.length;
     const currentStep = steps.find(step => !step.completed && step.status !== 'COMPLETED')?.stepName || null;
-
     return {
       completed: completedSteps,
       total: totalSteps,
@@ -412,17 +495,14 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
       'ngrok-skip-browser-warning': 'true',
       'Authorization': `Bearer ${this.apiKey}`
     });
-
     if (token) {
       headers = headers.set('X-User-Token', token);
     }
-
     return headers;
   }
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An unknown error occurred';
-
     if (error.error instanceof ErrorEvent) {
       errorMessage = error.error.message;
     } else {
@@ -434,7 +514,6 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
         errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
       }
     }
-
     return throwError(() => errorMessage);
   }
 
@@ -477,8 +556,9 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
         department: 'Legal',
         employmentType: 'Full-time',
         workType: 'Hybrid',
-        appliedDate: '2030-10-01',
+        appliedDate: '2024-01-15',
         attachments: 'Resume, Cover Letter',
+        attachment: undefined,
         status: 'Interview',
         score: 50,
         email: 'sophia@example.com',
@@ -495,8 +575,9 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
         department: 'Engineering',
         employmentType: 'Full-time',
         workType: 'Remote',
-        appliedDate: '2030-10-02',
+        appliedDate: '2024-01-16',
         attachments: 'Resume, Cover Letter',
+        attachment: undefined,
         status: 'In-Review',
         score: 75,
         email: 'john@example.com',
@@ -513,8 +594,9 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
         department: 'Marketing',
         employmentType: 'Full-time',
         workType: 'Onsite',
-        appliedDate: '2030-10-03',
+        appliedDate: '2024-01-17',
         attachments: 'Resume, Cover Letter',
+        attachment: undefined,
         status: 'Hired',
         score: 90,
         email: 'emily@example.com',
@@ -531,8 +613,9 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
         department: 'Analytics',
         employmentType: 'Contract',
         workType: 'Hybrid',
-        appliedDate: '2030-10-04',
+        appliedDate: '2024-01-18',
         attachments: 'Resume, Cover Letter',
+        attachment: undefined,
         status: 'Rejected',
         score: 35,
         email: 'michael@example.com',
@@ -544,14 +627,13 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
     ];
   }
 
-  // NEW: Fallback assessment steps for testing
   static getFallbackCandidateSteps(candidateId: number): CandidateStep[] {
     const stepTemplates = [
-      { stepName: 'Application Review', status: 'COMPLETED', completed: true },
-      { stepName: 'Resume Screening', status: 'COMPLETED', completed: true },
-      { stepName: 'Technical Interview', status: 'PENDING', completed: false },
-      { stepName: 'HR Interview', status: 'PENDING', completed: false },
-      { stepName: 'Final Decision', status: 'PENDING', completed: false }
+      { stepName: 'Application Review', status: 'COMPLETED', completed: true, score: 85 },
+      { stepName: 'Resume Screening', status: 'COMPLETED', completed: true, score: 90 },
+      { stepName: 'Technical Interview', status: 'PENDING', completed: false, score: 0 },
+      { stepName: 'HR Interview', status: 'PENDING', completed: false, score: 0 },
+      { stepName: 'Final Decision', status: 'PENDING', completed: false, score: 0 }
     ];
 
     return stepTemplates.map((template, index) => ({
@@ -561,7 +643,8 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
       stepOrder: index + 1,
       stepName: template.stepName,
       status: template.status,
-      completed: template.completed
+      completed: template.completed,
+      score: template.score
     }));
   }
 
@@ -569,7 +652,7 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
     return [
       {
         id: 1,
-        jobId: 1,
+        title: 'Software Engineer Assessment',
         stepOrder: 1,
         stepName: 'Technical Round',
         mode: 'Video Conferencing',
@@ -577,7 +660,7 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
       },
       {
         id: 2,
-        jobId: 1,
+        title: 'Software Engineer Assessment',
         stepOrder: 2,
         stepName: 'Managerial Round',
         mode: 'In-Person',
@@ -585,7 +668,7 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
       },
       {
         id: 3,
-        jobId: 2,
+        title: 'Frontend Developer Assessment',
         stepOrder: 1,
         stepName: 'HR Round',
         mode: 'Phone',
@@ -593,15 +676,15 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
       },
       {
         id: 4,
-        jobId: 3,
+        title: 'Marketing Manager Assessment',
         stepOrder: 1,
         stepName: 'Technical Round',
         mode: 'Video Conferencing',
         passingCriteria: 'Pass'
       },
       {
-        id:5,
-        jobId: 3,
+        id: 5,
+        title: 'Marketing Manager Assessment',
         stepOrder: 2,
         stepName: 'Managerial Round',
         mode: 'In-Person',
@@ -609,15 +692,15 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
       },
       {
         id: 6,
-        jobId: 3,
+        title: 'Marketing Manager Assessment',
         stepOrder: 3,
         stepName: 'HR Round',
         mode: 'Phone',
         passingCriteria: 'Qualified'
-      }, 
+      },
       {
         id: 7,
-        jobId: 4,
+        title: 'Data Analyst Assessment',
         stepOrder: 1,
         stepName: 'Technical Round',
         mode: 'Video Conferencing',
@@ -625,20 +708,26 @@ createReview(stepId: number, reviewData: CreateReviewRequest): Observable<Review
       },
       {
         id: 8,
-        jobId: 4,
+        title: 'Data Analyst Assessment',
         stepOrder: 2,
         stepName: 'Managerial Round',
         mode: 'In-Person',
         passingCriteria: 'Pass'
       },
       {
-        id:9,
-        jobId: 4,
+        id: 9,
+        title: 'Data Analyst Assessment',
         stepOrder: 1,
         stepName: 'HR Round',
         mode: 'Phone',
         passingCriteria: 'Qualified'
       }
     ];
+  }
+
+  getAssessmentStepsForJob(jobId: number): Observable<Assessment[]> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<Assessment[]>(`${this.baseUrl}/api/assessments/job/${jobId}`, { headers })
+      .pipe(catchError(this.handleError));
   }
 }

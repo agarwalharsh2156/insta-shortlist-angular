@@ -5,11 +5,12 @@
       <h2 class="fw-bold mb-0">Assessments</h2>
       <div class="d-flex gap-2 ms-auto">
         <button class="btn brand-green-btn" routerLink="/assessments/create-assessment">Create Assessment</button>
-        <button class="btn layout-toggle" [class.active]="isGridView" (click)="toggleView(true)" title="Grid View">
-          <i class="fas fa-th"></i>
-        </button>
-        <button class="btn layout-toggle" [class.active]="!isGridView" (click)="toggleView(false)" title="Table View">
+        
+        <button class="btn layout-toggle" [class.active]="isGridView" (click)="toggleView(true)" title="Table View">
           <i class="fas fa-list"></i>
+        </button>
+        <button class="btn layout-toggle" [class.active]="!isGridView" (click)="toggleView(false)" title="Grid View">
+          <i class="fas fa-th"></i>
         </button>
       </div>
     </div>
@@ -25,20 +26,23 @@
 
   <!-- Content Container -->
   <div class="assessments-floating-container" *ngIf="!loading && !error">
-    <!-- Grid View: Grouped by Job -->
-    <div class="row g-4 d-flex align-items-stretch flex-wrap" *ngIf="isGridView">
-      <div class="col-md-4 d-flex" *ngFor="let group of assessmentsByJob">
+    <!-- Grid View: Grouped by Title -->
+    <div class="row g-4 d-flex align-items-stretch flex-wrap" *ngIf="!isGridView">
+      <div class="col-md-4 d-flex" *ngFor="let group of assessmentsByTitle">
         <div class="assessment-card p-3 shadow-sm h-100 w-100 d-flex flex-column">
           <div>
-            <div class="fw-bold fs-5 mb-1">{{ getJobTitle(group.jobId) }}</div>
+            <div class="fw-bold fs-5 mb-1">{{ group.title }}</div>
             <div class="mb-2">
-              <span class="badge bg-info">Assessment Steps: {{ group.steps.length }}</span>
+              <span class="badge custom-badge">Total Steps: {{ group.steps.length }}</span>
             </div>
           </div>
           <div class="flex-grow-1 d-flex flex-column justify-content-center">
             <ul class="list-group list-group-flush mb-2">
               <li class="list-group-item px-0 py-1" *ngFor="let step of group.steps">
-                <div class="fw-semibold">{{ step.stepName }} <span class="badge bg-secondary ms-2">Order: {{ step.stepOrder }}</span></div>
+                <div class="d-flex align-items-center fw-semibold">
+                  <span class="badge bg-secondary ms-2 me-2">Step No : {{ step.stepOrder }}</span>
+                  <span>{{ step.stepName }}</span>
+                </div>
                 <div class="small text-muted">Mode: {{ step.mode }} | Passing: {{ step.passingCriteria }}</div>
               </li>
             </ul>
@@ -49,16 +53,15 @@
           </div>
         </div>
       </div>
-      <div *ngIf="assessmentsByJob.length === 0" class="text-center text-muted w-100">No assessments found.</div>
+      <div *ngIf="assessmentsByTitle.length === 0" class="text-center text-muted w-100">No assessments found.</div>
     </div>
 
-    <!-- Card List View: Grouped by Job -->
-    <div *ngIf="!isGridView" class="job-cards-list">
-      <div class="job-card mb-4" *ngFor="let group of assessmentsByJob">
+    <!-- Card List View: Grouped by Title -->
+    <div *ngIf="isGridView" class="job-cards-list">
+      <div class="job-card mb-4" *ngFor="let group of assessmentsByTitle">
         <div class="job-card-header d-flex justify-content-between align-items-center">
           <div class="fw-bold fs-5">
-            {{ getJobTitle(group.jobId) }}
-            <span *ngIf="getJobRole(group.jobId)">({{ getJobRole(group.jobId) }})</span>
+            {{ group.title }}
           </div>
           <div>
             <button class="btn btn-outline-primary btn-sm me-2">Edit</button>
@@ -72,7 +75,7 @@
           </li>
         </ul>
       </div>
-      <div *ngIf="assessmentsByJob.length === 0" class="text-center text-muted w-100">No assessments found.</div>
+      <div *ngIf="assessmentsByTitle.length === 0" class="text-center text-muted w-100">No assessments found.</div>
     </div>
   </div>
 </div>

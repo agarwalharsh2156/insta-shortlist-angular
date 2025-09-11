@@ -1,7 +1,16 @@
-<div class="d-flex" style="background-color: rgb(243, 243, 243); min-height: 100vh;">
+<!-- PUBLIC LAYOUT: For /apply/:jobId routes -->
+<div *ngIf="isPublicRoute()"
+  style="background-color: rgb(243, 243, 243); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+  <div style="width: 100%; max-width: 1200px; padding: 20px;">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<!-- ADMIN LAYOUT: For all other authenticated routes -->
+<div *ngIf="!isPublicRoute()" class="d-flex" style="background-color: rgb(243, 243, 243); min-height: 100vh;">
   <!-- Floating Sidebar -->
-  <nav class="sidebar d-flex flex-column align-items-start p-3 shadow"
-       style="width: 280px; min-width: 200px; margin: 32px; border-radius: 18px; height: calc(100vh - 64px);">
+  <nav *ngIf="showSidebar" class="sidebar d-flex flex-column align-items-start p-3 shadow"
+    style="width: 280px; min-width: 200px; margin: 32px; border-radius: 18px; height: calc(100vh - 64px);">
     <a class="navbar-brand d-flex align-items-center mb-4 text-decoration-none" href="/">
       <img src="/assets/logo.png" alt="Logo" width="36" height="36" class="me-2" />
       <span class="fs-4" style="color: #222;">InstaShortlist</span>
@@ -10,44 +19,39 @@
     <ng-container *ngIf="authService.isLoggedIn()">
       <ul class="nav nav-pills flex-column w-100 mb-auto">
         <li class="nav-item w-100 mb-2">
-          <a class="nav-link d-flex align-items-center gap-4" routerLink="/dashboard" routerLinkActive="active">
-            <i class="fas fa-tachometer-alt me-2"></i>
-            Dashboard
+          <a class="nav-link d-flex align-items-center gap-2" routerLink="/dashboard" routerLinkActive="active">
+            <span class="sidebar-icon"><i class="fas fa-tachometer-alt"></i></span>
+            <span class="sidebar-link-text">Dashboard</span>
           </a>
         </li>
         <li class="nav-item w-100 mb-2">
-          <a class="nav-link d-flex align-items-center gap-4" routerLink="/inbox" routerLinkActive="active">
-            <i class="fas fa-inbox me-2"></i>
-            Inbox
+          <a class="nav-link d-flex align-items-center gap-2" routerLink="/inbox" routerLinkActive="active">
+            <span class="sidebar-icon"><i class="fas fa-inbox"></i></span>
+            <span class="sidebar-link-text">Inbox</span>
           </a>
         </li>
         <li class="nav-item w-100 mb-2">
-          <a class="nav-link d-flex align-items-center gap-4" routerLink="/jobs" routerLinkActive="active">
-            <i class="fa fa-briefcase me-2"></i>
-            Jobs
+          <a class="nav-link d-flex align-items-center gap-2" routerLink="/jobs" routerLinkActive="active">
+            <span class="sidebar-icon"><i class="fa fa-briefcase"></i></span>
+            <span class="sidebar-link-text">Jobs</span>
           </a>
         </li>
         <li class="nav-item w-100 mb-2">
-          <a class="nav-link d-flex align-items-center gap-4" routerLink="/assessments" routerLinkActive="active">
-            <i class="fas fa-clipboard-list me-2"></i> Assessments
+          <a class="nav-link d-flex align-items-center gap-2" routerLink="/assessments" routerLinkActive="active">
+            <span class="sidebar-icon"><i class="fas fa-clipboard-list"></i></span>
+            <span class="sidebar-link-text">Assessments</span>
           </a>
         </li>
         <li class="nav-item w-100 mb-2">
-          <a class="nav-link d-flex align-items-center gap-4" routerLink="/candidates" routerLinkActive="active">
-            <i class="fa fa-user-friends me-2"></i>
-            Candidates
+          <a class="nav-link d-flex align-items-center gap-2" routerLink="/candidates" routerLinkActive="active">
+            <span class="sidebar-icon"><i class="fa fa-user-friends"></i></span>
+            <span class="sidebar-link-text">Candidates</span>
           </a>
         </li>
         <li class="nav-item w-100 mb-2">
-          <a class="nav-link d-flex align-items-center gap-4" routerLink="/offers" routerLinkActive="active">
-            <i class="fas fa-award me-2"></i>
-            Offers
-          </a>
-        </li>
-        <li class="nav-item w-100 mb-2">
-          <a class="nav-link d-flex align-items-center gap-4" routerLink="/onboarding" routerLinkActive="active">
-            <i class="fas fa-user-check me-2"></i>
-            Onboarding
+          <a class="nav-link d-flex align-items-center gap-2" routerLink="/offers" routerLinkActive="active">
+            <span class="sidebar-icon"><i class="fas fa-award"></i></span>
+            <span class="sidebar-link-text">Offers</span>
           </a>
         </li>
       </ul>
@@ -81,7 +85,7 @@
       </ng-template>
     </div>
   </nav>
-  <!-- Main content -->
+  <!-- Main content for admin -->
   <div class="flex-grow-1 main-content-wrapper" style="padding: 40px 40px 40px 40px;">
     <div class="main-content rounded-4">
       <router-outlet></router-outlet>
@@ -89,42 +93,3 @@
   </div>
 </div>
 
-<style>
-body {
-  background-color: rgb(243, 243, 243) !important;
-}
-.sidebar {
-  min-height: 90vh;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 1040;
-  background-color: rgb(253, 253, 253) !important;
-  box-shadow: 0 8px 32px rgba(60,60,60,0.08), 0 1.5px 4px rgba(60,60,60,0.06);
-}
-.sidebar .nav-link,
-.sidebar .navbar-brand,
-.sidebar .nav-link svg {
-  color: #3d3d3d !important;
-  fill: #3d3d3d !important;
-}
-.sidebar .nav-link.active, .sidebar .nav-link.router-link-active {
-  background-color: rgb(202, 210, 255) !important;
-  color: black!important;
-}
-.main-content-wrapper {
-  background: transparent;
-  min-height: 100vh;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  margin-left: 280px;
-}
-
-.main-content {
-  background: transparent !important;
-  border-radius: 18px;
-  min-height: 100%;
-  width: 100%;
-}
-</style>

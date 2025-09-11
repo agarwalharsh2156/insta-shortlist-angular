@@ -1,0 +1,65 @@
+body {
+    background-color: rgb(243, 243, 243) !important;
+  }
+
+  .sidebar {
+    min-height: 90vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1040;
+    background-color: rgb(253, 253, 253) !important;
+    box-shadow: 0 8px 32px rgba(60, 60, 60, 0.08), 0 1.5px 4px rgba(60, 60, 60, 0.06);
+  }
+
+  .sidebar .nav-link,
+  .sidebar .navbar-brand,
+  .sidebar .nav-link svg {
+    color: #3d3d3d !important;
+    fill: #3d3d3d !important;
+  }
+
+  .sidebar .nav-link.active,
+  .sidebar .nav-link.router-link-active {
+    background-color: rgb(202, 210, 255) !important;
+    color: black !important;
+  }
+
+ .main-content-wrapper {
+  background: transparent;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-left: 280px;
+}
+
+
+  /* Add these new classes */
+  .main-content {
+  background: transparent !important;
+  border-radius: 18px;
+  min-height: 100%;
+  width: 100%;
+}
+  .sidebar-icon {
+    font-size: 1.25rem;
+    min-width: 28px;
+    text-align: center;
+    color: #3d3d3d !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sidebar-link-text {
+    font-size: 1rem;
+    color: #3d3d3d !important;
+    display: flex;
+    align-items: center;
+  }
+
+  .sidebar .nav-link {
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+  }

@@ -1,17 +1,18 @@
 <div class="container candidates-bg p-4">
   <!-- Top Bar -->
-  <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-3">
+  <div class="top-bar d-flex flex-wrap justify-content-between align-items-center mb-3 gap-3">
     <div class="d-flex flex-grow-1 gap-2">
-      <input class="form-control" placeholder="Search candidates name, role, etc" [disabled]="loading" />
+      <input class="form-control" style="max-width:320px;" placeholder="Search candidates name, role, etc"
+        [disabled]="loading" />
       <button class="btn btn-outline-secondary" [disabled]="loading"><i class="fas fa-filter"></i> Filter</button>
     </div>
     <div class="d-flex align-items-center gap-2">
-      <button class="btn btn-outline-secondary btn-sm" (click)="refreshCandidates()" [disabled]="loading">
+      <!-- <button class="btn btn-outline-secondary btn-sm" (click)="refreshCandidates()" [disabled]="loading">
         <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i> Refresh
-      </button>
+      </button> -->
       <input type="text" class="form-control" style="width:180px;" placeholder="1-30 October, 2030" [disabled]="loading" />
       <span>Sort by:</span>
-      <select class="form-select form-select-sm" style="width:auto;" [disabled]="loading">
+      <select class="form-select form-select-m" style="width:auto;" [disabled]="loading">
         <option>Latest</option>
         <option>Oldest</option>
       </select>
@@ -76,7 +77,7 @@
           <th>Applied Date</th>
           <th>Attachment</th>
           <th>Status</th>
-          <th>Score (%)</th>
+          <!-- <th>Score (%)</th> -->
           <th>Actions</th>
         </tr>
       </thead>
@@ -94,7 +95,11 @@
           </td>
           <td>{{ candidate.employmentType }}</td>
           <td>{{ candidate.workType }}</td>
-          <td>{{ candidate.appliedDate | date:'shortDate' }}</td>
+          <td>
+            <!-- Debug output to see raw value -->
+            <!-- {{ candidate.appliedDate }} -->
+            {{ formatAppliedDate(candidate.appliedDate) }}
+          </td>
           <td>
             <div>
               <i class="far fa-file-alt me-1"></i>{{ candidate.attachments }}
@@ -106,16 +111,16 @@
           <td>
             <span class="badge status-badge"
               [ngClass]="{
-                'bg-applied': candidate.status === 'Applied',
-                'brand-green-bg': candidate.status === 'Interview',
-                'brand-purple-bg': candidate.status === 'In-Review' || candidate.status === 'Hired',
-                'brand-red-bg': candidate.status === 'Rejected',
-                'bg-info': candidate.status === 'Shortlisted'
+                'bg-applied': (candidate.status || '').toLowerCase() === 'applied',
+                'brand-green-bg': (candidate.status || '').toLowerCase() === 'interview',
+                'brand-purple-bg': ['in-review', 'hired'].includes((candidate.status || '').toLowerCase()),
+                'brand-red-bg': (candidate.status || '').toLowerCase() === 'rejected',
+                'bg-info': (candidate.status || '').toLowerCase() === 'shortlisted'
               }">
               {{ candidate.status }}
             </span>
           </td>
-          <td>
+          <!-- <td>
             <span class="score-circle" [ngClass]="{
                 'score-green': candidate.score >= 80,
                 'score-yellow': candidate.score >= 50 && candidate.score < 80,
@@ -124,7 +129,7 @@
               <i class="fas fa-circle-notch"></i>
             </span>
             {{ candidate.score }}%
-          </td>
+          </td> -->
           <td>
             <div class="d-flex gap-1">
               <!-- Edit Button -->

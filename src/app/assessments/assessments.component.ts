@@ -70,14 +70,16 @@ export class AssessmentsComponent implements OnInit {
     });
   }
 
-  // Group assessments by jobId for grid view
-  get assessmentsByJob(): { jobId: number, steps: Assessment[] }[] {
-    const map = new Map<number, Assessment[]>();
+ 
+
+  // Group assessments by title for grid view
+  get assessmentsByTitle(): { title: string, steps: Assessment[] }[] {
+    const map = new Map<string, Assessment[]>();
     for (const a of this.assessments) {
-      if (!map.has(a.jobId)) map.set(a.jobId, []);
-      map.get(a.jobId)!.push(a);
+      if (!map.has(a.title)) map.set(a.title, []);
+      map.get(a.title)!.push(a);
     }
-    return Array.from(map.entries()).map(([jobId, steps]) => ({ jobId, steps }));
+    return Array.from(map.entries()).map(([title, steps]) => ({ title, steps }));
   }
 
   toggleView(isGrid: boolean) {

@@ -31,7 +31,8 @@ export class CandidatesComponent implements OnInit {
 
     this.apiService.getCandidates().subscribe({
       next: (candidates: Candidate[]) => {
-        console.log('Candidates loaded successfully:', candidates);
+        // Add this debug log
+        console.log('Applied Dates:', candidates.map(c => c.appliedDate));
         this.candidates = candidates;
         this.loading = false;
       },
@@ -55,7 +56,10 @@ export class CandidatesComponent implements OnInit {
     if (this.activeTab === 'All') {
       return this.candidates;
     }
-    return this.candidates.filter(c => c.status === this.activeTab);
+    const tabStatus = this.activeTab.toLowerCase();
+    return this.candidates.filter(
+      c => (c.status || '').toLowerCase() === tabStatus
+    );
   }
 
   getCandidateCountForTab(tab: string): number {
@@ -132,5 +136,21 @@ export class CandidatesComponent implements OnInit {
 
   isDeletingCandidate(candidateId: number | undefined): boolean {
     return candidateId !== undefined && this.deletingCandidateId === candidateId;
+  }
+
+  formatAppliedDate(dateString: string | null): string {
+    if (!dateString) return '-';
+
+    const date = new Date(dateString);
+
+    // Return '-' if invalid date
+    if (isNaN(date.getTime())) return '-';
+
+    // Format: Sep 8, 2025
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   }
 }

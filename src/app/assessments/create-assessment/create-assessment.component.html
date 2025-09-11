@@ -1,84 +1,214 @@
-<div class="create-assessment-bg d-flex align-items-center justify-content-center min-vh-90 w-100">
-  <div class="create-assessment-card p-5 shadow-lg w-100">
+<div class="create-assessment-bg">
+  <div class="create-assessment-card">
+    <!-- Header Section -->
     <div class="text-center mb-4">
-      <div class="brand-icon mb-2">
+      <div class="brand-icon">
         <i class="fas fa-clipboard-list"></i>
       </div>
-      <h2 class="brand-heading mb-1">Create Assessment</h2>
-      <div class="brand-subheading mb-3">Add steps for the assessment below</div>
+      <h1 class="brand-heading mb-2">Create Assessment</h1>
+      <p class="brand-subheading">Design structured evaluation processes for your hiring workflow</p>
     </div>
-    <div *ngIf="loading" class="alert alert-info">
-      <i class="fas fa-spinner fa-spin me-2"></i>Creating assessment...
+
+    <!-- Assessment Title Section -->
+    <div class="mb-4">
+      <label for="assessmentTitle" class="form-label">Assessment Title</label>
+      <input 
+        type="text" 
+        id="assessmentTitle"
+        class="form-control" 
+        [(ngModel)]="assessmentTitle"
+        placeholder="Enter assessment title..."
+        [class.is-invalid]="error && !assessmentTitle.trim()">
     </div>
-    <div *ngIf="success" class="alert alert-success">
-      <i class="fas fa-check-circle me-2"></i>Assessment created successfully!
-    </div>
-    <div *ngIf="error" class="alert alert-danger">
-      <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
-    </div>
-    <form (ngSubmit)="submit()">
-      <div class="row g-4">
-        <!-- Job Selection Dropdown -->
-        <div class="col-md-6">
-          <label class="form-label">Select Job Position <span class="text-danger">*</span></label>
-          <select class="form-select" name="jobId" [(ngModel)]="selectedJobId" required [disabled]="loading || loadingJobs">
-            <option value="">-- Select Job --</option>
-            <option *ngFor="let job of jobs" [value]="job.id">
-              {{ job.title }} - {{ job.role }} ({{ job.location }})
-            </option>
-          </select>
-          <div class="form-text" *ngIf="loadingJobs">Loading available jobs...</div>
-        </div>
-        <!-- Selected Job Info -->
-        <div class="col-md-6" *ngIf="getSelectedJob()">
-          <label class="form-label">Job Details</label>
-          <div class="form-control-plaintext bg-light p-2 rounded">
-            <small>
-              <strong>{{ getSelectedJob()?.title }}</strong><br>
-              Department: {{ getSelectedJob()?.role }}<br>
-              Location: {{ getSelectedJob()?.location }}<br>
-              Type: {{ getSelectedJob()?.type }}
-            </small>
-          </div>
-        </div>
-        <div class="w-100"></div>
-        <div class="col-12" *ngFor="let step of steps; let i = index">
-          <div class="step-card p-3 mb-2 rounded-3 shadow-sm position-relative">
-            <div class="row g-3 align-items-end">
-              <div class="col-md-2">
-                <label class="form-label">Step Order</label>
-                <input type="number" class="form-control" [(ngModel)]="step.stepOrder" name="stepOrder{{i}}" min="1" required>
+
+    <!-- Steps Section -->
+    <div class="mb-4">
+      <h5 class="mb-3">Assessment Steps</h5>
+      
+      <div 
+        *ngFor="let step of steps; let i = index; trackBy: trackByIndex" 
+        class="step-card-wrapper">
+        
+        <!-- Delete Button (only show if more than 1 step) -->
+        <button 
+          *ngIf="steps.length > 1"
+          type="button" 
+          class="step-delete-btn"
+          (click)="removeStep(i)"
+          title="Remove step">
+          <i class="fas fa-times"></i>
+        </button>
+
+        <div class="step-card">
+          <div class="step-content">
+            <!-- Step Number Column -->
+            <div class="step-number-col d-flex flex-column align-items-center justify-content-center">
+              <span class="step-number-label mb-2">Step</span>
+              <span class="step-number-display">{{ i + 1 }}</span>
+            </div>
+
+            <!-- Main Content -->
+            <div class="step-main-row">
+              <div class="step-inputs-col">
+                <!-- Step Name Dropdown -->
+                <div class="input-group">
+                  <label class="form-label">Step Name</label>
+                  <div class="custom-dropdown-wrapper">
+                    <input 
+                      type="text" 
+                      class="form-control custom-dropdown-input"
+                      [(ngModel)]="step.stepName"
+                      (focus)="toggleStepDropdown(i, true)"
+                      (input)="filterStepOptions($event, i)"
+                      placeholder="Select or type step name..."
+                      autocomplete="off">
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    <div class="custom-dropdown-menu" [class.show]="activeStepDropdown === i">
+                      <div 
+                        *ngFor="let option of getFilteredStepOptions(i)" 
+                        class="dropdown-option"
+                        (click)="selectStepOption(option, i)">
+                        {{ option }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Mode Dropdown -->
+                <div class="input-group">
+                  <label class="form-label">Mode</label>
+                  <div class="custom-dropdown-wrapper">
+                    <input 
+                      type="text" 
+                      class="form-control custom-dropdown-input"
+                      [(ngModel)]="step.mode"
+                      (focus)="toggleModeDropdown(i, true)"
+                      (input)="filterModeOptions($event, i)"
+                      placeholder="Select mode..."
+                      autocomplete="off">
+                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                    <div class="custom-dropdown-menu" [class.show]="activeModeDropdown === i">
+                      <div 
+                        *ngFor="let option of getFilteredModeOptions(i)" 
+                        class="dropdown-option"
+                        (click)="selectModeOption(option, i)">
+                        {{ option }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Pass % -->
+                <div class="input-group">
+                  <label class="form-label">Pass %</label>
+                  <input 
+                    type="number" 
+                    class="form-control" 
+                    [(ngModel)]="step.passingCriteria"
+                    placeholder="70"
+                    min="0" 
+                    max="100">
+                </div>
               </div>
-              <div class="col-md-3">
-                <label class="form-label">Step Name</label>
-                <input type="text" class="form-control" [(ngModel)]="step.stepName" name="stepName{{i}}" required>
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Mode</label>
-                <input type="text" class="form-control" [(ngModel)]="step.mode" name="mode{{i}}" placeholder="e.g. Video Conferencing" required>
-              </div>
-              <div class="col-md-3">
-                <label class="form-label">Passing Criteria</label>
-                <input type="text" class="form-control" [(ngModel)]="step.passingCriteria" name="passingCriteria{{i}}" placeholder="e.g. 70" required>
-              </div>
-              <div class="col-md-1 d-flex align-items-center justify-content-end">
-                <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeStep(i)" [disabled]="steps.length === 1" title="Remove Step">
-                  <i class="fas fa-trash"></i>
+              <!-- Centered Arrow Controls -->
+              <div class="step-arrows-center">
+                <button 
+                  type="button" 
+                  class="step-arrow-btn"
+                  (click)="moveStepUp(i)"
+                  [disabled]="i === 0"
+                  title="Move step up">
+                  <i class="fas fa-chevron-up"></i>
+                </button>
+                <button 
+                  type="button" 
+                  class="step-arrow-btn"
+                  (click)="moveStepDown(i)"
+                  [disabled]="i === steps.length - 1"
+                  title="Move step down">
+                  <i class="fas fa-chevron-down"></i>
                 </button>
               </div>
             </div>
           </div>
-        </div>
-        <div class="col-12 d-flex justify-content-end mb-3">
-          <button type="button" class="btn btn-outline-primary" (click)="addStep()">
-            <i class="fas fa-plus me-1"></i>Add Step
-          </button>
-        </div>
-        <div class="col-12 d-flex justify-content-between align-items-center mt-4">
-          <a routerLink="/assessments" class="btn brand-outline-btn">Back to Assessments</a>
-          <button type="submit" class="btn brand-green-btn px-4" [disabled]="loading || !selectedJobId">Create Assessment</button>
+          <!-- Move interviewer and feedback below all fields -->
+          <div class="step-secondary-row mt-4 d-flex gap-4">
+            <!-- Interviewer Name Dropdown (only show when mode is Manual) -->
+            <div class="input-group" *ngIf="step.mode === 'Manual'">
+              <label class="form-label">Interviewer Name</label>
+              <div class="custom-dropdown-wrapper">
+                <input 
+                  type="text" 
+                  class="form-control custom-dropdown-input"
+                  [(ngModel)]="step.interviewerName"
+                  (focus)="toggleInterviewerDropdown(i, true)"
+                  (input)="filterInterviewerOptions($event, i)"
+                  placeholder="Select interviewer..."
+                  autocomplete="off">
+                <i class="fas fa-chevron-down dropdown-arrow"></i>
+                <div class="custom-dropdown-menu" [class.show]="activeInterviewerDropdown === i">
+                  <div 
+                    *ngFor="let option of getFilteredInterviewerOptions(i)" 
+                    class="dropdown-option"
+                    (click)="selectInterviewerOption(option, i)">
+                    {{ option }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="feedback-group">
+              <label for="feedback_{{ i }}">
+                <input 
+                  type="checkbox" 
+                  id="feedback_{{ i }}"
+                  [(ngModel)]="step.sendFeedback">
+                Send feedback to applicants
+              </label>
+              <span class="feedback-description">
+                Enables automatic feedback delivery to candidates for this assessment step
+              </span>
+            </div>
+          </div>
         </div>
       </div>
-    </form>
+    </div>
+
+    <!-- Add Step Button -->
+    <div class="text-center mb-4">
+      <button 
+        type="button" 
+        class="btn brand-outline-btn px-4"
+        (click)="addStep()">
+        <i class="fas fa-plus me-2"></i>Add Another Step
+      </button>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="alert alert-danger" role="alert">
+      <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="success" class="alert alert-success" role="alert">
+      <i class="fas fa-check-circle me-2"></i>Assessment created successfully!
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-between">
+      <button 
+        type="button" 
+        class="btn brand-outline-btn px-4"
+        routerLink="/assessments">
+        <i class="fas fa-arrow-left me-2"></i>Back to Assessments
+      </button>
+      
+      <button 
+        type="button" 
+        class="btn brand-green-btn px-4"
+        (click)="submit()"
+        [disabled]="loading">
+        <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+        <i *ngIf="!loading" class="fas fa-save me-2"></i>
+        {{ loading ? 'Creating...' : 'Create Assessment' }}
+      </button>
+    </div>
   </div>
 </div>

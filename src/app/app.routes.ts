@@ -10,6 +10,7 @@ import { AuthGuard } from './auth.guard';
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'apply/:jobId', loadComponent: () => import('./candidates/create-candidate/create-candidate.component').then(m => m.CreateCandidateComponent) },
   { path: 'dashboard', loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent), canActivate: [AuthGuard] },
   { path: 'jobs', loadComponent: () => import('./jobs/jobs.component').then(m => m.JobsComponent), canActivate: [AuthGuard] },
   { path: 'candidates', loadComponent: () => import('./candidates/candidates.component').then(m => m.CandidatesComponent), canActivate: [AuthGuard] },

@@ -64,71 +64,404 @@
 }
 
 .brand-outline-btn {
-  border: 2px solid rgb(210, 245, 91);
-  color: rgb(210, 245, 91);
-  background: transparent;
+  border: 1px solid #7e7e7e;
+  background: #f8fafd;
+  color: #161616;
   border-radius: 8px;
   font-weight: 600;
   transition: background 0.2s, color 0.2s;
 }
 .brand-outline-btn:hover {
+  border:2px solid rgb(210, 245, 91);
   background: rgb(210, 245, 91);
   color: #222;
 }
 
 .form-label {
   font-weight: 500;
-  color: #444;
+  color: #161616;
+  margin-bottom: 6px;
+  white-space: nowrap;
 }
 
 .form-control, .form-select {
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  border: 1px solid #7e7e7e;
   background: #f8fafd;
-  font-size: 1rem;
+  font-size: 1.08rem;
   transition: border-color 0.2s;
+  height: 54px;
+  padding: 0 22px;
+  width: 100%;
+  box-sizing: border-box;
 }
 .form-control:focus, .form-select:focus {
   border-color: rgb(210, 245, 91);
   box-shadow: 0 0 0 2px rgba(210,245,91,0.15);
+  background: #fff;
+}
+
+/* Ensure Pass % input takes full width */
+input[type="number"] {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* Fix for pass% input box rounded borders */
+input[type="number"].form-control,
+input[type="number"] {
+  border-radius: 8px !important;
 }
 
 .step-card {
-  background: #f8fafd;
-  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 18px;
+  padding: 48px 40px;
+  margin-bottom: 24px;
   box-shadow: 0 2px 8px rgba(60,60,60,0.06);
-  margin-bottom: 8px;
+  transition: box-shadow 0.2s ease;
+  position: relative;
+}
+.step-card:hover {
+  box-shadow: 0 4px 16px rgba(60,60,60,0.1);
+  border-color: rgb(210, 245, 91);
 }
 
-.btn-outline-primary {
-  border: 2px solid rgb(202, 210, 255);
-  color: rgb(202, 210, 255);
-  background: transparent;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: background 0.2s, color 0.2s;
+/* Step Card Wrapper */
+.step-card-wrapper {
+  position: relative;
+  margin-bottom: 16px;
 }
-.btn-outline-primary:hover {
-  background: rgb(202, 210, 255);
+
+/* Delete Button - Top Right */
+.step-delete-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #ff5a5a;
+  background: #fff;
+  color: #ff5a5a;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.step-delete-btn:hover:not(:disabled) {
+  background: #ff5a5a;
+  color: white;
+  transform: scale(1.1);
+}
+.step-delete-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  border-color: #ddd;
+  color: #999;
+}
+
+/* Increase gap between main step fields */
+.step-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 64px; /* Increased gap */
+}
+
+/* Increase gap between columns in main row */
+.step-main-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 48px; /* Increased gap */
+  flex: 1;
+  min-height: 120px;      /* More vertical space for each row */
+  flex-wrap: wrap;
+}
+
+/* Make step-inputs-col take more space and allow wrapping */
+.step-inputs-col {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1fr;
+  gap: 32px;
+  flex: 2; /* Increased from 1 */
+  min-width: 0;
+  align-items: end;
+}
+
+/* Ensure step-main-row allows its children to grow */
+.step-main-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 36px;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  min-width: 0;
+}
+
+/* Limit feedback description width and allow wrapping */
+.feedback-group {
+  margin-top: 12px;
+  margin-left: 0;
+  max-width: 340px; /* Limit width so it doesn't push inputs */
+  min-width: 200px;
+  word-break: break-word;
+  display: flex;
+  flex-direction: column;
+}
+
+.feedback-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px 18px;
+  background: #f8fafd;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(210,245,91,0.06);
+  min-width: 260px;
+  max-width: 340px;
+}
+
+.feedback-group input[type="checkbox"] {
+  accent-color: rgb(210, 245, 91);
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+  margin-bottom: 2px;
+}
+
+.feedback-group label {
+  font-weight: 600;
+  font-size: 1.08rem;
+  color: #222;
+  margin-bottom: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.feedback-description {
+  font-size: 0.96rem;
+  color: #7e7e7e;
+  font-weight: 400;
+  margin-top: 4px;
+  line-height: 1.5;
+  display: block;
+}
+
+/* Increase gap between input fields */
+.step-inputs-col {
+  display: grid;
+  grid-template-columns: 2fr 1.5fr 1fr;
+  gap: 32px;              /* More space between columns */
+  flex: 1;
+  align-items: end;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin-bottom: 24px;    /* More space between fields */
+}
+
+/* Centered Arrow Controls */
+.step-arrows-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: 24px;
+}
+
+.step-arrow-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #656565;
+  background: #fff;
+  color: #666;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.8rem;
+}
+.step-arrow-btn:hover:not(:disabled) {
+  background: rgb(210, 245, 91);
+  border-color: rgb(210, 245, 91);
+  color: #222;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.step-arrow-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background: #f8f9fa;
+}
+
+/* Custom Dropdown Styles */
+.custom-dropdown-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.custom-dropdown-input {
+  padding-right: 2.5rem !important;
+  cursor: pointer;
+}
+
+.custom-dropdown-input:focus {
+  cursor: text;
+}
+
+.dropdown-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  pointer-events: none;
+  font-size: 0.8rem;
+  transition: transform 0.2s ease;
+}
+.custom-dropdown-wrapper:hover .dropdown-arrow,
+.custom-dropdown-input:focus + .dropdown-arrow {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.custom-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+}
+.custom-dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.dropdown-option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  color: #333;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #f5f5f5;
+}
+.dropdown-option:last-child {
+  border-bottom: none;
+}
+.dropdown-option:hover {
+  background-color: rgba(210, 245, 91, 0.1);
   color: #222;
 }
 
-.btn-outline-danger {
-  border: 2px solid #ff5a5a;
-  color: #ff5a5a;
-  background: transparent;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: background 0.2s, color 0.2s;
+/* Custom scrollbar for dropdown */
+.custom-dropdown-menu::-webkit-scrollbar {
+  width: 6px;
 }
-.btn-outline-danger:hover {
-  background: #ff5a5a;
-  color: #fff;
+.custom-dropdown-menu::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+.custom-dropdown-menu::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-radius: 3px;
+}
+.custom-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
 }
 
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .step-content {
+    gap: 32px;
+  }
+  .step-main-row {
+    gap: 24px;
+  }
+  .step-card {
+    padding: 32px 12px;
+  }
+}
 @media (max-width: 900px) {
   .create-assessment-card {
     max-width: 98vw;
     padding: 2rem 0.5rem;
   }
+  .step-content,
+  .step-main-row {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .step-card {
+    padding: 20px 8px;
+  }
+  .step-inputs-col {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .interviewer-col {
+    min-width: 0;
+  }
+  .feedback-group {
+    max-width: 100%;
+  }
+}
+
+.step-feedback-row {
+  width: 100%;
+  margin-top: 24px;
+  padding-left: 80px; /* aligns with input fields, adjust as needed */
+}
+
+.step-number-col {
+  min-width: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 0;
+}
+
+.step-number-label {
+  font-size: 1rem;
+  color: #888;
+  font-weight: 500;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+.step-number-display {
+  width: 44px;
+  height: 44px;
+  background: #d2f55b;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #222;
+  margin-bottom: 0;
+  box-shadow: 0 2px 8px rgba(210,245,91,0.12);
 }

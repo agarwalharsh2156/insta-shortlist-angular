@@ -205,3 +205,15 @@
   padding-left: 0.75rem;
   padding-right: 0.75rem;
 }
+
+.custom-badge {
+  background-color: rgb(202, 210, 255); /* Example: purple */
+  color: rgb(0, 0, 0);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.list-group-item .badge {
+  font-size: 0.95rem;
+  vertical-align: middle;
+}

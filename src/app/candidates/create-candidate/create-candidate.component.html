@@ -3,7 +3,7 @@
     <!-- Success Alert -->
     <div class="alert alert-success alert-dismissible fade show" *ngIf="success" role="alert">
       <i class="fas fa-check-circle me-2"></i>
-      <strong>Success!</strong> Candidate has been created successfully. Redirecting...
+      <strong>Success!</strong> You have successfully Applied
       <button type="button" class="btn-close" (click)="success = false"></button>
     </div>
 
@@ -16,77 +16,81 @@
 
     <!-- Loading Overlay -->
     <div class="position-relative">
-      <div class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center" 
-           style="background: rgba(255,255,255,0.8); z-index: 1000;" *ngIf="loading">
+      <div class="position-absolute w-100 h-100 d-flex align-items-center justify-content-center"
+        style="background: rgba(255,255,255,0.8); z-index: 1000;" *ngIf="loading">
         <div class="text-center">
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
-          <p class="mt-2 text-muted">Creating candidate...</p>
+          <p class="mt-2 text-muted">Applying...</p>
         </div>
       </div>
 
       <form #createCandidateForm="ngForm" (ngSubmit)="onSubmit(createCandidateForm)">
         <div class="row g-4">
           <!-- Job Selection - New Field -->
-          <div class="col-md-6">
-            <label class="form-label">Select Job Position <span class="text-danger">*</span></label>
-            <select class="form-select" name="jobId" [(ngModel)]="selectedJobId" 
-                    (change)="onJobSelection()" required [disabled]="loading || loadingJobs">
-              <option value="">-- Select Job --</option>
+          <!-- Job Selection - Only show for admin/internal use -->
+          <div class="col-md-6" *ngIf="!isPublicApplication">
+            <label class="form-label">Job Position *</label>
+            <select class="form-select" [(ngModel)]="selectedJobId" name="jobId" required (change)="onJobSelection()"
+              [disabled]="loadingJobs">
+              <option value="">Select a job position</option>
               <option *ngFor="let job of jobs" [value]="job.id">
-                {{ job.title }} - {{ job.role }} ({{ job.location }})
+                {{ job.title }} - {{ job.location }}
               </option>
             </select>
-            <div class="form-text" *ngIf="loadingJobs">Loading available jobs...</div>
+            <div *ngIf="loadingJobs" class="text-muted small mt-1">Loading jobs...</div>
           </div>
 
-          <!-- Selected Job Info -->
-          <div class="col-md-6" *ngIf="getSelectedJob()">
-            <label class="form-label">Job Details</label>
-            <div class="form-control-plaintext bg-light p-2 rounded">
-              <small>
-                <strong>{{ getSelectedJob()?.title }}</strong><br>
-                Department: {{ getSelectedJob()?.role }}<br>
-                Location: {{ getSelectedJob()?.location }}<br>
-                Type: {{ getSelectedJob()?.type }}
-              </small>
+          <!-- Show job info for public applications -->
+          <div class="col-12" *ngIf="isPublicApplication && selectedJob">
+            <div class="alert alert-info">
+              <h6 class="mb-1">Applying for: {{ selectedJob.title }}</h6>
+              <small class="text-muted">{{ selectedJob.location }} • {{ selectedJob.type }}</small>
             </div>
           </div>
 
+
           <div class="col-md-6">
             <label class="form-label">Name <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="name" [(ngModel)]="candidate.name" required [disabled]="loading">
+            <input type="text" class="form-control" name="name" [(ngModel)]="candidate.name" required
+              [disabled]="loading" placeholder="Enter candidate name">
           </div>
-          
+
           <div class="col-md-6">
             <label class="form-label">Email <span class="text-danger">*</span></label>
-            <input type="email" class="form-control" name="email" [(ngModel)]="candidate.email" required [disabled]="loading">
+            <input type="email" class="form-control" name="email" [(ngModel)]="candidate.email" required
+              [disabled]="loading" placeholder="Enter email address">
           </div>
 
           <div class="col-md-6">
             <label class="form-label">Phone <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="phone" [(ngModel)]="candidate.phone" required [disabled]="loading">
+            <input type="text" class="form-control" name="phone" [(ngModel)]="candidate.phone" required
+              [disabled]="loading" placeholder="Enter phone number">
           </div>
 
           <div class="col-md-6">
             <label class="form-label">Current Role <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="role" [(ngModel)]="candidate.role" required [disabled]="loading">
+            <input type="text" class="form-control" name="role" [(ngModel)]="candidate.role" required
+              [disabled]="loading" placeholder="Enter current role">
           </div>
 
           <div class="col-md-6">
             <label class="form-label">Applied Role <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="appliedRole" [(ngModel)]="candidate.appliedRole" required [disabled]="loading">
+            <input type="text" class="form-control" name="appliedRole" [(ngModel)]="candidate.appliedRole" required
+              [disabled]="loading" placeholder="Enter applied role">
           </div>
-          
+
           <div class="col-md-6">
             <label class="form-label">Department <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" name="department" [(ngModel)]="candidate.department" required [disabled]="loading">
+            <input type="text" class="form-control" name="department" [(ngModel)]="candidate.department" required
+              [disabled]="loading" placeholder="Enter department">
           </div>
 
           <div class="col-md-6">
             <label class="form-label">Position Level <span class="text-danger">*</span></label>
-            <select class="form-select" name="position" [(ngModel)]="candidate.position" required [disabled]="loading">
+            <select class="form-select" name="position" [(ngModel)]="candidate.position" required [disabled]="loading"
+              placeholder="Select position level">
               <option value="">-- Select Position Level --</option>
               <option>Junior</option>
               <option>Mid-level</option>
@@ -99,13 +103,14 @@
 
           <div class="col-md-6">
             <label class="form-label">Experience (years) <span class="text-danger">*</span></label>
-            <input type="number" class="form-control" name="experience" [(ngModel)]="candidate.experience" required 
-                   min="0" max="50" [disabled]="loading">
+            <input type="number" class="form-control" name="experience" [(ngModel)]="candidate.experience" required
+              min="0" max="50" [disabled]="loading" placeholder="Years of experience">
           </div>
 
           <div class="col-md-6">
             <label class="form-label">Employment Type <span class="text-danger">*</span></label>
-            <select class="form-select" name="employmentType" [(ngModel)]="candidate.employmentType" required [disabled]="loading">
+            <select class="form-select" name="employmentType" [(ngModel)]="candidate.employmentType" required
+              [disabled]="loading" placeholder="Select employment type">
               <option>Full-time</option>
               <option>Part-time</option>
               <option>Contract</option>
@@ -115,7 +120,8 @@
 
           <div class="col-md-6">
             <label class="form-label">Work Type <span class="text-danger">*</span></label>
-            <select class="form-select" name="workType" [(ngModel)]="candidate.workType" required [disabled]="loading">
+            <select class="form-select" name="workType" [(ngModel)]="candidate.workType" required [disabled]="loading"
+              placeholder="Select work type">
               <option>Onsite</option>
               <option>Remote</option>
               <option>Hybrid</option>
@@ -124,7 +130,8 @@
 
           <div class="col-md-6">
             <label class="form-label">Status <span class="text-danger">*</span></label>
-            <select class="form-select" name="status" [(ngModel)]="candidate.status" required [disabled]="loading">
+            <select class="form-select" name="status" [(ngModel)]="candidate.status" required [disabled]="loading"
+              placeholder="Select status">
               <option>Applied</option>
               <option>Shortlisted</option>
               <option>In-Review</option>
@@ -136,29 +143,22 @@
 
           <div class="col-md-6">
             <label class="form-label">Applied Date</label>
-            <input type="date" class="form-control" name="appliedDate" [(ngModel)]="candidate.appliedDate" [disabled]="loading">
+            <input type="date" class="form-control" name="appliedDate" [(ngModel)]="candidate.appliedDate"
+              [disabled]="loading" placeholder="Select applied date">
           </div>
 
           <div class="col-md-6">
             <label class="form-label">Score (%) <span class="text-danger">*</span></label>
-            <input type="number" class="form-control" name="score" [(ngModel)]="candidate.score" required 
-                   min="0" max="100" [disabled]="loading">
+            <input type="number" class="form-control" name="score" [(ngModel)]="candidate.score" required min="0"
+              max="100" [disabled]="loading" placeholder="Enter score (%)">
           </div>
 
           <!-- File Upload - Updated -->
           <div class="col-md-6">
             <div class="mb-3">
               <label for="fileInput" class="form-label">Resume/Cover Letter <span class="text-danger">*</span></label>
-              <input
-                type="file"
-                class="form-control"
-                id="fileInput"
-                name="file"
-                (change)="onFileChange($event)"
-                accept=".pdf,.doc,.docx"
-                required
-                [disabled]="loading"
-              >
+              <input type="file" class="form-control" id="fileInput" name="file" (change)="onFileChange($event)"
+                accept=".pdf,.doc,.docx" required [disabled]="loading" placeholder="Upload resume or cover letter">
               <div class="form-text">Accepted formats: PDF, DOC, DOCX (Max 5MB)</div>
               <div class="mt-2" *ngIf="selectedFile">
                 <small class="text-success">
@@ -168,15 +168,12 @@
             </div>
           </div>
 
-          <div class="col-12 d-flex justify-content-between align-items-center mt-4">
-            <a routerLink="/candidates" class="btn brand-outline-btn" [class.disabled]="loading">
-              <i class="fas fa-arrow-left me-2"></i>Back to Candidates
-            </a>
-            <button type="submit" class="btn brand-green-btn px-4" 
-                    [disabled]="!createCandidateForm.valid || loading || !selectedFile || !selectedJobId">
+          <div class="col-12 d-flex justify-content-end align-items-center mt-5">
+            <button type="submit" class="btn brand-green-btn px-5 py-3 shadow-sm custom-submit-btn"
+              [disabled]="!createCandidateForm.valid || loading || !selectedFile || !selectedJobId">
               <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status"></span>
-              <i class="fas fa-plus me-2" *ngIf="!loading"></i>
-              {{ loading ? 'Creating...' : 'Add Candidate' }}
+              <i class="fas fa-paper-plane me-2" *ngIf="!loading"></i>
+              {{ loading ? 'Applying...' : 'Apply to the Job' }}
             </button>
           </div>
         </div>
