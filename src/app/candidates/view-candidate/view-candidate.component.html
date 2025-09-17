@@ -375,8 +375,7 @@
               <p class="mt-2 mb-0">Loading PDF Document...</p>
             </div>
           </div>
-          <iframe [src]="pdfDataUrl" class="pdf-iframe" *ngIf="pdfDataUrl">
-          </iframe>
+          <embed [src]="pdfDataUrl" type="application/pdf" width="100%" height="600px" />
         </div>
       </div>
     </div>

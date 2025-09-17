@@ -24,12 +24,13 @@ export class ViewCandidateComponent implements OnInit {
   // PDF handling properties
   showPDFViewer = false;
   pdfDataUrl: SafeResourceUrl | null = null;
-
+  private _blobUrl: string | null = null;
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private apiService: ApiService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    
   ) { }
 
   ngOnInit() {
@@ -37,6 +38,13 @@ export class ViewCandidateComponent implements OnInit {
     this.loadCandidateDetails();
     this.loadCandidateSteps();
   }
+  ngOnDestroy() {
+    if (this._blobUrl) {
+      URL.revokeObjectURL(this._blobUrl);
+    }
+  }
+
+
 
   private loadCandidateDetails() {
     this.apiService.getCandidateById(this.candidateId).subscribe({
@@ -75,59 +83,56 @@ export class ViewCandidateComponent implements OnInit {
     });
   }
 
-  // PDF handling methods
   private processPDFAttachment() {
     if (this.candidate?.attachment?.base64) {
       try {
-        // Create blob from base64
-        const binaryString = atob(this.candidate.attachment.base64);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
+        const byteCharacters = atob(this.candidate.attachment.base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+        // revoke old URL if it exists
+        if (this._blobUrl) {
+          URL.revokeObjectURL(this._blobUrl);
         }
 
-        const blob = new Blob([bytes], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        this.pdfDataUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-      } catch (error) {
-        console.error('Error processing PDF attachment:', error);
+        this._blobUrl = URL.createObjectURL(blob);
+
+        // sanitizer ensures Angular lets iframe use it
+        this.pdfDataUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this._blobUrl);
+
+        console.log('PDF blob URL ready:', this._blobUrl);
+      } catch (err) {
+        console.error('Error creating PDF blob URL:', err);
       }
     }
   }
+
+
+
+
 
   togglePDFViewer() {
     this.showPDFViewer = !this.showPDFViewer;
   }
 
   downloadPDF() {
-    if (this.candidate?.attachment?.base64) {
-      try {
-        // Create blob from base64
-        const binaryString = atob(this.candidate.attachment.base64);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
-        }
-
-        const blob = new Blob([bytes], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-
-        // Create download link
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = this.candidate.attachment.fileName || `resume_${this.candidate.name}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        // Clean up URL
-        URL.revokeObjectURL(url);
-      } catch (error) {
-        console.error('Error downloading PDF:', error);
-        alert('Error downloading PDF. Please try again.');
-      }
+    if (this._blobUrl && this.candidate) {
+      const link = document.createElement('a');
+      link.href = this._blobUrl;
+      link.download = this.candidate.attachment?.fileName || `resume_${this.candidate.name}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      alert('PDF not available.');
     }
   }
+
+
 
   // Helper methods for assessment steps
   getProgressPercentage(): number {
