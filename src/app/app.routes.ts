@@ -1,11 +1,15 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { JobsComponent } from './jobs/jobs.component';
+import { CreateJobComponent } from './jobs/create-job/create-job.component';
+import { EditJobComponent } from './jobs/edit-job/edit-job.component';
 import { AuthGuard } from './auth.guard';
 
 export const routes: Routes = [
-  { path: 'login', loadComponent: ()=> import('./login/login.component').then(m => m.LoginComponent), canActivate:[AuthGuard]},
-  { path: 'register', loadComponent: ()=>import('./register/register.component').then(m => m.RegisterComponent), canActivate: [AuthGuard] },
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   { path: 'apply/:jobId', loadComponent: () => import('./candidates/create-candidate/create-candidate.component').then(m => m.CreateCandidateComponent) },
   { path: 'dashboard', loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent), canActivate: [AuthGuard] },
   { path: 'jobs', loadComponent: () => import('./jobs/jobs.component').then(m => m.JobsComponent), canActivate: [AuthGuard] },
