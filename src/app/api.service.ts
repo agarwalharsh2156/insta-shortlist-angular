@@ -187,7 +187,9 @@ export interface CreateReviewRequest {
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = "https://465dddf85107.ngrok-free.app";
+  private baseUrl = "https://5b19b8e98c0b.ngrok-free.app";
+  // private baseUrl = "";
+
   private apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJiaGFza2FyIiwiaWF0IjoxNzQ5ODAzMzg4LCJleHAiOjE3NDk4MzkzODh9.vs518QlQXCvHB-YUhauw9Pzbi_cg14F8z5j9SIsSINc';
 
   private httpOptions = {
@@ -450,6 +452,27 @@ export class ApiService {
   getAssessments(): Observable<Assessment[]> {
     const headers = this.getAuthHeaders();
     return this.http.get<Assessment[]>(`${this.baseUrl}/api/assessments`, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  // Get assessment by ID
+  getAssessmentById(id: number): Observable<Assessment> {
+    const headers = this.getAuthHeaders();
+    return this.http.get<Assessment>(`${this.baseUrl}/api/assessments/${id}`, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  // Update assessment by ID
+  updateAssessment(id: number, assessment: Assessment): Observable<Assessment> {
+    const headers = this.getAuthHeaders();
+    return this.http.put<Assessment>(`${this.baseUrl}/api/assessments/${id}`, assessment, { headers })
+      .pipe(catchError(this.handleError));
+  }
+
+  // Delete assessment by ID
+  deleteAssessment(id: number): Observable<any> {
+    const headers = this.getAuthHeaders();
+    return this.http.delete(`${this.baseUrl}/api/assessments/${id}`, { headers })
       .pipe(catchError(this.handleError));
   }
 

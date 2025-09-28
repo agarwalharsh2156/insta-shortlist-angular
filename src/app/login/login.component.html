@@ -1,43 +1,73 @@
-<div class="container d-flex justify-content-center align-items-center vh-100">
-  <div class="card p-4 shadow" style="max-width: 400px; width: 100%;">
-    <h3 class="card-title text-center mb-4">
-      <i class="fas fa-lock me-2" *ngIf="isFontAwesomeEnabled"></i> Login
-    </h3>
-    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <div class="input-group">
-          <span class="input-group-text" *ngIf="isFontAwesomeEnabled">
-            <i class="fas fa-user"></i>
-          </span>
-          <input type="text" id="username" class="form-control" formControlName="username"
-            [class.is-invalid]="username?.invalid && (username?.dirty || username?.touched)" placeholder="Enter your username">
-          <div *ngIf="username?.invalid && (username?.dirty || username?.touched)" class="invalid-feedback">
-            <div *ngIf="username?.errors?.['required']">Username is required.</div>
-          </div>
+<div class="login-page">
+  <div class="login-form-wrapper">
+    <div class="form-header">
+      <h2 class="form-title">Welcome Back</h2>
+      <p class="form-subtitle">Sign in to your account</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <!-- Username Field -->
+      <div class="form-group">
+        <label for="username" class="form-label">
+          <i class="bi bi-person"></i>
+          Username
+        </label>
+        <div class="input-wrapper">
+          <input type="text" id="username" formControlName="username" class="form-input"
+            [class.error]="username?.invalid && username?.touched" placeholder="Enter your username">
+          <i class="bi bi-person-fill input-icon"></i>
+        </div>
+        <div *ngIf="username?.invalid && username?.touched" class="error-message">
+          <i class="bi bi-exclamation-circle"></i>
+          Username is required
         </div>
       </div>
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <div class="input-group">
-          <span class="input-group-text" *ngIf="isFontAwesomeEnabled">
-            <i class="fas fa-key"></i>
-          </span>
-          <input type="password" id="password" class="form-control" formControlName="password"
-            [class.is-invalid]="password?.invalid && (password?.dirty || password?.touched)"
-            placeholder="Enter your password">
-          <div *ngIf="password?.invalid && (password?.dirty || password?.touched)" class="invalid-feedback">
-            <div *ngIf="password?.errors?.['required']">Password is required.</div>
-          </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password" class="form-label">
+          <i class="bi bi-lock"></i>
+          Password
+        </label>
+        <div class="input-wrapper">
+          <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" class="form-input"
+            [class.error]="password?.invalid && password?.touched" placeholder="Enter your password">
+          <i class="bi bi-lock-fill input-icon"></i>
+          <button type="button" class="password-toggle" (click)="showPassword = !showPassword">
+            <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+          </button>
+        </div>
+        <div *ngIf="password?.invalid && password?.touched" class="error-message">
+          <i class="bi bi-exclamation-circle"></i>
+          Password is required
         </div>
       </div>
-      <button type="submit" class="btn brand-green-btn w-100" [disabled]="loginForm.invalid || isLoading">
-        {{ isLoading ? 'Logging in...' : 'Login' }}
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="alert-error">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="submit-btn" [disabled]="loginForm.invalid || isLoading" [class.loading]="isLoading">
+        <span *ngIf="!isLoading">
+          <i class="bi bi-box-arrow-in-right"></i>
+          Sign In
+        </span>
+        <span *ngIf="isLoading">
+          <i class="bi bi-arrow-clockwise spin"></i>
+          Signing In...
+        </span>
       </button>
+
+      <!-- Register Link -->
+      <div class="form-footer">
+        <p>
+          Don't have an account?
+          <a routerLink="/register" class="register-link">Create one</a>
+        </p>
+      </div>
     </form>
-    <p class="text-center mt-3" style="text-decoration: none;">
-      Don't have an account? <a routerLink="/register" style="text-decoration: none; color: inherit;">Register</a>
-    </p>
   </div>
 </div>

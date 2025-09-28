@@ -1,65 +1,385 @@
 body {
-    background-color: rgb(243, 243, 243) !important;
-  }
+  background-color: rgb(243, 243, 243) !important;
+}
 
-  .sidebar {
-    min-height: 90vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 1040;
-    background-color: rgb(253, 253, 253) !important;
-    box-shadow: 0 8px 32px rgba(60, 60, 60, 0.08), 0 1.5px 4px rgba(60, 60, 60, 0.06);
-  }
+.sidebar {
+  min-height: calc(100vh - 64px);
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1040;
+  background-color: rgb(253, 253, 253) !important;
+  box-shadow: 0 8px 32px rgba(60, 60, 60, 0.08), 0 1.5px 4px rgba(60, 60, 60, 0.06);
+  margin: 32px;
+  border-radius: 18px;
+  height: calc(100vh - 64px);
+  transition: width 0.3s ease, transform 0.3s ease;
+  overflow-x: hidden;
+}
 
-  .sidebar .nav-link,
-  .sidebar .navbar-brand,
-  .sidebar .nav-link svg {
-    color: #3d3d3d !important;
-    fill: #3d3d3d !important;
-  }
+.sidebar.collapsed {
+  width: 80px !important;
+}
 
-  .sidebar .nav-link.active,
-  .sidebar .nav-link.router-link-active {
-    background-color: rgb(202, 210, 255) !important;
-    color: black !important;
-  }
+.sidebar .nav-link,
+.sidebar .navbar-brand,
+.sidebar .nav-link svg {
+  color: #3d3d3d !important;
+  fill: #3d3d3d !important;
+}
 
- .main-content-wrapper {
+.sidebar .nav-link.active,
+.sidebar .nav-link.router-link-active {
+  background-color: rgb(202, 210, 255) !important;
+  color: black !important;
+}
+
+.main-content-wrapper {
   background: transparent;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
-  margin-left: 280px;
+  transition: margin-left 0.3s ease;
 }
 
-
-  /* Add these new classes */
-  .main-content {
+.main-content {
   background: transparent !important;
   border-radius: 18px;
   min-height: 100%;
   width: 100%;
 }
-  .sidebar-icon {
-    font-size: 1.25rem;
-    min-width: 28px;
-    text-align: center;
-    color: #3d3d3d !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+.sidebar-icon {
+  font-size: 1.25rem;
+  min-width: 28px;
+  text-align: center;
+  color: #3d3d3d !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1050;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgb(210, 245, 91) !important;
+  color: #222 !important;
+  border: none;
+  box-shadow: 0 4px 12px rgba(60, 60, 60, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu-btn:hover,
+.mobile-menu-btn:focus {
+  background: rgb(202, 235, 81) !important;
+  transform: scale(1.05);
+}
+
+.mobile-menu-btn.menu-open {
+  background: rgba(255, 82, 82, 0.9) !important;
+  color: white !important;
+}
+
+/* Mobile overlay */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1035;
+  display: none;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.show {
+  display: block;
+}
+
+/* Desktop toggle button - hide on mobile */
+.desktop-toggle {
+  display: block;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 991.98px) {
+  .sidebar {
+    transform: translateX(-100%);
+    width: 240px !important;
+    margin: 0;
+    border-radius: 0;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 1045;
   }
 
-  .sidebar-link-text {
-    font-size: 1rem;
-    color: #3d3d3d !important;
-    display: flex;
-    align-items: center;
+  /* Completely hide sidebar when collapsed on mobile */
+  .sidebar.collapsed {
+    transform: translateX(-100%);
+    width: 0 !important;
+    visibility: hidden;
+    opacity: 0;
   }
 
+  /* Show sidebar when not collapsed on mobile */
+  .sidebar.mobile-visible {
+    transform: translateX(0);
+    visibility: visible;
+    opacity: 1;
+  }
+
+  /* Hide desktop toggle on mobile */
+  .desktop-toggle {
+    display: none !important;
+  }
+
+  /* Main content always takes full width on mobile */
+  .main-content-wrapper {
+    margin-left: 0 !important;
+    width: 100%;
+    padding: 0px !important;
+  }
+
+  .main-content-wrapper.full-width-mobile {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+
+  /* Ensure mobile menu button is always visible */
+  .mobile-menu-btn {
+    z-index: 1050;
+    display: flex !important;
+  }
+}
+
+/* Smaller mobile devices */
+@media (max-width: 576px) {
+  .sidebar {
+    width: 220px !important;
+  }
+
+  /* Completely hide when collapsed on small devices too */
+  .sidebar.collapsed {
+    width: 0 !important;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .main-content-wrapper {
+    padding: 0px !important;
+  }
+
+  .mobile-menu-btn {
+    width: 45px;
+    height: 45px;
+    top: 15px;
+    left: 15px;
+    font-size: 1.1rem;
+  }
+
+  /* Adjust content for very small screens */
+  .card {
+    margin: 5px;
+    padding: 15px;
+  }
+
+  /* Button sizing for touch */
+  .btn {
+    min-height: 48px;
+    padding: 14px 20px;
+    font-size: 16px;
+  }
+
+  /* Form elements for touch */
+  .form-control,
+  .form-select {
+    min-height: 48px;
+    font-size: 16px;
+    padding: 12px;
+  }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 991.98px) and (orientation: landscape) {
+  .sidebar {
+    width: 200px !important;
+  }
+
+  /* Completely hide when collapsed in landscape too */
+  .sidebar.collapsed {
+    width: 0 !important;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .mobile-menu-btn {
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Mobile Responsiveness for other components */
+@media (max-width: 768px) {
+
+  /* Header section responsive */
+  .assessments-floating-container-heading {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 15px;
+  }
+
+  .assessment-header-wrapper {
+    padding: 15px;
+    margin: 10px;
+  }
+
+  .assessment-card {
+    margin: 8px;
+    padding: 15px;
+    border-radius: 12px;
+  }
+
+  .assessment-floating-container {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 15px;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .candidate-card {
+    margin: 8px;
+    padding: 15px;
+  }
+
+  .candidates-floating-container {
+    margin-left: 10px;
+    margin-right: 10px;
+    padding: 15px;
+  }
+
+  /* Form responsiveness */
+  .form-control,
+  .form-select {
+    font-size: 16px;
+    /* Prevents zoom on iOS */
+  }
+
+  /* Button responsiveness */
+  .btn {
+    min-height: 44px;
+    padding: 12px 20px;
+  }
+
+  /* Card responsiveness */
+  .card {
+    margin: 10px;
+    border-radius: 12px;
+  }
+
+  /* Table responsiveness - hide on very small screens */
+  .table-responsive {
+    font-size: 14px;
+  }
+
+  /* Sidebar adjustments */
   .sidebar .nav-link {
-    padding-top: 0.55rem;
-    padding-bottom: 0.55rem;
+    padding: 15px;
+    font-size: 16px;
   }
+
+  .sidebar .navbar-brand {
+    font-size: 1.5rem;
+  }
+
+  /* Job cards on mobile */
+  .job-card {
+    margin-bottom: 15px;
+    border-radius: 12px;
+  }
+
+  /* Mobile padding adjustments */
+  .container,
+  .container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+  .sidebar {
+    box-shadow: 0 4px 16px rgba(60, 60, 60, 0.12), 0 1px 3px rgba(60, 60, 60, 0.08);
+  }
+
+  .mobile-menu-btn {
+    box-shadow: 0 2px 8px rgba(60, 60, 60, 0.2);
+  }
+}
+
+/* Focus and accessibility improvements */
+@media (hover: none) and (pointer: coarse) {
+  .sidebar .nav-link {
+    min-height: 48px;
+    padding: 16px;
+  }
+
+  .mobile-menu-btn {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  .btn {
+    min-height: 48px;
+    padding: 14px 20px;
+  }
+}
+
+/* Animation improvements */
+.sidebar {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sidebar-overlay {
+  transition: opacity 0.3s ease;
+}
+
+.main-content-wrapper {
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Print styles */
+@media print {
+
+  .sidebar,
+  .mobile-menu-btn,
+  .sidebar-overlay {
+    display: none !important;
+  }
+
+  .main-content-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 0 !important;
+  }
+}

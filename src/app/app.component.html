@@ -8,61 +8,96 @@
 
 <!-- ADMIN LAYOUT: For all other authenticated routes -->
 <div *ngIf="!isPublicRoute()" class="d-flex" style="background-color: rgb(243, 243, 243); min-height: 100vh;">
+
+  <!-- Mobile Menu Button (only visible on mobile) -->
+  <button *ngIf="isMobile && showSidebar" class="mobile-menu-btn btn btn-primary" (click)="toggleSidebar()"
+    [class.menu-open]="!sidebarCollapsed" title="Toggle Menu">
+    <i class="fas fa-bars" *ngIf="sidebarCollapsed"></i>
+    <i class="fas fa-times" *ngIf="!sidebarCollapsed"></i>
+  </button>
+
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" [class.show]="isSidebarVisible() && isMobile" (click)="toggleSidebar()"></div>
+
   <!-- Floating Sidebar -->
   <nav *ngIf="showSidebar" class="sidebar d-flex flex-column align-items-start p-3 shadow"
-    style="width: 280px; min-width: 200px; margin: 32px; border-radius: 18px; height: calc(100vh - 64px);">
-    <a class="navbar-brand d-flex align-items-center mb-4 text-decoration-none" href="/">
-      <img src="/assets/logo.png" alt="Logo" width="36" height="36" class="me-2" />
-      <span class="fs-4" style="color: #222;">InstaShortlist</span>
-    </a>
+    [class.collapsed]="sidebarCollapsed" [class.mobile-visible]="isSidebarVisible() && isMobile"
+    [style.width.px]="sidebarCollapsed ? 80 : 280"
+    style="margin: 32px; border-radius: 18px; height: calc(100vh - 64px);">
+
+    <!-- Brand and Toggle -->
+    <div class="w-100 mb-4" [class.d-flex]="!sidebarCollapsed" [class.justify-content-between]="!sidebarCollapsed"
+      [class.align-items-center]="!sidebarCollapsed">
+      <a class="navbar-brand d-flex align-items-center text-decoration-none" href="/" *ngIf="!sidebarCollapsed">
+        <img src="/assets/logo.png" alt="Logo" width="36" height="36" class="me-2" />
+        <span class="fs-4" style="color: #222;">InstaShortlist</span>
+      </a>
+
+      <!-- Desktop Toggle Button (hidden on mobile) -->
+      <div [class.d-flex]="sidebarCollapsed" [class.justify-content-center]="sidebarCollapsed" class="desktop-toggle">
+        <button class="btn btn-sm btn-outline-secondary" (click)="toggleSidebar()" title="Toggle Sidebar">
+          <i class="fas" [class.fa-chevron-left]="!sidebarCollapsed" [class.fa-chevron-right]="sidebarCollapsed"></i>
+        </button>
+      </div>
+    </div>
+
     <!-- Navigation links only visible if logged in -->
     <ng-container *ngIf="authService.isLoggedIn()">
       <ul class="nav nav-pills flex-column w-100 mb-auto">
         <li class="nav-item w-100 mb-2">
-          <a class="nav-link d-flex align-items-center gap-2" routerLink="/dashboard" routerLinkActive="active">
+          <a class="nav-link d-flex align-items-center gap-2" routerLink="/dashboard" routerLinkActive="active"
+            [class.justify-content-center]="sidebarCollapsed" title="Dashboard">
             <span class="sidebar-icon"><i class="fas fa-tachometer-alt"></i></span>
-            <span class="sidebar-link-text">Dashboard</span>
+            <span class="sidebar-link-text" *ngIf="!sidebarCollapsed">Dashboard</span>
           </a>
         </li>
         <li class="nav-item w-100 mb-2">
-          <a class="nav-link d-flex align-items-center gap-2" routerLink="/inbox" routerLinkActive="active">
+          <a class="nav-link d-flex align-items-center gap-2" routerLink="/inbox" routerLinkActive="active"
+            [class.justify-content-center]="sidebarCollapsed" title="Inbox">
             <span class="sidebar-icon"><i class="fas fa-inbox"></i></span>
-            <span class="sidebar-link-text">Inbox</span>
+            <span class="sidebar-link-text" *ngIf="!sidebarCollapsed">Inbox</span>
           </a>
         </li>
         <li class="nav-item w-100 mb-2">
-          <a class="nav-link d-flex align-items-center gap-2" routerLink="/jobs" routerLinkActive="active">
+          <a class="nav-link d-flex align-items-center gap-2" routerLink="/jobs" routerLinkActive="active"
+            [class.justify-content-center]="sidebarCollapsed" title="Jobs">
             <span class="sidebar-icon"><i class="fa fa-briefcase"></i></span>
-            <span class="sidebar-link-text">Jobs</span>
+            <span class="sidebar-link-text" *ngIf="!sidebarCollapsed">Jobs</span>
           </a>
         </li>
         <li class="nav-item w-100 mb-2">
-          <a class="nav-link d-flex align-items-center gap-2" routerLink="/assessments" routerLinkActive="active">
+          <a class="nav-link d-flex align-items-center gap-2" routerLink="/assessments" routerLinkActive="active"
+            [class.justify-content-center]="sidebarCollapsed" title="Assessments">
             <span class="sidebar-icon"><i class="fas fa-clipboard-list"></i></span>
-            <span class="sidebar-link-text">Assessments</span>
+            <span class="sidebar-link-text" *ngIf="!sidebarCollapsed">Assessments</span>
           </a>
         </li>
         <li class="nav-item w-100 mb-2">
-          <a class="nav-link d-flex align-items-center gap-2" routerLink="/candidates" routerLinkActive="active">
+          <a class="nav-link d-flex align-items-center gap-2" routerLink="/candidates" routerLinkActive="active"
+            [class.justify-content-center]="sidebarCollapsed" title="Candidates">
             <span class="sidebar-icon"><i class="fa fa-user-friends"></i></span>
-            <span class="sidebar-link-text">Candidates</span>
+            <span class="sidebar-link-text" *ngIf="!sidebarCollapsed">Candidates</span>
           </a>
         </li>
         <li class="nav-item w-100 mb-2">
-          <a class="nav-link d-flex align-items-center gap-2" routerLink="/offers" routerLinkActive="active">
+          <a class="nav-link d-flex align-items-center gap-2" routerLink="/offers" routerLinkActive="active"
+            [class.justify-content-center]="sidebarCollapsed" title="Offers">
             <span class="sidebar-icon"><i class="fas fa-award"></i></span>
-            <span class="sidebar-link-text">Offers</span>
+            <span class="sidebar-link-text" *ngIf="!sidebarCollapsed">Offers</span>
           </a>
         </li>
       </ul>
     </ng-container>
+
+    <!-- Bottom Navigation -->
     <div class="mt-auto w-100">
       <ng-container *ngIf="authService.isLoggedIn(); else notLoggedIn">
         <ul class="nav nav-pills flex-column w-100 mb-2">
           <li class="nav-item w-100 mb-2">
-            <a class="nav-link d-flex align-items-center gap-4" (click)="logout()" style="cursor:pointer;">
-              <i class="fas fa-sign-out-alt me-2"></i>
-              Logout
+            <a class="nav-link d-flex align-items-center gap-4" (click)="logout()" style="cursor:pointer;"
+              [class.justify-content-center]="sidebarCollapsed" title="Logout">
+              <i class="fas fa-sign-out-alt"></i>
+              <span *ngIf="!sidebarCollapsed">Logout</span>
             </a>
           </li>
         </ul>
@@ -70,26 +105,30 @@
       <ng-template #notLoggedIn>
         <ul class="nav nav-pills flex-column w-100 mb-2">
           <li class="nav-item w-100 mb-2">
-            <a class="nav-link d-flex align-items-center gap-4" routerLink="/login" routerLinkActive="active">
-              <i class="fas fa-sign-in-alt me-2"></i>
-              Login
+            <a class="nav-link d-flex align-items-center gap-4" routerLink="/login" routerLinkActive="active"
+              [class.justify-content-center]="sidebarCollapsed" title="Login">
+              <i class="fas fa-sign-in-alt"></i>
+              <span *ngIf="!sidebarCollapsed">Login</span>
             </a>
           </li>
           <li class="nav-item w-100 mb-2">
-            <a class="nav-link d-flex align-items-center gap-4" routerLink="/register" routerLinkActive="active">
-              <i class="fas fa-user-plus me-2"></i>
-              Register
+            <a class="nav-link d-flex align-items-center gap-4" routerLink="/register" routerLinkActive="active"
+              [class.justify-content-center]="sidebarCollapsed" title="Register">
+              <i class="fas fa-user-plus"></i>
+              <span *ngIf="!sidebarCollapsed">Register</span>
             </a>
           </li>
         </ul>
       </ng-template>
     </div>
   </nav>
+
   <!-- Main content for admin -->
-  <div class="flex-grow-1 main-content-wrapper" style="padding: 40px 40px 40px 40px;">
+  <div class="flex-grow-1 main-content-wrapper" [class.full-width-mobile]="isMobile"
+    [style.margin-left.px]="showSidebar && !isMobile ? (sidebarCollapsed ? 112 : 312) : 0"
+    style=" transition: margin-left 0.3s ease;">
     <div class="main-content rounded-4">
       <router-outlet></router-outlet>
     </div>
   </div>
 </div>
-

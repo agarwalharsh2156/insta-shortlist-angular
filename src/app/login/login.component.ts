@@ -16,6 +16,7 @@ export class LoginComponent implements OnInit {
   isFontAwesomeEnabled = true;
   isLoading = false;
   errorMessage = '';
+  showPassword = false; // Added for password toggle
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
@@ -24,7 +25,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   get username() { return this.loginForm.get('username'); }
   get password() { return this.loginForm.get('password'); }
@@ -33,7 +34,7 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       this.isLoading = true;
       this.errorMessage = '';
-      
+
       const credentials = {
         username: this.loginForm.value.username,
         password: this.loginForm.value.password
@@ -48,7 +49,7 @@ export class LoginComponent implements OnInit {
         },
         error: (error) => {
           console.error('Login failed:', error);
-          this.errorMessage = error;
+          this.errorMessage = 'Invalid username or password. Please try again.';
           this.isLoading = false;
         },
         complete: () => {

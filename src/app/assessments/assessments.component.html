@@ -1,81 +1,158 @@
-<div class="container mt-4 assessments-bg">
-  <!-- Top Bar (Heading Menu) -->
-  <div class="assessments-floating-container-heading p-4 mb-4">
-    <div class="top-bar d-flex flex-wrap justify-content-between align-items-center mb-3 gap-3">
-      <h2 class="fw-bold mb-0">Assessments</h2>
-      <div class="d-flex gap-2 ms-auto">
-        <button class="btn brand-green-btn" routerLink="/assessments/create-assessment">Create Assessment</button>
-        
-        <button class="btn layout-toggle" [class.active]="isGridView" (click)="toggleView(true)" title="Table View">
-          <i class="fas fa-list"></i>
-        </button>
-        <button class="btn layout-toggle" [class.active]="!isGridView" (click)="toggleView(false)" title="Grid View">
-          <i class="fas fa-th"></i>
+<div class="assessments-bg">
+  <!-- Header Section -->
+  <div class="assessments-floating-container-heading p-4">
+    <div class="top-bar d-flex justify-content-between align-items-center">
+      <div>
+        <h2 class="mb-1 fw-bold">Assessment Management</h2>
+        <p class="text-muted mb-0">Manage assessment steps and workflows</p>
+      </div>
+      <div>
+        <!-- Replace your existing CREATE ASSESSMENT button with this -->
+        <!-- <button class="create-btn" (click)="navigateToCreateAssessment()">
+          <i class="fas fa-plus"></i>
+          Create Assessment
+        </button> -->
+        <button class="btn brand-green-btn me-2" (click)="navigateToCreateAssessment()">
+          <i class="bi bi-plus-circle me-2"></i>Create Assessment
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Loading/Error States -->
-  <div *ngIf="loading" class="text-center my-5">
+  <!-- Loading and Error States -->
+  <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
+    <p class="mt-3 text-muted">Loading assessments...</p>
   </div>
-  <div *ngIf="error" class="alert alert-danger text-center">{{ error }}</div>
 
-  <!-- Content Container -->
-  <div class="assessments-floating-container" *ngIf="!loading && !error">
-    <!-- Grid View: Grouped by Title -->
-    <div class="row g-4 d-flex align-items-stretch flex-wrap" *ngIf="!isGridView">
-      <div class="col-md-4 d-flex" *ngFor="let group of assessmentsByTitle">
-        <div class="assessment-card p-3 shadow-sm h-100 w-100 d-flex flex-column">
-          <div>
-            <div class="fw-bold fs-5 mb-1">{{ group.title }}</div>
-            <div class="mb-2">
-              <span class="badge custom-badge">Total Steps: {{ group.steps.length }}</span>
-            </div>
-          </div>
-          <div class="flex-grow-1 d-flex flex-column justify-content-center">
-            <ul class="list-group list-group-flush mb-2">
-              <li class="list-group-item px-0 py-1" *ngFor="let step of group.steps">
-                <div class="d-flex align-items-center fw-semibold">
-                  <span class="badge bg-secondary ms-2 me-2">Step No : {{ step.stepOrder }}</span>
-                  <span>{{ step.stepName }}</span>
-                </div>
-                <div class="small text-muted">Mode: {{ step.mode }} | Passing: {{ step.passingCriteria }}</div>
-              </li>
-            </ul>
-          </div>
-          <div class="d-flex gap-2 mt-3 w-100">
-            <button class="btn btn-outline-primary btn-sm flex-fill">Edit</button>
-            <button class="btn btn-outline-danger btn-sm flex-fill">Delete</button>
+  <div *ngIf="error && !loading" class="alert alert-danger mx-3">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+  </div>
+
+  <!-- Edit Assessment Section -->
+  <div *ngIf="editingAssessment" class="assessments-floating-container-heading p-4 mb-4">
+    <h4 class="fw-bold mb-3">
+      <i class="bi bi-pencil-square me-2"></i>Edit Assessment Step
+    </h4>
+    <form (ngSubmit)="saveEdit()" #editFormRef="ngForm">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="editTitle" class="form-label">Assessment Title</label>
+          <input type="text" class="form-control" id="editTitle" [(ngModel)]="editForm.title" name="title" required>
+        </div>
+        <div class="col-md-3 mb-3">
+          <label for="editStepOrder" class="form-label">Step Order</label>
+          <input type="number" class="form-control" id="editStepOrder" [(ngModel)]="editForm.stepOrder" name="stepOrder"
+            min="1" required>
+        </div>
+        <div class="col-md-3 mb-3">
+          <label for="editStepName" class="form-label">Step Name</label>
+          <select class="form-select" id="editStepName" [(ngModel)]="editForm.stepName" name="stepName" required>
+            <option value="">Select Step Name</option>
+            <option *ngFor="let option of stepNameOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="editMode" class="form-label">Mode</label>
+          <select class="form-select" id="editMode" [(ngModel)]="editForm.mode" name="mode"
+            (ngModelChange)="onModeChange()" required>
+            <option value="">Select Mode</option>
+            <option *ngFor="let option of modeOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="editCriteria" class="form-label">Passing Criteria</label>
+          <input type="text" class="form-control" id="editCriteria" [(ngModel)]="editForm.passingCriteria"
+            name="passingCriteria" required>
+        </div>
+      </div>
+
+      <!-- Interviewer field - only show when mode is Manual -->
+      <div class="row" *ngIf="showInterviewerField">
+        <div class="col-md-8 mb-3">
+          <label for="editInterviewer" class="form-label">
+            <i class="bi bi-person me-1"></i>Assessment Interviewer/Person Responsible
+          </label>
+          <select class="form-select" id="editInterviewer" [(ngModel)]="editForm.interviewerName"
+            name="interviewerName">
+            <option value="">Select Interviewer</option>
+            <option *ngFor="let option of interviewerOptions" [value]="option">{{ option }}</option>
+          </select>
+        </div>
+        <div class="col-md-4 mb-3 d-flex align-items-end">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="editSendFeedback" [(ngModel)]="editForm.sendFeedback"
+              name="sendFeedback">
+            <label class="form-check-label" for="editSendFeedback">
+              Send Feedback
+            </label>
           </div>
         </div>
       </div>
-      <div *ngIf="assessmentsByTitle.length === 0" class="text-center text-muted w-100">No assessments found.</div>
-    </div>
 
-    <!-- Card List View: Grouped by Title -->
-    <div *ngIf="isGridView" class="job-cards-list">
-      <div class="job-card mb-4" *ngFor="let group of assessmentsByTitle">
-        <div class="job-card-header d-flex justify-content-between align-items-center">
-          <div class="fw-bold fs-5">
-            {{ group.title }}
-          </div>
-          <div>
-            <button class="btn btn-outline-primary btn-sm me-2">Edit</button>
-            <button class="btn btn-outline-danger btn-sm">Delete</button>
-          </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn brand-green-btn" [disabled]="!editFormRef.form.valid">
+          <i class="bi bi-check-circle me-2"></i>Save Changes
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
+          <i class="bi bi-x-circle me-2"></i>Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Assessment List View -->
+  <div *ngIf="!loading" class="assessments-floating-container">
+    <div class="job-cards-list">
+      <div *ngFor="let group of groupedAssessments" class="job-card">
+        <div class="job-card-header">
+          <h4 class="fw-bold fs-5 mb-0">{{ group.title }}</h4>
         </div>
-        <ul class="list-group list-group-flush mt-3">
-          <li class="list-group-item px-0 py-2" *ngFor="let step of group.steps">
-            <div class="fw-semibold">{{ step.stepName }} <span class="badge bg-secondary ms-2">Order: {{ step.stepOrder }}</span></div>
-            <div class="small text-muted">Mode: {{ step.mode }} | Passing: {{ step.passingCriteria }}</div>
+
+        <ul class="list-group">
+          <li *ngFor="let assessment of group.assessments"
+            class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="flex-grow-1">
+              <div class="d-flex align-items-center mb-2">
+                <span class="custom-badge badge me-3">Step {{ assessment.stepOrder }}</span>
+                <strong>{{ assessment.stepName }}</strong>
+              </div>
+              <div class="text-muted small">
+                <i class="bi bi-gear me-1"></i>{{ assessment.mode }} |
+                <i class="bi bi-check-circle me-1"></i>{{ assessment.passingCriteria }}
+                <span *ngIf="assessment.mode === 'Manual' && getInterviewerName(assessment)" class="ms-2">
+                  | <i class="bi bi-person me-1"></i>{{ getInterviewerName(assessment) }}
+                </span>
+
+              </div>
+            </div>
+            <div class="d-flex gap-2 ms-3">
+              <button class="btn btn-outline-primary btn-sm" (click)="startEdit(assessment)"
+                title="Edit Assessment Step">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-outline-danger btn-sm" (click)="deleteAssessment(assessment)"
+                title="Delete Assessment Step">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
           </li>
         </ul>
       </div>
-      <div *ngIf="assessmentsByTitle.length === 0" class="text-center text-muted w-100">No assessments found.</div>
+
+      <!-- Empty State -->
+      <div *ngIf="groupedAssessments.length === 0" class="text-center py-5">
+        <i class="bi bi-clipboard-x display-1 text-muted"></i>
+        <h4 class="mt-3 text-muted">No Assessments Found</h4>
+        <p class="text-muted">Create your first assessment to get started.</p>
+        <button class="btn brand-green-btn" routerLink="/create-assessment">
+          <i class="bi bi-plus-circle me-2"></i>Create Assessment
+        </button>
+      </div>
     </div>
   </div>
 </div>

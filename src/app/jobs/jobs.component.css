@@ -1,17 +1,20 @@
+/* Existing styles preserved */
 .jobs-bg {
   background: transparent !important;
- 
 }
+
 .job-card {
   background: rgb(253, 253, 253);
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(60,60,60,0.06);
+  box-shadow: 0 2px 12px rgba(60, 60, 60, 0.06);
   min-height: 220px;
   transition: box-shadow 0.2s;
 }
+
 .job-card:hover {
-  box-shadow: 0 6px 24px rgba(60,60,60,0.12);
+  box-shadow: 0 6px 24px rgba(60, 60, 60, 0.12);
 }
+
 .job-icon {
   width: 40px;
   height: 40px;
@@ -24,45 +27,53 @@
   font-size: 1.3rem;
   padding: 15px;
 }
+
 .brand-green-bg {
   background: rgba(209, 245, 91, 0.623) !important;
   color: #222 !important;
 }
+
 .brand-green-btn {
   background: rgb(210, 245, 91) !important;
   color: #222 !important;
   border: none;
   font-weight: 600;
   border-radius: 8px;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
 }
+
 .job-status-badge {
   font-size: 0.95rem;
   border-radius: 8px;
   padding: 4px 12px;
 }
+
 .job-meta {
   font-size: 0.97rem;
   color: #555;
 }
-.layout-toggle.active, .layout-toggle:focus {
+
+.layout-toggle.active,
+.layout-toggle:focus {
   background: rgb(210, 245, 91) !important;
   color: #222 !important;
 }
+
 .layout-toggle {
   border-radius: 8px;
   border: none;
   background: #f4f4f4;
   color: #888;
+  min-height: 40px;
+  min-width: 40px;
 }
 
-.brand-green-bg {
-  background: rgb(117, 245, 91) !important;
-  color: #000000b2 !important;
-}
 .brand-yellow-bg {
   background: #e4ee5dc5 !important;
-  color: #000000b2  !important;
+  color: #000000b2 !important;
 }
+
 .brand-purple-bg {
   background: rgba(202, 210, 255, 0.801) !important;
   color: #000000b2 !important;
@@ -71,25 +82,24 @@
 .jobs-floating-container {
   background: rgb(253, 253, 253);
   border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(60,60,60,0.08), 0 1.5px 4px rgba(60,60,60,0.06);
-  
+  box-shadow: 0 8px 32px rgba(60, 60, 60, 0.08), 0 1.5px 4px rgba(60, 60, 60, 0.06);
 }
 
-.top-bar{
+.top-bar {
   padding-bottom: 20px;
   border-bottom: 1px solid #99989885;
 }
 
-.form-control{
+.form-control {
   background-color: #f3f2f2b9;
-  border: 1px solid #838282
+  border: 1px solid #838282;
 }
 
 .job-table-view {
   border-radius: 16px;
-  overflow: hidden; /* Ensures the rounded corners are visible */
+  overflow: hidden;
   background: rgb(253, 253, 253);
-  box-shadow: 0 2px 12px rgba(60,60,60,0.06);
+  box-shadow: 0 2px 12px rgba(60, 60, 60, 0.06);
 }
 
 .job-icon-table {
@@ -103,26 +113,216 @@
   justify-content: center;
   font-size: 1rem;
 }
+
 .job-table-view td {
   vertical-align: middle;
 }
 
-
-.table-head {
-  background-color: rgb(202, 210, 255) !important; /* Use your brand purple */
-}
-
 .job-table-view thead th {
-  background-color: rgb(202, 210, 255) !important; /* Ensures all th cells get the color */
+  background-color: rgb(202, 210, 255) !important;
   color: #222 !important;
   border-bottom: 2px solid #e2e1e1;
   font-weight: 600;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding: 20px;
   vertical-align: middle;
 }
 
-.job-table-view tbody td{
-  padding-top: 15px;
-  padding-bottom: 15px;
+.job-table-view tbody td {
+  padding: 15px;
+}
+
+/* MOBILE RESPONSIVE STYLES */
+
+/* Extra Small Devices (phones, less than 576px) */
+@media (max-width: 575.98px) {
+  .container {
+    padding: 0.5rem !important;
+  }
+
+  .jobs-floating-container {
+    margin: 0.5rem;
+    padding: 1rem !important;
+    border-radius: 12px;
+  }
+
+  /* Stack top bar elements vertically */
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 1rem !important;
+  }
+
+  .top-bar .d-flex:first-child {
+    flex-direction: column;
+    gap: 0.75rem !important;
+  }
+
+  .top-bar .d-flex:last-child {
+    margin: 0 !important;
+    justify-content: center;
+    gap: 0.5rem !important;
+  }
+
+  /* Full width search on mobile */
+  .form-control {
+    max-width: none !important;
+    width: 100%;
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  /* Smaller buttons on mobile */
+  .brand-green-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    flex: 1;
+    text-align: center;
+    min-height: 48px;
+  }
+
+  /* Stack helper nav vertically */
+  .d-flex:has(span:contains("Showing")) {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 1rem !important;
+  }
+
+  .d-flex:has(.layout-toggle) {
+    justify-content: space-between;
+    margin: 0 !important;
+  }
+
+  /* Job cards - single column */
+  .row .col-md-6,
+  .row .col-lg-4 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+
+  .job-card {
+    min-height: auto;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Hide table on mobile, show cards */
+  .job-table-view {
+    display: none !important;
+  }
+
+  /* Adjust layout toggles */
+  .layout-toggle {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.5rem;
+  }
+
+  /* Form select adjustments */
+  .form-select {
+    min-height: 44px;
+    font-size: 1rem;
+  }
+
+  /* Job meta text */
+  .job-meta {
+    font-size: 0.9rem;
+  }
+
+  /* Status badges */
+  .job-status-badge {
+    font-size: 0.85rem;
+    padding: 0.25rem 0.75rem;
+  }
+}
+
+/* Small Devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .jobs-floating-container {
+    padding: 1.5rem !important;
+  }
+
+  /* Two column grid for job cards */
+  .row .col-md-6 {
+    flex: 0 0 50% !important;
+    max-width: 50% !important;
+  }
+
+  .job-card {
+    min-height: 200px;
+  }
+
+  /* Partially responsive top bar */
+  .top-bar .d-flex:first-child {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .form-control {
+    max-width: 250px !important;
+  }
+}
+
+/* Medium Devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  /* Three column grid */
+  .row .col-lg-4 {
+    flex: 0 0 33.333333% !important;
+    max-width: 33.333333% !important;
+  }
+
+  /* Show table view on tablets */
+  .job-table-view {
+    display: table !important;
+  }
+
+  /* Adjust table for tablets */
+  .job-table-view th,
+  .job-table-view td {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+
+  .brand-green-btn,
+  .layout-toggle,
+  .btn {
+    min-height: 48px;
+    padding: 0.75rem 1rem;
+  }
+
+  .form-control,
+  .form-select {
+    min-height: 48px;
+    font-size: 1.1rem;
+  }
+
+  .job-card {
+    padding: 1.25rem;
+  }
+}
+
+/* Landscape orientation on small screens */
+@media (orientation: landscape) and (max-height: 600px) {
+  .jobs-floating-container {
+    padding: 1rem !important;
+  }
+
+  .top-bar {
+    padding-bottom: 1rem;
+  }
+
+  .job-card {
+    min-height: 180px;
+  }
 }

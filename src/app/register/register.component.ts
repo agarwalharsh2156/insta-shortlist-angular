@@ -17,10 +17,12 @@ export class RegisterComponent implements OnInit {
   isFontAwesomeEnabled = true;
   isLoading = false;
   errorMessage = '';
+  showPassword = false; // Added for password toggle
+  showConfirmPassword = false; // Added for confirm password toggle
 
   constructor(
-    private fb: FormBuilder, 
-    private authService: AuthService, 
+    private fb: FormBuilder,
+    private authService: AuthService,
     private apiService: ApiService,
     private router: Router
   ) {
@@ -34,7 +36,7 @@ export class RegisterComponent implements OnInit {
     }, { validators: this.passwordMatchValidator });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   passwordMatchValidator(form: FormGroup) {
     return form.get('password')?.value === form.get('confirmPassword')?.value
@@ -70,7 +72,7 @@ export class RegisterComponent implements OnInit {
             username: this.registerForm.value.username,
             password: this.registerForm.value.password
           };
-          
+
           this.authService.login(loginCredentials).subscribe({
             next: (loginSuccess) => {
               if (loginSuccess) {
@@ -85,7 +87,7 @@ export class RegisterComponent implements OnInit {
         },
         error: (error) => {
           console.error('Registration failed:', error);
-          this.errorMessage = error;
+          this.errorMessage = 'Registration failed. Please try again.';
           this.isLoading = false;
         }
       });

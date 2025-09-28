@@ -21,7 +21,7 @@ export class ViewJobComponent implements OnInit {
   loadingAssessments = false;
   assessmentsError: string | null = null;
 
-  selectedAssessmentTitle: string | null = null;
+  selectedAssessmentTitle: string = ''; // <-- set to empty string, not null
   linking = false;
   linkError: string | null = null;
   linkSuccess: string | null = null;
