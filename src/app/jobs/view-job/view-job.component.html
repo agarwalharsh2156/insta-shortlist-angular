@@ -1,4 +1,4 @@
-<div class="container mt-4 jobs-bg">
+<div class="container jobs-bg">
   <!-- Loading State -->
   <div *ngIf="loading" class="text-center py-5">
     <div class="jobs-floating-container p-5">
@@ -100,7 +100,7 @@
       </div>
     </div>
 
-    <div class="card mt-4" *ngIf="job">
+    <div class="card mt-4" *ngIf="job" style="border-radius: 10px;">
       <div class="card-header">
         <div class="d-flex align-items-center">
           <div class="section-icon me-3">
@@ -112,12 +112,12 @@
       <div class="card-body">
         <p class="text-muted mb-3">Share this link with candidates to allow them to apply directly for this position:
         </p>
-        <div class="input-group">
+        <div class="input-group align-items-center" style="display: flex;">
           <input type="text" class="form-control" [value]="getPublicApplicationUrl()" readonly>
-          <button class="btn brand-green-btn" type="button" (click)="copyApplicationUrl()"
-            style="border: 1px solid #0000005f;">
-            <i class="bi bi-clipboard"></i> Copy Link
+          <button type="button" class="btn brand-green-btn" (click)="copyApplicationUrl()">
+            <i class="fas fa-link"></i> Copy Link
           </button>
+          <span *ngIf="copied" class="ms-2 text-success fw-semibold" style="align-self: center;">Copied!</span>
         </div>
       </div>
     </div>

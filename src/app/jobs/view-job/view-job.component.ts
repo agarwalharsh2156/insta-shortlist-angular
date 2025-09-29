@@ -29,6 +29,8 @@ export class ViewJobComponent implements OnInit {
   assessmentSteps: any[] = []; // Response from GET /api/assessments/job/{jobId}
   showAssessmentSteps = false;
 
+  copied = false;
+
   constructor(private route: ActivatedRoute, private apiService: ApiService) { }
 
   ngOnInit() {
@@ -114,19 +116,35 @@ getPublicApplicationUrl(): string {
 
 copyApplicationUrl() {
   const url = this.getPublicApplicationUrl();
-  navigator.clipboard.writeText(url).then(() => {
-    // You can show a toast or alert here
-    alert('Application link copied to clipboard!');
-  }).catch(() => {
-    // Fallback for older browsers
+    const onCopied = () => {
+      this.copied = true;
+      setTimeout(() => this.copied = false, 1500);
+    };
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(url).then(onCopied).catch(() => {
+        this.fallbackCopy(url);
+        onCopied();
+      });
+    } else {
+      this.fallbackCopy(url);
+      onCopied();
+    }
+  }
+
+  private fallbackCopy(text: string) {
     const textArea = document.createElement('textarea');
-    textArea.value = url;
+    textArea.value = text;
+    // Avoid scrolling to bottom
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-9999px';
     document.body.appendChild(textArea);
+    textArea.focus();
     textArea.select();
+    try {
     document.execCommand('copy');
+    } catch { }
     document.body.removeChild(textArea);
-    alert('Application link copied to clipboard!');
-  });
 }
 
 

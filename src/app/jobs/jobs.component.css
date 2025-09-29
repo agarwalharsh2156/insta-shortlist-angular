@@ -1,6 +1,7 @@
 /* Existing styles preserved */
 .jobs-bg {
   background: transparent !important;
+  margin-top:40px;
 }
 
 .job-card {

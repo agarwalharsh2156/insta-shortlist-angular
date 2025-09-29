@@ -2,6 +2,7 @@
   background: rgb(253, 253, 253) !important;
   border-radius: 20px;
   box-shadow:0 8px 32px rgba(60,60,60,0.08), 0 1.5px 4px rgba(60,60,60,0.06);
+  margin-top: 40px;
 }
 
 .candidates-table {

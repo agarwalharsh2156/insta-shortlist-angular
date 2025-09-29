@@ -1,9 +1,9 @@
 .create-job-bg {
-  background: linear-gradient(120deg, #f3f7fa 0%, #e9f7ef 100%);
   min-height: 90vh;
   width: 100%;
   z-index: 0;
   display: flex;
+  margin-top:40px;
   align-items: center;
   justify-content: center;
 }

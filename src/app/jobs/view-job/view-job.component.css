@@ -1,4 +1,10 @@
-/* Info Cards */
+/* Existing styles preserved */
+.jobs-bg {
+  background: transparent !important;
+  margin-top: 40px;
+  margin-bottom: 40px
+}
+
 .info-card {
   background: rgb(253, 253, 253);
   border-radius: 12px;

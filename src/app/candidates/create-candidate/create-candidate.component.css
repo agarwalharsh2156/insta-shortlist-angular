@@ -2,6 +2,7 @@
   background: transparent !important;
   min-height: 90vh;
   width: 100%;
+  margin-top:40px;
   z-index: 0;
   display: flex;
   align-items: center;
